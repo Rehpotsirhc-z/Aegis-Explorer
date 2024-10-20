@@ -78,13 +78,15 @@ async function downloadImage(url) {
 }
 
 function recordCategory(category) {
-    chrome.storage.local.get([category]).then((result) => {
+    chrome.storage.local.get([`${category}-log`]).then((result) => {
         let currentTime = new Date().getTime();
-        let log = Array.from(result[category] || []).filter(
+        let log = Array.from(result[`${category}-log`] || []).filter(
             (time) => time > thirtyDaysAgo(),
         );
         console.log("Log: ", result);
-        chrome.storage.local.set({ [category]: [...log, currentTime] });
+        chrome.storage.local.set({
+            [`${category}-log`]: [...log, currentTime],
+        });
     });
 }
 
@@ -96,12 +98,12 @@ function thirtyDaysAgo() {
 
 setInterval(() => {
     chrome.storage.local.get(["onlineLog"]).then((result) => {
-        log = Array.from(result.onlineLog || [])
+        log = Array.from(result.onlineLog || []);
         console.log(log);
 
         let time = new Date().getTime();
         log.push(time);
-        chrome.storage.local.set({onlineLog: log});
+        chrome.storage.local.set({ onlineLog: log });
     });
 }, 60000);
 

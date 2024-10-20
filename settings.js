@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ].map((id) => document.getElementById(id));
 
     chrome.storage.local.get(["confidence"]).then((result) => {
-        console.log(result.confidence);
         if (!result.confidence) {
             chrome.storage.local.set({ confidence: 0.5 });
         }
@@ -179,28 +178,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     dateLabel.textContent = date.toDateString();
 
+    let myChart1, myChart2, myChart3; // Declare charts in the outer scope
+
+    const categoryLog = {};
+
     prevButton.addEventListener("click", () => {
         date.setDate(date.getDate() - 1);
         dateLabel.textContent = date.toDateString();
-        updateCharts(date, eventLog, myChart1);
-        updateCharts(date, eventLog, myChart2);
-        updateCharts(date, eventLog, myChart3);
+        updatePieChart(date, categoryLog, myChart1);
+        updateLineChart(date, eventLog, myChart2);
+        updateLineChart(date, eventLog, myChart3);
     });
 
     nextButton.addEventListener("click", () => {
         date.setDate(date.getDate() + 1);
         dateLabel.textContent = date.toDateString();
-        updateCharts(date, eventLog, myChart1);
-        updateCharts(date, eventLog, myChart2);
-        updateCharts(date, eventLog, myChart3);
+        updatePieChart(date, categoryLog, myChart1);
+        updateLineChart(date, eventLog, myChart2);
+        updateLineChart(date, eventLog, myChart3);
     });
-
-    const categoryLog = {};
 
     Promise.all(
         Object.entries(categories).map(([key, value]) => {
-            return chrome.storage.local.get([value]).then((result) => {
-                categoryLog[key] = result[value];
+            return chrome.storage.local.get([`${value}-log`]).then((result) => {
+                categoryLog[key] = result[`${value}-log`];
             });
         }),
     ).then(() => {
@@ -209,23 +210,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // TODO STATISTICS LOGIC
         const ctx = document
-            .getElementById("time-per-category")
+            .getElementById("hits-per-category")
             .getContext("2d");
-        const myChart = new Chart(ctx, {
+        myChart1 = new Chart(ctx, {
             type: "pie",
             data: {
                 labels: Object.keys(categoryLog),
                 datasets: [
                     {
-                        label: "Time Spent on Category",
-                        data: Object.values(categoryLog).map(
-                            (value) =>
-                                value.filter(
-                                    (timestamp) =>
-                                        timestamp >= date &&
-                                        timestamp <
-                                            date.getTime() + 24 * 60 * 60000,
-                                ).length,
+                        label: "Number of Hits per Category",
+                        data: Object.values(categoryLog).map((value) =>
+                            value
+                                ? value.filter(
+                                      (timestamp) =>
+                                          timestamp >= date &&
+                                          timestamp <
+                                              date.getTime() + 24 * 60 * 60000,
+                                  ).length
+                                : 0,
                         ),
                         backgroundColor: [
                             "rgba(255, 99, 132, 1)", // Red
@@ -308,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const ctx2 = document
             .getElementById("page-per-5-minutes")
             .getContext("2d");
-        const myChart2 = new Chart(ctx2, {
+        myChart2 = new Chart(ctx2, {
             type: "line",
             data: {
                 labels: fiveMinutesLabels,
@@ -362,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const ctx2 = document
                 .getElementById("online-minutes")
                 .getContext("2d");
-            const myChart3 = new Chart(ctx2, {
+            myChart3 = new Chart(ctx2, {
                 type: "line",
                 data: {
                     labels: oneMinuteLabels,
@@ -393,6 +395,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
 function getMinuteIntervals(minutes, date) {
     let interval = minutes * 60000;
 
@@ -412,7 +415,24 @@ function formatTime(date) {
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
-function updateCharts(date, eventLog, myChart2) {
+function updatePieChart(date, categoryLog, chart) {
+    // Calculate the new data for the pie chart based on the new date
+    const updatedData = Object.values(categoryLog).map((value) =>
+        value
+            ? value.filter(
+                  (timestamp) =>
+                      timestamp >= date &&
+                      timestamp < date.getTime() + 24 * 60 * 60000,
+              ).length
+            : 0,
+    );
+
+    // Update the pie chart with the new data
+    chart.data.datasets[0].data = updatedData;
+    chart.update();
+}
+
+function updateLineChart(date, eventLog, chart) {
     let today = eventLog.filter(
         (timestamp) =>
             timestamp >= date && timestamp < date.getTime() + 24 * 60 * 60000,
@@ -432,14 +452,14 @@ function updateCharts(date, eventLog, myChart2) {
     });
 
     // Update the line chart
-    myChart2.data.labels = intervals.map((interval) =>
+    chart.data.labels = intervals.map((interval) =>
         formatTime(new Date(interval)),
     );
-    myChart2.data.datasets[0].data = todayIntervals.map(
+    chart.data.datasets[0].data = todayIntervals.map(
         (interval) => interval.length,
     );
 
-    myChart2.update();
+    chart.update();
 }
 
 // FUNCTIONS

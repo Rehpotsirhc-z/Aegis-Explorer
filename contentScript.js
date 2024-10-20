@@ -154,7 +154,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         console.log("Revealing image", message.imageLink);
 
         const images = document.querySelectorAll(
-            `img[src=""], img[data-original-src="${message.imageLink}"]`,
+            `img[src=""][data-original-src="${message.imageLink}"]`,
         );
         images.forEach((image) => {
             image.src = image.dataset.originalSrc;
@@ -180,7 +180,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             element.removeAttribute("data-original-background-image");
         });
     } else if (message.action === "removeText" && message.text) {
-        // remove all instances of the text in the document █
+        // remove all instances of the text in the document
         const text = message.text.trim();
 
         console.log("Removing text", text);
