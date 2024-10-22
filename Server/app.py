@@ -21,7 +21,7 @@ text_model = BertForSequenceClassification.from_pretrained(
 )
 
 text_model.load_state_dict(
-    torch.load("models/text/model.pth", map_location=torch.device("cpu")), strict=False
+    torch.load("models/text/model_v2.pth", map_location=torch.device("cpu")), strict=False
 )
 text_model.eval()
 

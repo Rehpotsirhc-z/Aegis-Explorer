@@ -1,34 +1,1044 @@
-invisible wall
-Crowd control
+An attack from the boss in which the said boss completely knocks out the entire party. Mostly in massively multiplayer online role-playing games.
+Exploit - A way of breaking the usual constraints of a game by finding gaps within the programming or logic that allow you to manipulate the game in unintended ways. Also known as 'glitching'.
+artificial intelligence (AI)
+The killing of teammates through destruction or damage done to allies, such as through deliberate shooting of teammates. Teamkilling is often identified as unsportsmanlike behavior.
+Plant
+Level 256 in Pac-Man is unbeatable due to a bug associated with an integer overflow in the game's code.
+Hit points
+Metroidvania
 minigame
-wall bang
-Also story mode and campaign.
-Repeated use of the jump button while moving, which increases the character's momentum in some games. Originally a glitch in Quake 1 based games, a large portion of games have implemented it as a feature and gamers have taken into doing this.
-Repeated use of the same item or action (e.g. chat message, combo, weapon). Often used generally to describe such repeated uses, but sometimes used pejoratively when the item or action is considered overpowered or annoying, such as an overreliance on rocket launchers in shooter games.
-Any enemy that appears to require more firepower than would be considered realistic or reasonable to defeat. This is an allusion to how the enemy can absorb bullets much like a sponge absorbs liquids. For example, an enemy soldier in a first-person shooter that requires several full magazines of ammunition to defeat, in comparison to other soldier types that are defeated in a handful of shots, would be a bullet sponge.
-invulnerability
-The automatic change in parameters, scenarios, and behaviors in a video game in real-time, based on the player's ability, with the aim of avoiding player boredom or frustration.
-When a game consists of multiple turns. When one player's turn is complete, they must wait until everyone else has finished their turn.
-VRR - An acronym for 'variable refresh rate', VRR is a technology that allows the refresh rate of the display panel to be matched to the frame-rate of the video input, improving visual clarity, particularly in situations where frame-rate is highly variable.
-A mechanism in a video game where progress to or from a saved game can be done by pressing a single controller button or keystroke, instead of opening a file dialog to locate the save file. Typically, there is only one quickload location and quicksaving will overwrite any previously saved state.
-A subgenre of puzzle video game where the player has to use the game's physics and environment to complete each puzzle. Notable examples include Portal, World of Goo and Cut the Rope, and projectile collision games such as Angry Birds and Peggle.
-A game environment divided into single-screen portions, similar to individual tiles in a maze. Players see only one such screen at a time, and they transfer between screens by moving the player-character to the current screen's edge. The picture then abruptly "flips" to the next screen, hence the technique's name. UK magazines also refer to this as flick-screen.
-A term used in many role-playing and strategy games to describe attacks or other effects that affect multiple targets within a specified area. For example, in the role-playing game, Dungeons & Dragons, a fireball spell will deal damage to anyone within a certain radius of where it strikes. In most tactical strategy games artillery weapons have an area of effect that will damage anyone within a radius of the strike zone. Often the effect is stronger on the target than on anything else hit. See also: Splash damage
-frag
-Playing the meta, at possible detriment to the story and/or enjoyment of the game. Colloquialism.
-cross-platform
-The losing screen shown when a loss condition is met.
-A location in a game. Also area, map, stage, dungeon. Several levels may be grouped into a world. Some games include special bonus stages or secret levels.
-A program, either provided within the game software or as separate software product, that allows players to place objects or create new levels for a video game.
-rocket jumping
-Friendly fire - refers to any situation in which players are vulnerable to attacks from their own allies (especially in multiplayer settings), or to describe the act of being attacked by an ally.
-specialization
-A 3D graphics process which determines if an object is visible and "clips" any obscured parts before drawing it. See also clipping (computer graphics).
-mudflation
-An abbreviation of 1 versus 1, denoting two players battling against each other. Can be extended to any player versus player grouping, such as '2v2' to mean two teams of two battling each other, or "1v4" to refer to a team of four players against one (as seen in asymmetrical gameplay).
-open world
-A spell or skill that is capable of dealing a large amount of damage to its target. Also in the context of video games, "nuking" may also describe the act of using a nuclear weapon while playing the game, such as the atomic bomb in Call of Duty games. In an MMORPG, nuking may differ in meaning between different communities. For example, to some individuals, to "nuke" is to deal the most possible damage to the most enemies possible (almost exclusively by means of an area of effect skill), whereas other individuals use the term by referring to the highest possible damage to a single target in the shortest amount of time, also known as a spike. Some individuals believe that the player, or players, nuking must do so by means of ranged combat (that is, out of melee range); others make no such distinction. It can also mean to critical hit often or just to deal high standard damage. In a real-time or turn-based strategy game, the term "nuke" has one distinct use. It can describe the tactic of attacking an opponent's specific (often high-priority) units with high-damage spells in order to kill them or force (or strongly encourage) the opposing player to remove them from battle. Such usage is common in Warcraft III, in which "Heroes" are frequently the targets and attackers due to their relative high priority and common faculty for high-damaging spells.
-Hit points have been a mainstay of the RPG genre for decades now, with long-running series like Final Fantasy keeping the concept largely unchanged since the mid-'80s.
+clock/clocked
+A secret level that is used by developers to test the movements, actions and control of a game's player character(s). They are usually removed or hidden from regular access before the game is released.
+virtual reality (VR)
+mouselook
+A small variation of a joystick, usually placed on a game controller to allow a player more fluent 2-dimensional input than is possible with a D-pad.
+See minigame.
+A measure of the rendering speed of a video game's graphics, typically in frames per second (FPS).
+A descriptor for hardware or software that arose during the fifth generation of video game consoles, targeting 64-bit computer architecture.
+An animation technique in which a new head is put on an existing character model, to save memory or animation effort.
+B2P
+See deathmatch.
+A fixed series of controller button presses used across numerous Konami games to unlock special cheats (such as gaining a large number of lives in Contra), and subsequently used by other developers to enable cheats or added functions in these games. The term applies to variations on this sequence but nearly all begin with "up up down down left right left right".
+A collection of isolated dungeon-, cave-, or hell-like levels which are connected by an open overworld.
+nerf
+health
+massively multiplayer online game (MMO)
+underworld
+Destiny 2 is well-known for its end-game play, providing hours of extra content that will keep players entertained long after the main story missions have been completed.
+Also hardcore mode.
+wipe
+The moment in which a character sees a rise in relative strength from leveling up larger than that of a normal milestone. This is usually due to an item becoming available or certain abilities being unlocked.
+Any video game, or genre which involves heavy use of jumping, climbing, and other acrobatic maneuvers to guide the player-character between suspended platforms and over obstacles in the game environment.
+shoot 'em up (SHMUP)
+See quality assurance.
+MMO
+Printed or online manuals that are written to guide players through a game, typically offering maps, lists of equipment, moves, abilities, enemies, and secrets, and providing tips and hints for effective play strategies.
+A file or similar data storage method that stores the state of the game in non-volatile memory, enabling the player to shut down the gaming system and then later restart the device and load the saved game state to continue playing from where they saved. Saved games may also be used to store the game's state before a difficult area that, should the player-character die, the player can try again without penalty.
+Nades - A shorthand slang for hand grenades, nades is a general term used for all thrown explosive projectiles.
+skill tree
+splash damage
+interface
+controller
+infinite health
+A visual effect that occurs every time the player-character lands a hit on the opponent; commonly seen in first-person shooter games like Call of Duty.
+cheat
+Playing games of chance for real money or in-game currency. In video games, loot boxes are commonly associated with gambling.
+A game mode in which one team tries to attack (or capture) specific areas and the other team tries to defend those points.
+Top-down, isometric graphics-based, and 3D graphics-based games may have 3-DoF or 4-DoF: aim left/right (rotate around Z-axis), move left/right (strafe along X-axis) & move forward/backward (run along Y-axis), and move up/down (jump/fall/crouch along Z-axis).
+third party
+Balancing - A process, typically carried out by a developer, of creating an even, consistent and fair level of challenge within a game setting. See also: 'Nerfing', 'OP'
+A subgenre of platform game in which the player character runs for an infinite amount of time while avoiding obstacles. The player's objective is to reach a high score by surviving for as long as possible.
 blacklist
-expansion pack (Add-on)
+Loot boxes (and other name variants, such as booster packs for online collectible card games) are awarded to players for completing a match, gaining an experience level, or other in-game achievement. The box contains random items, typically cosmetic-only but may include gameplay-impacting items, often awarded based on a rarity system. In many cases, additional loot boxes can be obtained through microtransactions.
+Bug - An unexpected glitch that arises in a game due to programming errors. These can range from amusing and trivial oddities to game-breaking issues that prevent player progress or corrupt save data.
+See endless runner.
+Also day zero.
+See saved game.
+Gacha terminology that refers to spinning the wheel in hopes of obtaining a rare or high-quality item or character.
+Manipulating a game to carry out events out of their intended order. Sequence breaking can be used to speedrun a game, obtain desirable items earlier in a game's story than intended, unlock content faster, or induce other glitches that may be utilised for advantageous means.
+When two teams or players are in a fight and a third team or player attempts to kill one or both of the teams. The term was likely popularized in battle royale games such as Fortnite but is also used in first-person shooters.
+button mashing
+An abbreviation for frames per second. See frame rate.
+An interactive computer-generated experience taking place within a simulated environment. Used in video gaming primarily to describe a VR-based video game or a VR option for an otherwise non-VR video game.
+Part of a game's design that regulates how new gameplay elements, levels, weapons, abilities, or the like are introduced to the player.
+The act of quitting a game mid-progress instead of waiting for the game to end. Typically, this is associated with leaving in frustration, such as unpleasant communication with other players, being annoyed, or losing the game. However, the reasons can vary beyond frustration, such as being unable to play due to the way the game has progressed, bad sportsmanship, or manipulating game statistics. Apparent rage quits may occur due to a player's game crashing, or the player experiencing network connection problems. There are also social implications of rage quitting, such as making other players rage quit. Certain games can penalize the player for leaving early. Sometimes the player may damage or even destroy the device, console, or controller the game is being played on. Contrast with drop-in, drop-out.
+triple A
+sequence breaking
+Also isometric graphics.
+In multiplayer games, a portion of the game's user interface that shows the last few events (generally, when other players are killed) from the last few seconds, like a news feed.
+Area of Effect
+digital rights management (DRM)
+ROM hacking
+A means of highlighting a feature on a game's map that is seen on the user interface of allied players.
+The gameplay of a given title at the climax of its storyline or campaign, and is followed by the postgame.
+The opposite of a buff, an effect placed on a character that negatively impacts their statistics and characteristics. Compare with nerf.
+multiplier
+bullshot
+The sum total of all known or implied stories of every character in the game, every branching storyline, and all potential outcomes and backstory.
+Backwards compatibilty - The ability of a games console to run software created for prior consoles in the series. The PS5, for example, is backwards compatible with PS4 and is able to run the overwhelming majority of software created for that console.
+team deathmatch
+A high-budget game with a large development team. AAA games are usually multiplatform or are first-party, have multimillion-dollar budgets, and expect to sell millions of copies.
+A game segment that exists solely to provide detail and exposition to the story. They are used extensively in MMOs and RPGs in order to progress the plot. Cut-scenes are more likely to be generated by the in-game engine while cinematics are pre-recorded.
+A frag or kill which occurs when a player uses a teleporter to get to a location occupied by another character. This character is killed and the player-character landing on them is granted credit for the kill.
+A measurement reflecting how much of the game world is visible in a first-person perspective on the display screen, typically represented as an angle. May also refer to the general amount of the game world that is visible on the screen, typically in games where being able to see a lot at once is important, such as strategy games and platformers.
+animation priority
+gibs
+drift
+multi-load games
+gank
+A block in fighting video games that does not have a downside to the player using it, usually performed by precisely timing a defensive maneuver or block. Parries may fully negate damage from the attack or even reflect the attack.
+review bomb
+A player who attempts to collect all achievements in a game. Achievement hunters tend to be completionists.
+AoE
+Status effects - A condition applied to a character which causes certain desirable or undesirable effects, sometimes referred to as 'buffs' or 'de-buffs'.
+Quality Assurance teams for games will play through a title multiple times in an attempt to find and track down bugs, glitches and crashes in the game before it goes live. This process can start early in development and can last until after post-production. Not to be mistaken with playtesting.
+GLHF
+parry
+open beta
+metagame
+secret character
+roguelike
+A type of video game walkthrough done by players, through screenshots or video, where the player provides commentary about the game as they work through it.
+kill stealing
+game save
+indie game
+HUD - An acronym for 'heads-up display', HUD generally refers to the text or graphical overlay visible during gameplay that displays key information like remaining HP, ammunition, available items or abilities.
+A jump performed off of a vertical surface to propel the player higher in the opposite direction. Wall jumps can be done between two tight walls in quick succession to climb vertically in some games, though some games such as Mega Man X and Transformice allow you to continuously jump on a single wall. As a special jump, it is sometimes an acquired skill instead of available from the game's start. 102 
+WASD keys
+Refers to content that existed in a game during development and is in the code, but is not actually present in typical gameplay. Lots of aspects in a game can be this, such as cutscenes, weapons, characters (playable or not), items, missions or levels. There are many reasons why content may be subject to this, like if it was too buggy, if it was too unbalanced, if it was never intended to be released (like a weapon that's overpowered on purpose so the developers can get through the story easily), copyright issues (such as if a license to use a copyrighted character expired), if programming it couldn't be finished in time (such as to meet a release date), or any other reason.
+A shortcut that allows a player to bypass one or more sections of the game. See fast travel.
+idle game
+A side game mode, mostly found in some action-adventure games, in which a player-controlled character is placed in a closed area and challenged to defeat enemies using combat abilities.
+Loadouts have become a large part of the tactical play for mutliplayer-focused online shooters like the Call of Duty series, where a smart loadout can be the difference between winning and losing.
+A game mode in which players are challenged to last as long as possible against a continuing threat with limited resources or player-character lives, with their performance ranked on how long they survive before succumbing to the threat (such as the death of the player-character) or on score. This mode is typically offered in games that otherwise have normal endings that can be reached, providing an additional challenge to the players once the main game is completed.
+A means of control over the console or computer on which the game is played. Specialized game controllers include the joystick, light gun, paddle, and trackball.
+roguelite
+AoE - Short for 'Area of Effect', AoE refers to attacks which cover a certain area with a damaging effect.
+old-school gaming
+endless runner
+kill-death ratio (K/D ratio or KDR)
+Loadout - Refers to the weapons, armor, items and abilities with which a player launches into a match or a combat scenario. In most cases, a 'loadout' will need to be balanced against the scenario itself and against the player's preferred playstyle.
+PT
+Graphic rendering technique in a two-dimensional perspective, often using sprites.
+area
+A portmanteau of masochist and hardcore, referring to a genre of punishingly difficult games, particularly the Dark Souls series and related Soulslikes as well as indie games such as I Wanna Be the Guy and Super Meat Boy. The genre is popular among hardcore gamers. See also Nintendo hard.
+K/D ratio - A player's ratio of in-game 'kills' to 'deaths'. Common to multiplayer shooters, K/D ratio is generally considered to be a measure of overall performance.
+A system of many competitive team-based multiplayer games that automatically finds a new player based on their skill level in an already existing game in case of one player leaving it. Usually only seen in casual modes to keep competitive integrity in ranked games.
+ban wave
+64-bit.
+A finite period of time in a massively multiplayer online game in which new content, such as themes, rules, modes, et cetera, becomes available, sometimes replacing prior time-limited content. Notable games that use this system include Star Wars: Battlefront II and Fortnite Battle Royale.
+level
+proc
+retrogaming
+Permadeath - A normally optional game mode which limits the player to a single attempt, deleting all progress should the player character die.
+save scumming
+on rails
+game jam
+FF - a shorthand for 'forfeit', FF is commonly used in multiplayer settings when a player or team concedes victory to the opposition.
+action game
+whale
+softlock
+The number of vectors of player-character movement that the player has control over, which are often a criterion associated with the game's genre.
+monetization
+Refers to competition for video game console market dominance and, in specific, to the rivalry between Sega and Nintendo throughout most of the 1980s and 1990s. The analogy also extends to competition in later console generations, particularly the PlayStation and Xbox brands.
+Tanking is a common - and quite often crucial - role in massive online multiplayer games like Final Fantasy XIV Online; no raiding team is complete without a tank to lead the charge.
+A game mode in which players can fight immediate battles without having to go through the linear, story-based campaign mode. It is popular in real-time strategy games.
+During publishing, the process of editing a game for audiences in another region or country, primarily by translating the text and dialog of a video game. Localization can also involve changing content of the game to reflect different cultural values and censoring material that is against local law, or in some cases self-censoring in an effort to obtain a more commercially favorable content rating.
+Also old-school gaming
+A term used around ongoing games with rotating content, the "fear of missing out" is an expression related to the psychological and social anxiety effect for players concerned about missing the opportunity to obtain limited-time items while they are available and thus devote more time and resources into the game as to obtain those items. This can include additional expenditures for microtransactions for free-to-play or freemium games.
+A type of game mode in co-operative multiplayer games. Players work together to defend one or more objectives or simply to have at least one man standing as they fight through discrete waves of enemies, with each subsequent wave featuring more numerous and powerful enemies. Such modes often include elements of tower defense games where players can deploy defensive tools such as turrets or traps to injure or slow enemies. The game may offer short periods between waves where players can spend in-game currency or similar points to improve their defenses, their equipment, or similar boosts. Horde modes can be based on a fixed number of waves or in an endless mode where players attempt to last as long as possible.
+A genre of video games with interactive stories. These games typically use static imagery, anime-styled character art (thanks in part to the popularity of the genre in Japan), and detailed backgrounds, with character dialogue presented in text boxes. Players may alter the path of the story by choosing from dialog trees or a small list of actions.
+handheld console
+Acronym for Greatest Of All Time.
+An opponent non-player character in a video game that is typically much more difficult to defeat compared to normal enemies, often at the end of a level or a game.
+Refers to the specific factor which changes a playable character or enemy's attributes, either inherently or due to a temporary buff or debuff.
+An early release of a video game, following its alpha release, where the game developer seeks feedback from players and testers to remove bugs prior to the product's commercial release. Games are usually almost finished at the beta stage. See also closed beta and open beta.
+The ability in games to define the player-characters abilities by selecting appropriate gear, equipment, and accessories to optimize and maximize the character's performance in the game. The end results, known as builds, then are frequently shared to other players through various means.
+hitscan
+no johns
+A revamped version of an older game. Sharing many similarities to a remaster, a remake may take more liberties with the changes made to the gameplay, graphics, and story. See also remaster and reboot, contrast with demake.
+AAA
+booster pack
+party game
+procedural generation
+No Man's Sky represents one of the most ambitious uses of procedural generation in gaming to date, with entire galaxies, teeming with plant and animal life being generated entirely through an sophisticated algorithm.
+rhythm game
+demake
+The probability of obtaining a particular item from a loot box or booster pack in certain video games, particularly in games with microtransactions.
+Personification of RNG, in a similar fashion to traditional personifications of Lady Luck, often addressed in humor to plead for more favourable RNG. Portmanteau of RNG and Jesus; also called RNGsus, RNJesus, RNGod, or Random Number God.
+In platform games, levels that are considered above-ground, in contrast to cave-like levels which are referred to as underworlds.
+bullet hell
+See retrogaming.
+Shooting games that are typically based on fast-paced gameplay and in a limited map or level space.
+Fetch-quest - A type of quest in which the player is asked to visit a specific location by a quest giver and bring back a particular item.
+act
+A personal computer.
+Frame-buffer - referring to a portion of RAM - 'a buffer' -  in which visual output information is stored, typically as a bitmap image. It often refers more generally to the height and width, in pixels, of the image output by a console, such as 1920 x 1080 (also know as '1080p' or 'HD') or 2160 x 3840 (also known as '2160p' or '4K'). See also: 'Resolution'
+An application program for personal computers use to launch one or more games, rather than launching the game directly. Launchers typically include additional services from the software developer to provide middleware such as friends and matchmaking services, content updating, digital-rights management, and cloud saving. A game launcher may also provide features of a digital storefront to purchase and download games. Launchers include those designed by publishers specifically for their games, such as Battle.net or Ubisoft Connect, or may be a general platform to support first- and third-party games like Steam and Epic Games Store.
+season
+development hell
+spawn killing
+To achieve a score so high it resets the in-game score counter back to 0, often used in older arcade games. More commonly used nowadays to express the (absolute) 100% completion of a game. Also see rolling the score.
+A visual element of most rhythm games that show the notes the player must match as they scroll along the screen. This is more commonly considered a "highway" when the notes scroll down the screen on a perspective-based grid, making it appear as a road highway.
+matchmaking
+class
+VRR - An acronym for 'variable refresh rate', VRR is a technology that allows the refresh rate of the display panel to be matched to the frame-rate of the video input, improving visual clarity, particularly in situations where frame-rate is highly variable.
+A multiplayer deathmatch mode in which the objective is not to achieve the most kills but to survive the longest, or alternatively to have the fewest character deaths in a given period of time.
+A group of players formed on the fly, usually to carry out a mutually beneficial task. PUGs will disband after the common objective has been achieved. Commonly used in MMORPGs.
+Rendering lag: A delay in the rate at which an otherwise-processed frame is rendered, usually due to a very large number of polygons or visual effects on screen at once. This can have similar visual effects as frame lag, but can alternatively result in frames being rendered incompletely - missing visual details, textures, particle effects or occasionally entire objects. Occasionally, a similar effect can be seen with layered audio cues.
+pulling
+Farming - The act of gathering valuable items or materials for crafting or in-game progress by repeatedly playing through areas rich in those resources. See also: 'Grinding'
+In a single player game, a group of characters traveling together on a quest that the player may control or have the most direct access to. The characters themselves are typically referred to as "party members".
+BM
+See gamethrowing.
+Raising a character's statistics to the maximum value.
+The pressing of different button combinations in rapid succession to perform or attempt to perform special moves, typically with little rhyme or reason. This technique is most often encountered in fighting games, especially among weaker players.
+ban
+Kiting - A tactic of luring an enemy away from their initial location, either as a means of distraction or evasion or to lead them into a more suitable area for combat, away from particular hazards, or other enemies.
+Wrecked - Often stylised as 'rekt' or 'recked', to be wrecked or to wreck another is to best or be bested easily, typically in a one-on-one encounter. 'Get Rekt' is a common victory put-down when overcoming a difficult or tenacious enemy.
+kill screen
+Buff - A temporary boost to a player's, enemy's or group of players' attributes or abilities. Typically applied with an item or player action. See also: 'De-buff', 'Nerfing'
+content rating
+See damage per minute.
+A practice of scaling down numbers, commonly score or health points, damage or healing values, or item levels, in the aftermath of a stat inflation as numbers get exponentially large and more difficult for the player to conceptualize. The practice is most common in MMORPGs, and the World of Warcraft is notable for having several stat squishes.
+A feature included in time attack or time trial modes in video games allowing the player to review their previous rounds. In racing games, for example, a "ghost car" may follow the last or fastest path a player took around the track. In fighting games, the ghost is an opponent that the computer AI player can train against outside of normal player versus player or story mode. Ghost cars in racing games generally appear as translucent or flashing versions of the player's vehicle. Based on previously recorded lap times, they serve only to represent the fastest lap time and do not interact dynamically with other competitors. A skilled player will use the ghost to improve their time, matching the ghost's racing line as it travels the course. Many racing games, including Gran Turismo, F-Zero, and Mario Kart offer a ghost function. Some also have ghosts set by staff members and developers, often showing perfect routes and lap times. A variation of the feature, dubbed by Firemonkeys Studios as "Time-Shifted Multiplayer", was implemented in the mobile racing game Real Racing 3. It works by recording the lap times of players in each race, and uses statistics from other players to recreate their lap times for the player to beat. These ghost cars can collide with the player and other vehicles, and are fully visible to the player. In some rhythm games, such as the Elite Beat Agents and Moero! Nekketsu Rhythm Damashii Osu! Tatakae! Ouendan 2, saved replay data can be used in one of the player slots in a multiplayer game.
+Methods used in multiplayer games to distribute treasure among cooperating players for finishing a quest. While early MMOs distributed loot on a 'first come, first served' basis, it was quickly discovered that such a system was easily abused, and later games instead used a 'need-or-greed' system, in which the participating players roll virtual dice, and the loot is distributed according to the results.
+drop rate
+Also free-for-all
+A game that presents two or more views seen by different players in a multiplayer game on the same display unit.
+A type of speedrun in which the player's objective is to reach the game's end goal as quickly as possible without regard to the normal intermediate steps. Compare to 100%.
+An attempt to complete a game as fast as possible. Depending on the rules for the speedrun, players may exploit glitches or bugs in the game to speed their progress.
+A random assortment of cards in digital collectible card games that players can buy or earn to add to their deck. See also lootbox.
+Friendly fire - refers to any situation in which players are vulnerable to attacks from their own allies (especially in multiplayer settings), or to describe the act of being attacked by an ally.
+Dominated by an opponent, usually another player. A deliberate misspelling of the word "owned".
+Also grenade jumping.
+achievement hunter
+A type of video game remake for older generation hardware.
+Also badge, trophy, medal, cheevo.
+noob
+Games that do not require purchase from a retailer, either physical or digital, to play. Highly prevalent on smartphones, free-to-play games may also provide additional gameplay-enhancing purchases via an in-app purchase. Games that require in-app purchases in order to remain competitive, or gamers who engage in said purchases, are known as pay to win (P2W). Compared to the P2W players, F2P players are often looked down upon. (Compare 'freemium', a free-to-play game that follows such a model.)
+See rage quit.
+Games that are made for YouTubers or Twitch streamers. See Let's Play.
+cloud save
+always-on DRM
+Judder - An inconsistent in-game motion often caused by uneven frame-pacing, in which some frames persist longer than than others and camera motion in particular exhibits a perceptible 'stutter'.
+Doom clone
+CPU versus CPU
+JRPG
+See above.
+Griefing - The harassing of other players in an online setting. See also: 'Kicking'
+arena shooter
+See field of view.
+A descriptor for hardware or software that arose during the fifth generation of video game consoles, targeting 32-bit computer architecture.
+An emoji that looks like a pair of teary eyes. Used as a taunt that means "cry more". Originally referred to the shortcut Alt+Q+Q from Warcraft 2, used as an insult telling players to activate the shortcut which would quit the game. The phrase blew up so much, it made its way out of the Warcraft community and eventually evolved into "cry more".
+energy
+Commonly seen in first-person shooters, hitscan is used to determine hits along a path with no travel time. Some games use this technique to detect hits with firearms in contrast to physics-based projectiles which have noticeable travel time.
+When a player uses a sniper rifle to achieve a kill without using its scope. Considered skillful, especially at range, as hipfired weapons usually have poor accuracy. Similar to quickscoping.
+quality of life (QoL)
+turtling
+A type of gamer who tries very hard and being extremely serious at all times while gaming. Also known as playing sweaty.
+A sub-genre of the shooter genre, where a single, usually mobile character has to shoot at enemies while all of the enemies attacking or moving toward it. The player character will typically have no allies, is extremely fragile, has little non-hazardous terrain to deal with, lacks any reload time for their basic weapon, and will gain power-ups to improve their abilities. Strongly associated with spaceships, but other player characters may be used. Sometimes conflated with shooters in general. Contains the bullet hell sub-genre
+double jump
+QQ
+The full set of downloadable content that is planned to be added to a video game, which can be entirely purchased with a season pass
+See downloadable content.
+A situation whereby the player character cannot act for a long period of time due to being periodically stunned. Often caused by being staggered by repeated attacks from multiple enemies.
+inventory
+one-shot
+A statistic typically found in player-versus-player video games, gauging the ratio between the number of opponents the player defeated and the number of deaths the player suffered at the hands of opponents. More skilled players typically have higher kill-death ratios.
+De-aggro - means to de-escalate a combat encounter by moving far enough away from a computer controlled enemy that it ceases attacking and returns to a neutral state.
+A menu or area of the screen where items collected by the player-character during the game can be selected. This interface allows the player to retrieve single-use items for an instant effect or to equip the player-character with the item.
+Being able to perform exceptionally well in a high-stakes situation, or have certain events occur at the right time in a very important or critical moment, in particular in a way that changes the outcome of the game; scoring a victory for your team when it was on the verge of defeat.
+A game genre emphasizing hand–eye coordination, reflexes, timing, and other physical skills. It includes fighting games, shooters, and platformers.
+A game mode associated with collectible card games including digital variants. A draft mode enables a player to create a deck of cards in such games by selecting one card of a number of randomly selected cards at a time. The player then uses the completed deck to play in matches against other players or computer opponents until they meet a certain win or loss record. Draft games contrast with constructed deck games, where players draw on their personal collections of cards.
+GOTY
+A region of the screen in video games in which the camera is controlled via free look where the mouse cursor can be positioned to lock the camera in place. Can be adjusted in some games.
+A game mechanic popularized by the Grand Theft Auto series and used in many Grand Theft Auto clone games. A player's actions in an open-world game may cause non-player characters, often representing law enforcement, to chase the player, with the response becoming more significant at higher wanted levels. The wanted level persists unless the player can elude these opponents, or if the character dies, eliminating the wanted level. Compare to aggro.
+Also ragdolling.
+DRM
+multiple character control
+main quest
+A game genre based on gameplay from the Dark Souls series, typically where character death due to the high level of difficulty is a core mechanic.
+Deliberately inducing glitches and other strange behaviour in cartridge-based games by tilting the cartridge slightly in its slot in the console, enough for the connection to be altered but not completely severed. Cartridge tilting creates similar effects to using a corruptor, and may include such glitches as character models becoming distorted, extremely loud noises and in particularly severe cases, both the game and the console itself may crash.
+ESP cheats (extra-sensory perception cheats)
+Abbreviation of one-credit completion or one-coin clear. To complete an arcade (or arcade-style) game without using continues.
+See experience point.
+Noob-tube - Originally referring to grenade launchers, a 'noob-tube' typically refers to powerful, easy-to-use weapons that are popular with inexperienced players, particularly in competitive multiplayer.
+Ganking - A portmanteau of 'Gang' and 'Kill', a 'Gank' refers to any in-game death caused by a group of assailants. See also: 'Mobs'
+A 360 no-scope usually refers to a trick shot in a first or third-person shooter video game in which one player kills another with a sniper rifle by first spinning a full circle and then quickly shooting without looking through the scope.
+display mode
+head swap
+A mechanism in a video game where progress to or from a saved game can be done by pressing a single controller button or keystroke, instead of opening a file dialog to locate the save file. Typically, there is only one quickload location and quicksaving will overwrite any previously saved state.
+A recorded playthrough of a game from the beginning to the end without any interruptions or commentary, often made as video walkthrough guides in case players get stuck on some parts of the game. Compare with Let's Play.
+A descriptor for hardware or software that arose during the third generation of video game consoles, targeting 8-bit computer architecture.
+A video game hardware unit that typically connects to a video screen and controllers, along with other hardware. Unlike personal computers, a console typically has a fixed hardware configuration defined by its manufacturer and cannot be customized. Sometimes includes handheld consoles, to differentiate them from computers, arcade machines, and cell phones.
+A buzzword for operating system, a video game is released for Windows or Android and so forth, not for PC, console or mobile. A corporation that controls a platform is referred to as a "platform holder".
+Aggro - Refers to attention from in-game enemies, often relating to the distance at which an enemy will notice the player character and engage in combat, or - in a multiplayer setting - the player being targeted by an enemy. See also: 'Tanking'
+In first-person view games, the up-and-down (and sometimes left-and-right) motion of the player's camera to simulate the bobbing of the player-character's head when walking or running. It is often an option that can be disabled as it may induce motion sickness in players.
+Also hi-score.
+When you clap a player, you deal enough damage to eliminate them, without them hitting you or shooting you once.
+In free-to-play games, a user who occasionally spends real-world money on in-game items or spends a modest amount, but not enough to be considered a whale.
+masocore
+S Rank
+Games, typically from the 1980s, that would only load one portion of the game into memory at a time. This technique let developers make each in-memory portion of the game more complex.
+Bots - A bot is a computer-controlled character playing alongside regular players in a multiplayer setting. It may also refer to an inexperienced or poor player, whose ability is no greater than an AI bot.
+crafting
+pocket (pocketing)
+The ability to play a game again after its completion with reasonable enjoyment.
+Players who play in public lobbies ("pubbies").
+quest
+2D graphics.
+world compression
+griefer
+A term meaning "no excuses", generally used when a player proclaims false or exaggerated reasons for not playing well. Originates from the competitive Super Smash Bros. Melee community.
+Slang rendering of "get good", often used to dismiss complaints about difficulty, especially within the soulslike genre, by implying the addressee has not yet learned the game's mechanics. While it can be used in a positive and encouraging manner, it has been accused of fostering elitism and hostility towards non-gamers when used to insult struggling players.
+In online multiplayer games that include ranked competitive play, boosting is where a player with a low-ranked level has a more-skilled player use their account to improve the low-ranked character to higher levels, or other improvements and benefits for their account.
+Also Streamer bait
+telefrag
+Also beta testing.
+abandonware
+spawn
+Main article: metagaming
+See free look.
+A character movement control system in which up and down directional inputs move the player character forward or backward, while sideways directional inputs rotates the character, similar to how a tank's movement is controlled.
+I-frames - Short for 'invincibility frames', i-frames are a set number of frames within an animation during which it is impossible for the player to take damage. This is most commonly found in dodge or sidestep moves, but can also be found in more generalized animations for opening doors or operating switches.
+The activation, trigger or occurrence of a conditional, often random, event. Particularly common for massively multiplayer online games, they are conditional events where special equipment provide the user with temporary extra powers, or when the opposing enemy suddenly becomes more powerful in some way. The term's origin is uncertain, possibly from programmed random occurrence, process, or procedure.
+localization
+A genre of video game that involves using ranged weapons. See also first-person shooter.
+fangame
+In online multiplayer games that use matchmaking, a new or much lower-ranked account used by an experienced player in order to be matched with a new and inexperienced opponent who can be easily defeated. The concept is similar to hustling and sandbagging that can be found in gambling and board games. See also twinking.
+damage per minute (DPM)
+raid
+quick time event (QTE)
+See survival multiplayer.
+first-party developer
+wrapping
+A mechanism by which non-player characters prioritize which player(s) to attack. See aggro.
+level editor
+heal over time (HoT)
+Screenshot from FreedroidRPG showing an "area of effect", or AoE
+An AUG is an abbreviated nickname for a long-scoped Burst Rifle, especially in Fortnite, as well as other shooter games. An AUG is a real gun, and the real inspiration for in-game Burst Rifles.
+aiming down sights (ADS)
+tank controls
+developer
+An abbreviation of Valve Anti-Cheat, Valve Corporation's cheat detection software. Players who are caught using cheats on a VAC-secured server will be issued a VAC ban, banning them from VAC-secured servers for that particular game in the future and putting a mark on their Steam profile that can't be hidden from public view. VAC bans are permanent, non-negotiable, and cannot be removed by Steam Support. Players who have gotten a VAC ban are sometimes referred to as going on a "permanent VACation".
+breach
+pervasive game
+The analysis of a video game to mathematically determine the most-optimal approach to winning the game, typically in games that feature a number of player-character attributes that are enumerated. One common type of theorycraft is determining how to best maximize damage per second through selection of equipment and skills. See also min-maxing.
+teabagging
+Also wall banging.
+See cooperative gameplay.
+A gameplay strategy that emphasizes heavy defense, with little or no offense. A player who turtles minimizes risk to themselves while baiting opponents to take risks in trying to overcome the defenses.
+The rapid pressing of a single button to accomplish a task, especially in minigames. Sometimes, this requires the rapid pressing of two buttons simultaneously, or rapidly pressing any button.
+End-game
+Programming used to ensure that the player stays within the physical boundaries of the game world. 119  Also see noclip, a cheat where clipping is disabled.
+wave
+The final boss in a game.
+first-person
+A game mode that challenges player(s) to complete a level or the game within a fixed amount of game time or in the fastest time possible. Often, the best times are recorded for other players to see.
+A game mechanic which allows the player to use walls or other features of the game's environment to take cover from oncoming ranged attacks, such as gunfire in first-person shooters. Many cover systems also allow the character to use ranged attacks in return while in cover although with an accuracy penalty.
+stat point
+stat squish
+4X.
+battle pass
+The player cannot see enemy activity beneath the greyed-out fog of war.
+competitive gaming
+player-character (PC)
+GDDR - An acronym for 'graphics double data rate', GDDR is a special type of RAMused in dedicated gaming hardware specialised for rendering 3D graphics. See also: 'GPU'
+Also control stick and thumbstick.
+In an open world game such as an RPG, an enclosed area filled with hostile NPCs where the player is likely to come under attack. In this sense, it can be used to refer to literal "dungeons" or include any number of other places, such as caves, ships, forests, sewers or buildings. Dungeons may be maze-like and/or contain puzzles that the player must solve and often hide valuable items within to encourage player exploration.
+Key art for Destiny 2 The Witch Queen, featuring three Guardians moving through an alien environment.
+arena FPS
+underpowered
+A 'game-within-a-game', often provided as a diversion from the game's plot. Minigames are usually one-screen affairs with limited replay value, though some games have provided an entire commercial release as a 'mini-game' within the primary game-world. See also bonus stage, secret level and game mode.
+Similar to cross-save, when multi-platform games may share the player's current account details, including earned and purchased items, via a server.
+player's handbook
+macro
+A game mechanic that allows the player-character to construct game items, such as armor, weapons or medicine from combinations of other items. Most MMOGs feature a crafting system.
+See localization.
+In games that generate randomized loot, the "god roll" is loot that has the subjectively best selection of possible random attributes such as perks and bonuses that could be generated for that particular piece of equipment.
+An aspect ratio of digital display devices such as televisions and monitors, supporting up to 3840 × 2160 pixel (roughly 4 kilopixels wide) resolutions.
+Pixel - A single coloured point in a digital image. Modern video game framesare typically made up of several million pixels - 4K images contain over eight million.
+SMP
+online game
+Refers to a game mode where many players face one overpowered enemy (called the Juggernaut) and try to defeat it. The player who kills it often becomes the next Juggernaut.
+An overarching term that covers both buffs and debuffs. Essentially, any effect to a character that is outside of the normal baseline is a status effect. Common negative status effects are poisoning (damage over time), petrification/paralysis (inability to move), or armor/damage reduction (lowering of defensive/offensive abilities). Common positive status effects include a heal-over-time (a small, pulsing heal that triggers multiple times over a set period), armor/damage increases, or speed increases.
+Also meat shield.
+A multiplayer real-time virtual world, usually text-based.
+A genre of video game that implements the gacha (toy vending machine) mechanic. Similar to loot boxes, gacha games induce players to spend in-game currency to receive random in-game items or characters. The gacha mechanic is considered integral to the gameplay or player progression of gacha games, whereas loot boxes would not change the gameplay of the games they're attached to in a significant way if they were removed or replaced with a different reward system.
+When a game is ported from one platform to another. Cross-platform ports are often criticized for their quality, particularly if platform-specific design elements (such as input methods) are not updated for the target platform.
+A round or wave in a single-location game with increasing difficulty.
+A deadzone setting for the analog stick that lets players configure how sensitive they want their analog sticks to be, popular in console FPS games, and in racing games where it appears as Steering Deadzone.
+The player's saved game is stored at a remote server. This may provide a backup, or enable access from a different game system. See also cross-save.
+Telegraph - A deliberate lengthening or accentuation of an enemy's attack animation to signal to the player the nature of an upcoming attack, giving them time to respond.
+Out-of-bounds - Refers to any area of a game outside of the intended play-space. Such areas are typically accessed through exploits and are sometimes used in speedrunning to skip parts of a game.
+The act of waiting around a rare mob or player's spawn point, usually in MMOs. This may be known as spawn-camping or spawn-trapping.
+The automatic change in parameters, scenarios, and behaviors in a video game in real-time, based on the player's ability, with the aim of avoiding player boredom or frustration.
+invincibility frames
+day one
+To complete an arcade game by using as many continues as possible. Prevalent in action games or shooters where the player is revived at the exact moment their character died during their previous credit. Some home conversions (such as AES versions of Neo Geo games) tend to limit the number of credits each player is allowed to use in a playthrough as a way of preserving the challenge, while other conversions (such as the ports in the Namco Museum series) impose no such limits in order to reproduce the original version as faithfully as possible. Compare with 1CC.
+A particular kind of video game player who focuses on achieving 100% completion in the games they play.
+side quest
+Abbreviation of non-player character or non-playable character, is a computer-controlled character or any character that is not under a player's direct control.
+damage over time (DoT)
+Losing a game on purpose, or losing a game badly. Mostly used in competitive, team-based games.
+In multiplayer games, the actions a player does, revealing to their opponent or opponents what attack they may do next. Usually considered a sign of predictability, but for some characters it may be necessary.
+capture the flag (CTF)
+full combo (FC)
+In arcade games, the title screen is shown as part of the attract mode loop, usually after a game demonstration is played. The title screen and high score list urge potential players to insert coins. In console games, especially if the screen is not merged with the main menu, it urges the player to press start. Similarly, in computer games, the message "Hit any key" is often displayed. Controls that lack an actual "Start" button use a different prompt; the Wii, for example, usually prompts the player to press both letter buttons on the Wii Remote simultaneously, as in Super Mario Galaxy 2 or Mario Party 9. Fan-made games often parody the style of the title that inspired them.
+The production company which makes a video game.
+Organized competitions around competitive video games, often played for prize money and recognition.
+mudflation
+Also banhammer.
+Fast travel - Travelling between two fixed points in a game world instantly without traversal. This is typically done via a loading screen as a quality-of-life improvement that saves players from traversing the same parts of the game world over and over, but in most cases is limited to specific areas or points on the map.
+Invasion - A style of multiplayer in which players can invade the otherwise single-player game worlds of one another to engage in combat.
+lifesteal (or "life steal")
+motion control
+meta
+show mode
+Features or improvements designed to make games easier, smoother to play, or more accessible, without changing fundament aspects of the game's presentation, narrative, or gameplay.
+A broad genre of video games involving puzzle solving, often with abstract shapes.
+Also: infinite health, infinite life, invincibility, invulnerability
+critical hit
+ARPG
+In-game activities that receive currency (gold) from players; in online multiplayer games, this functionally reduces the overall money supply
+augmented reality (AR)
+Abbreviation of Age of Empires
+A game that blends its in-game world with the physical world. The term has been associated with ubiquitous games, mixed-reality games, and location-aware mobile games. Examples of pervasive games include Pokémon Go and Pac-Manhattan.
+boss
+A pricing strategy by which a product or service (typically a digital offering or an application such as software, media, games or web services) is provided free of charge, but money (premium) is charged for additional features, services, or virtual (online) or physical (offline) goods.
+The act of looking at other players' areas of the screen when playing split-screen multiplayer, giving the screen cheater an unfair advantage. The 2014 game Screencheat derives both its name and core gameplay from this act.
+A sub-genre of games primarily featuring procedurally-generated levels, tile-based movement, turn-based action, complex maps to explore, resource management, and permanent death. Games that lack some of those elements are usually better termed dungeon crawlers, but can be referred to as "Roguelites"; in particular, permadeath alone does not make a game Roguelike. Roguelikes are typically set in dungeons, but may contain an overworld or other settings. Roguelike games are usually designed to be more challenging than typical games, with luck and memory playing a larger role. Named after the 1980 game Rogue.
+RNG - An acronym for 'random number generator', RNG refers to the weighted elements of chance within game design that can significantly impact rewards and experiences. See also: 'Procedural generation', 'Loot'
+trash
+foozle
+Preparations a player makes with their character's inventory, such as storing or retrieving items, repairing weapons, etc. Failure to manage an inventory properly may result in losing rare items or being less powerful in combat. Common in hardcore games with limited resources like RPGs and survival horror, while uncommon in more casual titles, which may have an infinite inventory or manage it automatically.
+dynamic game difficulty balancing
+A brief period of time where a player can't take damage from attacks. Invincibility frames are most commonly triggered by a player action (such as dodging or rolling), or by taking damage. See also flashing invulnerability.
+An online game virtual economy phenomenon in which endgame players become rich in currency and drive down the cost of rare items.
+OHK - An acronym for 'one-hit kill', an 'OHK' is any attack which can deplete a player character's entire HPin a single blow.
+See action role-playing game.
+See digital rights management.
+sandbox game
+32-bit.
+A mechanic in certain gacha games where a player will eventually be guaranteed a high-quality item after too many unsuccessful pulls.
+A saving function in many video games that saves the current progress without the player's input, often after completing a mission, level, or winning a match. These points are called save points.
+god mode
+See massively multiplayer online role-playing game.
+Area of Effect attacks are frequently used in Elden Ring's boss design, with terrifying enemies like Godrick the Grafted filling areas of the arena with beds of fire or battering whirlwinds.
+alpha release
+backfill
+permadeath
+fear of missing out (FOMO)
+A phase within a character's super move where the game briefly pauses the character's attack and shows their face (or full body) before proceeding to complete the attack. In fighting games, this move can be blocked.
+action point (AP)
+Soulslike
+Under-levelled - A situation where challenge is significantly increased due a player being under-powered for the part of the game they are attempting.
+Restarting a game with a new character from the lowest possible stats, after having maxed out a previous character.
+ultimate
+item level
+The act of blindly firing an automatic weapon with the intent of potentially hitting the target; tends to be ineffective.
+local co-op
+spawn camping
+Frame-rate - Much like motion picture, games are made up of a rapid succession of still images played back at high speed to create the illusion of motion. Frame-rate dictates the number of unique still images - or 'frames' - created by a computer system each second. In modern games it's common for a system to output 30, 60 or even 120 frames per second (FPS), with apparent motion clarity improving in proportion to the number of frames.
+paddle
+A game that is forgotten about or abandoned by its developers for any number of reasons, including copyright issues.
+quickscoping
+A widely-licensed video game released in large volume with little attention to quality.
+B-hopping
+A7Xpg gives the player the opportunity to continue playing after losing their last life.
+A character included in a game for humorous reasons, such as having weak stats or an atypical appearance or personality. They may also function as an additional challenge or handicap for skilled players.
+puzzle video game
+For the film, see Action Point.
+Juggling - Common to fighting games and other stylized action games, 'Juggling' is the art of knocking an opponent into the air and keeping them aloft with repeated blows.
+emergent gameplay
+day zero
+Short for specifications, used to describe the details of a player's stats, gear, or build.
+role-playing video game (RPG)
+joke character
+MOBA
+gimp
+Defeating an enemy that someone else was about to defeat, usually to receive the reward or credit without doing most of the work. Considered 'bad form' in many online communities.
+Any objective-based activity created in-game for the purpose of either story (story quest) or character-level advancement (side quest). Quests follow many common types, such as defeating a number of specific monsters, gathering a number of specific items, or safely escorting a non-player character. Some quests involve more-detailed information and mechanics and are either greatly enjoyed by players as a break from the common monotony or are reviled as uselessly more-complicated than necessary.
+Hit box - An invisible 'box' created by an enemy or player attack used to determine if that attack lands. These boxes are sometimes larger than the visible weapon or enemy making the attack, which may lead to players being 'hit' by an attack, even if the blow did not appear to make contact.
+cross-platform
+CRPG
+clone
+The act of playing a game from start to finish, in one or several sessions. Compare with longplay.
+Game music which changes and reacts to the actions of the player and state of the game in an attempt to better reflect the game atmosphere.
+A game where part of the game engine is on a server and requires an Internet connection. Many multiplayer games support online play.
+A strategic and tactical move that shows that the player is familiar with or skilled in a game and its gameplay mechanics. Sometimes used outside of video games, and occasionally used in an ironic manner to describe a poorly-planned move or failure.
+CPU
+See quick time event.
+trickjump
+A distinct configuration that varies game mechanics and affects gameplay, such as a single-player mode vs a multiplayer mode, campaign mode, endless mode, or god mode.
+reactivity
+A post-processing effect that emphasizes movement and speed.
+See D-pad.
+See electronic sports.
+class identity
+A game mode that allows a player to view the world without restrictions, but without being able to interact with the game world in any way.
+cheese (or cheesing)
+A version of a video game released on an optical disc or other storage device, as opposed to a digital download.
+cheevo
+See character class.
+gold sink
+Procedural generation - A technique wherein elements of a game are generated in real-time from a fixed set of variables, in-game assets and parameters that allows a near-limitless amount of unique content variations. See also: 'RNG'
+3D flying games may have up to 6-DoF: movement along the X, Y, or Z axes as left/right (along X-axis), forward/backward (along Y-axis), and up/down (along Z-axis), and rotation around X, Y, or Z axes as pitch (around X-axis), roll (around Y-axis), and yaw (around Z-axis).
+An attempt to reach the ending of a game while defeating as few enemies as possible, often exploiting various bugs and glitches.
+buff
+best-in-slot
+zero-player game
+A form of user input that relies on physical touch, rather than a mouse, keyboard or other control method.
+strategy guide
+final boss
+A microtransaction in a mobile game (or regular app), usually for virtual goods in free or cheap games.
+adaptive music
+Gameplay which takes place after completion of a game's storyline; the postgame may unlock new means to play the game, such as new game plus, additional minigames or sidegames, or even an additional, second storyline for the player to play through.
+PvE
+A gathering of people who play multiplayer games together over a local network, often bringing their own computers or game systems with them. LAN is an acronym for Local Area Network.
+thumbstick
+In PvP games, the act of killing other players in their spawn, often immediately after they have spawned. Usually looked down upon as unfair for not giving opposing players a chance, though some gamers defend it as a legitimate strategy. Many games have features to prevent spawn killing, such as temporary invincibility or barriers preventing enemies from entering or attacking in spawns. A component of, but not entirely the same as, spawn camping.
+rolling the score
+Screenshot from Elden Ring, featuring boss character 'Godrick the Grafted'.
+OTP
+How often a player is allowed to play a particular free-to-play game; energy can be replenished instantly with an in-app purchase, or replenished slowly by waiting and not playing the game.
+FPS
+A pool of resources inherent to a character that determines the amount of magical abilities they are able to use.
+rack
+juggernaut
+point of no return
+rage quit
+The placement of a room directly above another room. This was impossible to achieve with the Doom engine which did mapping in 2D, with height variance done via numbers. In true 3D game engines to follow, such as those using the Quake engine, room-over-room became an easy effect to accomplish.
+A tactic in strategy games where the player sacrifices economic development in favor of using many low-cost fast/weak units to rush and overwhelm an enemy by attrition or sheer numbers. Can also be used to refer to a quick "rush" onto an objective or point, with the intention to overwhelm by surprise or speed.
+gamer rage
+A game mode that allows a player to view the world from another player's perspective.
+Also cross-platform.
+split-screen multiplayer
+A game mode in the Halo-series and a few other first-person shooters, where players on opposing teams attempt to capture and then hold on to a ball for as long as possible, while the opposing team tries to eliminate the player holding the ball in an attempt to get it back.
+A term exclusive to Valorant where each individual member of one team killed one individual member of the opposing team.
+3D graphics.
+Dummied out
+A cheat that makes walls translucent. 119  Some wallhacks let players shoot weapons or physically pass through walls. 120  See noclip.
+Skins - A purely cosmetic variant of a player character, item, weapon or NPC - often as rewards or unlocks.
+A type of mission in a game where a number of people attempt to defeat either: (a) another number of people at player-vs-player (PVP), (b) a series of computer-controlled enemies (non-player characters; NPCs) in a player-vs-environment (PVE) battlefield, or (c) a very powerful boss (superboss).
+ping system
+Video game characters which are graphically similar except for a hue-shifted palette. Typically done to preserve resources or data space that would otherwise be used up by different designs for the same character, especially for games with sprite-based graphics, though other reasons may exist for palette swaps, such as differentiating similar-looking characters with different properties (e.g. the Green and Red Koopa Troopas from the Super Mario series having different behaviors), or accommodating for the presence of more than one instance of the same unique character to avoid confusion or paradoxes (e.g. Super Smash Bros. characters having multiple palette swaps to avoid confusion in matches where multiple players pick the same character).
+dynamic music
+cinematic
+The gameplay available in a massively multiplayer online game for characters that have completed all of the currently-available content. Repeatable content after the climax of the storyline or campaign.
+The process of modifying a ROM image of a video game to alter the game's graphics, dialogue, levels, gameplay, or other elements. This is usually done by technically inclined video-game fans to make an old game more fresh, as a creative outlet, or to create entirely new experiences using the old game as a base "engine".
+unlockable
+A genre of strategic video games, short for "eXplore, eXpand, eXploit, and eXterminate". Such games are usually complicated, involving extensive diplomacy, technology trees, and win conditions.
+Elo hell
+ghost
+spectator mode
+survival mode
+A game that can only have one player at a time. Compare with multiplayer.
+non-player character (NPC)
+ADS - Short for 'Aim Down Sights', ADS is the action of raising a ranged weapon to eye-level and aiming along the sights.
+free look
+Git gud - A deliberate misspelling of 'Get Good', 'git gud' is an injunction to raise one's own skill level in response to a particularly difficult challenge. Players complaining of unreasonable difficulty in a game are often encouraged to 'git gud', persevering with the game and overcoming the challenge through patience and learning.
+A multiplayer lobby composed of random players found using in-game matchmaking tools.
+Commonly used in MMORPGs to refer to groups of non-boss enemies. Particularly in dungeons/ areas leading up to boss fights.
+A beta testing period where only specific people have access to the game.
+A discrete number of points for the player to distribute among their character's attributes, e.g., to choose their player's trade-offs between strength, charisma, and stamina.
+Special equipment that can be installed into an arcade machine that changes the current game it plays into another one. For example, a conversion kit can be used to reconfigure an arcade machine designed to play one game so that it would play its sequel or update instead, such as from Star Wars to The Empire Strikes Back, or from Street Fighter II: Champion Edition to Street Fighter II Turbo.
+The phenomenon of being stuck at a lower rank in comparison to the player's true skill level in competitive video games that utilizes the Elo rating system that may occur for various reasons, often due to unbalanced matchmaking (where the player may happen to have teammate/s of inferior skill).
+JRPG - An acronym for 'Japanese role-playing game', JRPGs are a specific genre of JRPG produced predominantly in Japan, typically focusing on party-based adventures and quite often exhibiting a visual style influenced by Japan's Anime and Manga scene. See also: 'RPG'
+gambling
+A game system that requires physical movement by the player to control player character actions. Popularized by the Wii, motion control is available on most recent console and handheld systems.
+rocket jumping
+A feature of a playable map that funnels players and might restrict mechanics like movement (chokepoint).
+Team Ace
+transmogrification or transmog
+chiptune
+A dominant strategy or set of strategies, often in the context of a competitive game.
+When players are stationed near their opponent's spawn point and kill them the moment they respawn.
+Gibs in OpenQuartz
+port
+A place in the game world of a video game where the player's progress in the game can be saved. Often, when the player dies or receives a Game Over, their progress will be reset back to the last Save Point that they used. Some games do not have specific save points, allowing the player to save at any point.
+A descriptor for hardware or software that arose during the fourth generation of video game consoles, targeting 16-bit computer architecture.
+simcade
+A game system that automatically sorts players with similar playing styles, desires, objectives, or skill levels into a team or a group. In competitive games or modes, a matchmaking rating (MMR) is a number assigned to each player based on skill and is the basis for matching players. This rating goes up or down based on individual or team performance.
+When a player/team that is currently winning or expected to win a match performs unexpectedly poorly.
+Attract mode is not only found in arcade video games, but in most coin-operated games like pinball machines, stacker machines and other games. Cocktail arcade machines on which the screen flips its orientation for each player's turn in two-player games traditionally have the screen's orientation in player 1's favour for the attract mode.
+A non-player character controlled by the game software using artificial intelligence, usually serving as an opponent to the player or players.
+An option to play through an already-completed game's story again, carrying over characters, attributes, or equipment from a prior playthrough.
+FOV
+The character controlled and played by the human player in a video game. Often the game's main protagonist. Tidus from Final Fantasy X and Doomguy from the Doom series are all "player-characters" developed by their game studios. Compare with NPC.
+wall bang
+The place where a character or item is placed in the game world. Also see respawn.
+To focus on playing a certain character in a game, sometimes exclusively.
+Software tools for copyright protection. Often criticized, particularly if the DRM tool is overly restrictive or badly-designed.
+T-pose - A type of bug in which a humanoid character appears in-game completely static with both feet locked together and both arms extended perpendicular to the body, forming the shape of the capital letter 'T'.
+single-player
+A portable gaming console; i.e. one that is not connected to a TV or other peripheral device. Nintendo's Game Boy is the most-recognizable example.
+hitbox
+game over
+Games as a Product
+p-rank
+title screen
+experience point (XP, EXP)
+Algorithms used to generate responsive, adaptive or intelligent game behavior, primarily in non-player characters. Distinct from the computing science concept of 'artificial intelligence'.
+An object that gives the player an extra life (or attempt) in games where the player has a limited number of chances to complete a game or level.
+Also tunneling.
+A cheat that makes player-characters invulnerable. 119  Occasionally adds invincibility, where the player can hurt enemies by touching them (e.g., the Super Mario Super Star). 357  The effect may be temporary. See flashing invulnerability.
+Anti-Aim
+Hack vs Hack
+A role-playing video game that subverts the typical elements of such games. The term was coined by the video game Moon: Remix RPG Adventure.
+Key art for Final Fantasy XIV Online - Endwalker, featuring the warrior of light.
 To collect all collectibles within a game, either indicated within games as a percentage counter or determined by player community consensus.
+upgrade
+A typical malfunction that affects the analog stick(s) of a gamepad, in which its neutral position is set somewhere on its fringe, instead of the central position that it default maintains when the analog stick is unmoved. This can cause undesired gameplay effects, such as causing a character to constantly move or the game camera to constantly be locked to one skewed angle while the analog stick(s) is/are unmoved, depending on which stick is affected or the game's controls.
+The day of release for a video game; often accompanied by a 'day-one patch' to repair issues that could not be addressed in time for the game's distribution, or 'day-one DLC', where the developer offers content for a price. 'Day-one DLC' is often associated with on-disc DLC, where the content is already a part of the game's data, but the player must pay to access it.
+See capture the flag.
+A multiplayer game that can be played over a local network, such as LAN or WLAN, without needing to be connected to the wider internet.
+Party - A group of player characters, either individually controlled by separate players in a multiplayer setting, or by one player and sometimes the computer in single-player settings.
+asymmetric gameplay
+A video game made by fans, based on one or more established video games. Retrogamers may clone early video games to take advantage of more advanced hardware and game engines.
+cooperative gameplay (co-op)
+(Usually in futuristic games) The player's health.
+A game in which the human player takes on the role of a specific character "class" and advances the skills and abilities of that character within the game environment. RPG characters generally have a wide variety of skills and abilities available to them, and much theorycrafting is involved in creating the best possible form of each of these character classes. This is different from games such as first-person shooters (FPS), where the player-character in those games are all standardized forms and the physical skills of the player involved are the determining factor in their success or failure within the game. In an RPG, a human player can be the best player in the world at the game, but if they are using a character build that is substandard, they can be significantly outplayed by a lesser player running a more-optimal character build.
+note highway
+RPG - An acronym for 'role-playing game', an RPG has very broad definitions in modern gaming, but usually refers to any story-driven game that centres around the development and definition of a central main character or party of characters. See also 'ARPG', 'CRPG' and 'JRPG'.
+See games as a service.
+time to kill
+The set of skills and abilities given to a pre-defined playable character in games featuring many such characters to choose from, such as many MOBAs or hero shooters.
+A shot that can be charged up so that a stronger attack can be dealt, but requiring more time. Usually performed by holding the shot button.
+infinite life
+A type of procedural animation used by physics engines where static death animations have been replaced by a body going limp and collapsing in on itself, with the only animation acting on the body and its connected limbs being from the game's physics engine. This often gives the impression that a character is flailing or being flung around, like a rag doll.
+The playing or collecting of older personal computer, console, and arcade video games in contemporary times.
+LAN party
+cross-buy
+anti-RPG
+pacifist run
+turn-based game
+Being extremely good at something.
+Hack vs Hack (HvH) refers to using cheats to compete against other players using cheats.
+See dungeon.
+God of War's New Game + mode allows players to carry over their progress into a new playthrough and collect new armor, talismans, skins and more, pushing Kratos' power far beyond anything possible in the first playthrough.
+The gradual unbalancing of a game due to successive releases of new content. The phenomenon may be caused by a number of different factors and, in extreme cases, can be damaging to the longevity of the game in which it takes place. Game expansions are usually stronger than previously existing content, giving consumers an incentive to buy it for competitions against other players or as new challenges for the single-player experience. While the average power level within the game rises, older content falls out of balance and becomes regressively outdated or relatively underpowered, effectively rendering it useless from a competitive or challenge-seeking viewpoint. Very occasionally may refer to the result of repeatedly balancing a game primarily through buffs and nerfs, thus making every character substantially more powerful than they were at release. See also: planned obsolescence.
+round
+adventure game
+A monetization method that requires players to spend money to access gameplay features.
+Derived from the word "duplicating", the practice of using a bug to illegitimately create duplicates of unique items or currency in a persistent online game, such as an MMOG. Duping can vastly destabilize a virtual economy or even the gameplay itself.
+stun lock
+Also heads-up display (HUD).
+Cheese(ing) refers to a tactic in a video game that may be considered cheap, unfair, or overly easy, requiring no skill by others as to otherwise complete a difficult task. What may account as cheese depends on the type of game. Its origin traces back to players of Street Fighter II who would frequently use the same combo move over and over against to defeat their opponent. In multiplayer games like MOBAs or hero shooters, certain team compositions of heroes are considered cheese compositions for how easily they can defeat most other team compositions. In other games, cheese can refer to exploiting glitches and other bugs to make difficult gameplay sections easy.
+A developer which, despite not being owned by a console maker nonetheless produces games solely for that maker's consoles. Often they have a special arrangement involved. Due to the ambiguity from the player's perspective, these developers are often referred to as first-party developers. Games developed by second-party developers are often called 'second-party games.'
+The end of the game.
+spray and pray
+Quest-giver - A special type of non-player character whose primary function is to provide quests and story-related information to the player.
+Arena shooters that use the first-person perspective.
+A cycle of gameplay elements designed to keep the player invested in the game, typically through a feedback system involving in-game rewards that open up more gameplay opportunities.
+See god mode.
+character select screen
+A mode of gameplay that challenges the player to earn the highest score possible in a game level or through the whole game.
+laner
+secret level
+Technical or non-play modes for the hardware or software of a video game, such as a diagnostic or configuration mode, video or sound test, or the attract mode of arcade games.
+See also difficulty level, item level, wanted level.
+A game in which the action is viewed from a side-view camera angle and the screen follows the player as they move.
+Someone new to the game, generally used as a pejorative, although often light-heartedly. Not as pejorative as noob.
+early access
+Japanese role-playing video game, typically referring to a subgenre of RPGs that originate from Japan.
+A series of levels that share a similar environment or theme. A boss fight will typically happen once all or most of these levels are completed rather than after each individual level.
+mana
+control pad
+Loadout
+When an enemy is low on health and one shot away from elimination.
+DPS - An acronym for 'damage per second', DPS can literally be a measure of damage output, or shorthand for a character class that focuses on offensive play.
+physical release
+A game with a gameplay element that gives the player a great degree of creativity to complete tasks towards a goal within the game, if such a goal exists. Some games exist as pure sandbox games with no objectives; these are also known as non-games or software toys. Very common examples of sandbox games are ones where the player has the ability to create, modify, or destroy their environment, i.e., a game that includes some form of a game creation system. The term alludes to a child's sandbox where the child can create and destroy with no given objective. While 'open world' and 'sandbox' are sometimes used interchangeably (or with only the implication of 'sandbox' being smaller), the terms refer to different concepts and are not synonymous.
+1CC.
+Also magic points.
+A game mechanic resulting from dynamic game difficulty balancing that alters the rules of the game to keep the game competitive and fun. Most notable in racing games, where human players may easily outdistance computer opponents; when this happens, the computer opponents are often given the ability to go faster than normal or to avoid certain obstacles as to allow them to catch up and outpace the player. The effect is likened to stretching and releasing a rubber band between the player and the computer opponent. This effect may also apply to human players as well, with the game providing (often unstated) handicaps for losing players to stay competitive.
+second-party developer
+See also arcade game.
+pub
+Abbreviation of magic points.
+An early term for first-person shooters, based on gameplay that mimicked that from Doom.
+pentakill
+end game
+RDM
+dungeon
+A field of social sciences that attempts to quantify or predict human behavior in various game-based scenarios, often where there is a reward or risk in taking certain actions.
+player versus environment (PvE)
+A game set in a hostile open-world environment where characters are challenged to collect resources, craft items, and survive as long as possible.
+Story that is conveyed via the physical design or set dressing of a game's world, rather than cutscenes or dialogue.
+hit marker
+An animation that occurs when the player character is not performing any actions.
+A common control-mechanism using a typical QWERTY keyboard, with the W, A, S, and D keys bound to movement controls. This allows arrow key-like control with the left hand.
+See game port.
+battle royale game
+tile-matching video game
+See dialog tree.
+virtual economy (in game money)
+pity pull
+Used as a metric in some games to allow the player to determine their offensive power.
+loot system
+Git gud
+teamkill
+Any type of unusual jump that demonstrates skill and expertise, often considered an exploit that was unforeseen by the game's creators.
+Also story mode and campaign.
+Video and audio that is continuously fed from a server to a client and presented to the end user. In gaming, this may be used to watch a live or recorded Let's Play demonstration of a game, or to play a game through cloud gaming.
+Also hit points (HP).
+In game genres or modes where player(s) are to defend a point or stay alive as long as possible, enemies are commonly grouped into "waves" (sometimes referred to as levels). When one wave of enemies is defeated, player(s) are typically given a short period to prepare for the next wave.
+MP
+An optional quest which does not advance the main quest.
+Multi-platform games may share the player's current state via a server.
+Initialism of random number generation, which refers to computational methods that produce random (or, more accurately in most cases, pseudo-random) variability. In video games, this refers to gameplay elements that have unpredictable outcomes determined by such methods. Examples of such elements include random encounters, loot drops, and NPC behavior.
+Acronym for Game Of The Year, a game award given out annually by events and media publications to the games that they consider the best of that particular year. Game of the Year-awards are often divided in subcategories and an overall winner.
+Content that is on the physical media (usually a disc) of a game, but cannot be accessed without buying the content separately. Usually day-one DLC is assumed to be this, but not always. This term also includes data which is downloaded with a downloadable game but not accessible without payment. Not used for free-to-play or freemium games.
+A gameplay feature most commonly used in older Japanese role-playing games whereby combat encounters with non-player character (NPC) enemies or other dangers occur sporadically and at random without the enemy being physically seen beforehand.
+timed exclusive
+A design choice that has this effect.
+The handling of detailed gameplay elements by the player. See also macro.
+A type of puzzle video game where the player manipulates tiles in order to make them disappear according to a matching criterion. If this number is three, the game is called a match-3 game.
+pick-up group (PUG)
+See level.
+clicker game
+A genre of video game requiring the player to perform actions in time to the game's music.
+technology tree
+Repeating a battle, quest, or other part of a game in order to receive more or duplicates of specific reward items that can be gained through that battle or quest, such as experience points, game money, or specific reward items. Gold farming is a type of farming done for in-game currency. See grinding.
+A character-development gaming mechanic typically seen in role-playing games. A skill tree consists of a series of skills (sometimes known as perks) which can be earned as the player levels up or otherwise progresses their player-character. These skills grant gameplay benefits; for example, giving the character the ability to perform a new action, or giving a boost to one of the character's stats. A skill tree is called a "tree" because it uses a tiered system and typically branches out into multiple paths. A tiered skill tree will require a player to achieve certain skills before the next tier of skills become available. The player may be required to achieve all skills in one tier before moving on to the next, or may only be required to complete prerequisites for individual branches. Skill trees are a common tool used for in-game balancing by game designers. Skill trees also offer a "game within a game" in which players are not only playing a video game, but their decisions on how they allocate points into their skill trees will affect their overall gaming experience. The action roleplaying game Diablo II, released in 2000, is often cited as the true innovator of in-depth skill trees.
+The practice of playing a role-playing game, wargame or video game with the intent of creating the "best" character by means of minimizing undesired or unimportant traits and maximizing desired ones. This is usually accomplished by improving one specific trait or ability (or a set of traits/abilities) by sacrificing ability in all other fields. This is easier to accomplish in games where attributes are generated from a certain number of points rather than in ones where they are randomly generated.
+test room
+A set of video game consoles in direct competition for market share in a given era. The set, as a generation, is obsoleted at the introduction of the "next generation" or "next gen".
+A form of artificial intelligence which takes data based on how the player performs and uses it to learn to better counter the player.
+kill farming
+A multiplayer game mode where players start out with no items, a health bar, and are able to die (as opposed to creative mode, where players are immortal). Commonly used to refer to Minecraft servers, but can otherwise be used to refer to any similar game mode in any game. A well-known example is the Dream SMP.
+A situation where a player or faction is able to leverage a small advantage into a larger and larger advantage. An example of a snowball effect.
+A process in which game developers observe players (called playtesters) testing their game and what the user experience is like in real-time, in order to see where players get stuck, what information is and isn't communicated clearly, and which gameplay elements are found enjoyable or frustrating.
+overwatch
+Loosely defined as a game made by a single person or a small studio without any financial, development, marketing, or distribution support from a large publisher, though there are exceptions.
+Quick-time event (QTE) - A gameplay scenario in which the player is challenged to respond to a number of on-screen prompts, entering the correct button presses to trigger specific on-screen actions.
+vaporware
+cranking 90s
+A software program that is designed to replicate the software and hardware of a video game console on more modern computers and other devices. Emulators typically include the ability to load software images of cartridges and other similar hardware-based game distribution methods from the earlier hardware generations, in addition to more-traditional software images.
+Also field of vision.
+cracked
+A type of game where player progression happens without the player's input, and often even while the game is closed. See also clicker game.
+A technique in first-person shooter video games used to attack a target by quickly aiming down sights on a weapon and immediately shooting.
+fast travel
+The handling of larger scale decisions, primarily in real-time strategy games. See also micro.
+A subgenre of puzzle video game where the player has to use the game's physics and environment to complete each puzzle. Notable examples include Portal, World of Goo and Cut the Rope, and projectile collision games such as Angry Birds and Peggle.
+head bob
+Abbreviation of multiplayer.
+The act of restoring a defeated character or entity to life that is not removed from play after their health is gone; this is different from respawning, which only occurs typically without outside intervention and when a character is removed from play after their health has been depleted. Another common synonym is "rez".
+gone gold
+Procedural generation
+triple jump
+In games that encourage repeated playthroughs and match-based multiplayer games, the gameplay elements that are typically not part of the main game but can be invoked by the player to alter future playthroughs of the main game.
+trackball
+See player versus environment.
+construction and management simulation (CMS)
+A genre designed to cause anger and frustration in the player, using unintuitive controls, unforeseeable obstacles, unfair challenges and/or taunting the player, often with the express stated purpose of causing the player to rage quit. Completing a rage game is commonly seen as a measure of determination and resolve as much as skill.
+warp zone
+Stun-lock - Using a rapid flurry of attacks to lock an opponent into a 'stunned' or 'staggered' state from which they're unable to escape or defend themselves.
+continue
+Playing video games on an infrequent and spontaneous basis without a long-term commitment. Casual video games are distinguished by a low learning curve and ease of access, often web-based for mobile phones or personal computers. Most casual games have simplified controls, with one or two buttons dominating play. Casual games can normally be played in small periods of time, and may not have a save feature.
+See survival mode.
+bot
+In online games, the act of kicking a player from the server, and then employing means of preventing them from returning. This is usually accomplished using a blacklist. In some games, done in "ban waves" against cheaters to obfuscate how they were recognized as cheating in the game.
+kick
+couch co-op
+See couch co-op.
+flip-screen
+Tanking - A style of play that focuses on very high damage resistance and large amounts of HP. 'Tanking' is a common role in raid-style team play, where the tank character is responsible for focusing and absorbing enemy aggro while other team members focus on healing allies or damaging opponents.
+A specialized type of game controller that the player points at their television screen or monitor to interact with the game.
+any%
+A graphical perspective rendered from the viewpoint of the player-character.
+In video games, an unintentional or unexpected delay between the start and end of a process, usually to a detrimental effect on gameplay. Lag can occur in any of the many different processes in a video game, to vastly differing effects depending on the source:
+Meaning "Nice try". Generally said through a chat function in online multiplayer games to boost the morale of players. Can be directed towards both the friendly and enemy teams. Used when teammates or opponents fail after trying something new, or put in large amounts of effort towards the objective to no avail. "Nice try" could also be used in a condescending manner to mock opponents.
+The initial screen of a computer, video, or arcade game after the credits and logos of the game developer and publisher are displayed. Early title screens often included all the game options available (single player, multiplayer, configuration of controls, etc.) while modern games have opted for the title screen to serve as a splash screen. This can be attributed to the use of the title screen as a loading screen, in which to cache all the graphical elements of the main menu. Older computer and video games had relatively simple menu screens that often featured pre-rendered artwork.
+combo
+kill feed
+challenge mode
+carry
+Usually used within first-person shooters, where a single player manages to eliminate the entire opposing team by themselves while their teammates are alive. Can also be used to describe situations where a player manages to complete a possibly difficult section of game flawlessly. Comparable to pentakill in competitive games with teams made up of 5 players, such as MOBAs. Not to be confused with Team Ace.
+The game mechanics that determine how a player improves their player-character over the course of a game or several games, such as gaining experience points to level up characters, performing tasks to gain new abilities, or part of a metagame improvement.
+wanted level
+taunt
+HP - An acronym for 'hit points' or some times 'health points', HP refers to the total amount of damage a player's character can take before they are either knocked unconscious or killed.
+clapped
+Not to be confused with minimax.
+A feature of role-playing video games where the player controls multiple characters in real-time. The PlayStation 2 was first with this feature in the Summoner and Dynasty Warriors series.
+A development model where players are able to purchase and play a game as it currently stands, be it early in development or close to a full release. On the developer's end, early access allows them to gather player feedback and further the game's development with the money made from these sales. See also open beta.
+New Game Plus (NG+)
+Also platformer.
+bonus stage
+choke
+A chain of quests that compose a game's storyline which must be completed to finish the game. In comparison, side quests offer rewards but don't advance the main quest.
+esports
+A form of a video game controller, most often found on arcade game cabinets, in which the player uses a freely-rotating ball to interact with the game.
+gating
+respawn
+A character archetype in MMOs and RPGs, specifically a character or class that is designed purely to deal as much damage as possible to enemies, as opposed to a tank or healer, who have other primary duties. Specific characters or classes may be considered "sub-types" of DPS, such as a "magic-DPS" as opposed to a "melee-DPS".
+An increment of damage or healing periodically caused by a DoT or HoT effect.
+multiplayer
+A portmanteau of bullshit and screenshot, referring to the misrepresentation of a final product's technical or artistic quality by artificially enhancing promotional images or video footage.
+"Bad Manners"; conduct that is not considered 'cheating' but may be seen as unsportsmanlike or disrespectful. Some games may elect to punish badly behaved players by assessing game penalties, temporarily blocking them from re-entering play, or banishing them to a playing environment populated solely by other badly behaved players. What constitutes bad manners is subjective and may be hard to gather a consensus on.
+See game engine.
+A character with abilities or equipment to have high health and damage mitigation that draws aggro from opponents and receives enemy attacks so that teammates can concentrate on their attacks or objectives. Common in MMORPGs.
+microtransaction
+hit points (HP)
+Refers to the manner in which a game world reacts to and is changed by the player's choices. Examples include branching dialogue trees in an RPG, or detailed interacting systems in a simulation or strategy game. A reactive game world offers a greater number of possible outcomes to a given action, but increases the complexity and cost of development.
+noclip mode
+Also called mouselook, a method of control where the player uses the computer mouse to indicate the direction they desire the player-character to look.
+expansion pack (Add-on)
+flashing invulnerability
+Area of effect can also refer to spells and abilities that are non-damaging. For example, a powerful healing spell may affect anyone within a certain range of the caster (often only if they are a member of the caster's party). Some games also have what are referred to as "aura" abilities that will affect anyone in the area around the person with the ability. For example, many strategy games have hero or officer units that can improve the morale and combat performance of friendly units around them. The inclusion of AoE elements in game mechanics can increase the role of strategy, especially in turn-based games. The player has to place units wisely to mitigate the possibly devastating effects of a hostile area of effect attack; however, placing units in a dense formation could result in gains that outweigh the increased AoE damage received.
+adaptive AI
+GG - An acronym for 'good game' - a straightforward congratulation between players.
+destructible environment
+paywall
+dead zone
+borderless fullscreen windowed
+A location in a game. Also area, map, stage, dungeon. Several levels may be grouped into a world. Some games include special bonus stages or secret levels.
+Any of a variety of game mechanics to render fantastical or otherwise unnatural effects, though accessories (scrolls, potions, artifacts) or a pool of resources inherent to the character (mana, magic points, etc).
+tryhard
+See Games as a service.
+Actions taken by players to leave negative reviews of a game or other form of media on a digital storefront or user-contributed as a form of protest due to actions typically unrelated to the game or media quality itself.
+A game which can be played on multiple platforms.
+An effect, such as poison or catching on fire, that reduces a player's health over the course of time or turns.
+party
+A stage or level in a video game (often an arcade game) that stops the player's progress due to a software bug. Not to be mistaken for a game over screen, kill screens can result in unpredictable gameplay and bizarre glitches.
+The losing screen shown when a loss condition is met.
+A genre of video game where the player experiences the game from the first-person perspective, where the primary mechanic is the use of guns and other ranged weapons to defeat enemies.
+1-up.
+A player character that is only available to the player after meeting some sort of requirement; such as beating the game, completing optional challenges, entering cheat codes or even hacking the game (as some secret characters may be intended to not be in the game, but are still present in the game's code). Secret characters may initially appear as NPCs.
+video game design
+remake
+Common in role-playing games, a means by which to have the player-character(s) teleport between already-discovered portions of the game's world without having to actually interactively move that distance.
+DPS
+A type of digital rights management (DRM) that typically requires a connection to the Internet while playing the game.
+A genre of video game where the player controls one or more units in real-time combat with human or computer opponents.
+Also tech tree.
+Where a player stays in one place – typically a fortified high-traffic location – for an extended period of time and waits to ambush other players. Many players consider camping a form of cheating. It is most common in first-person shooter games, but is also frequent in fighting games with projectile-heavy characters.
+grinding
+mode
+reboot
+alt
+A spell or skill that is capable of dealing a large amount of damage to its target. Also in the context of video games, "nuking" may also describe the act of using a nuclear weapon while playing the game, such as the atomic bomb in Call of Duty games. In an MMORPG, nuking may differ in meaning between different communities. For example, to some individuals, to "nuke" is to deal the most possible damage to the most enemies possible (almost exclusively by means of an area of effect skill), whereas other individuals use the term by referring to the highest possible damage to a single target in the shortest amount of time, also known as a spike. Some individuals believe that the player, or players, nuking must do so by means of ranged combat (that is, out of melee range); others make no such distinction. It can also mean to critical hit often or just to deal high standard damage. In a real-time or turn-based strategy game, the term "nuke" has one distinct use. It can describe the tactic of attacking an opponent's specific (often high-priority) units with high-damage spells in order to kill them or force (or strongly encourage) the opposing player to remove them from battle. Such usage is common in Warcraft III, in which "Heroes" are frequently the targets and attackers due to their relative high priority and common faculty for high-damaging spells.
+Camping - Holding to or hiding at a certain strategic location (typically in a multiplayer setting) within a map. Depending on the game setting or game style this may include specifics, such as 'spawn camping' or 'bush camping'.
+XP - A shorthand for 'experience' or 'experience points', XP refers to a gradually accrued reserve of points that typically manifest as a level or set of attribute gains awarded to the main character.
+first-person shooter (FPS)
+A special level in which the player has a chance to earn extra points or power-ups, often in the form of a mini-game. Compare with secret level.
+Gameplay modes which affect the game mechanics. See game mode.
+game world
+A system in video games that causes the player-character to move forward without input from the user. The system is predominantly used in platform games, as well as being a toggleable feature in some open world and MMO games where users may need to travel long distances without the assistance of fast travel systems.
+Drops - Refers to the weapons, armor or other items which are 'dropped' by fallen enemies. Dropped items typically have a 'drop-rate' associated with them dictating how often they can drop. See also: 'Loot', 'RNG'
+console generations
+A 3D graphics process which determines if an object is visible and "clips" any obscured parts before drawing it. See also clipping (computer graphics).
+specialization
+In more modern times, continues have also been used in a number of free-to-play games, especially mobile games, where the player is offered a chance to pay a certain amount of premium currency to continue after failing or losing. One example is Temple Run 2, where the price of a continue doubles after each failure, with an on-the-fly in-app purchase of the game's premium currency if required.
+cut-in
+Games as a Service (GaaS)
+clutch
+game port
+(used when not distinguishing between hitbox and hurtbox) The virtual envelope describing precisely where the game will register any hits on a game target. See hurtbox.
+Video games which are announced and appear in active development for some time but are never released nor officially cancelled.
+The act of achieving such a high score that the game's ability to display the score restarts, displays a negative number, or is otherwise unable to accurately display the score. Originates from early games that had limitations on the number that could be displayed as a score, such as pinball with a limited number of analog or digital number places, or video game systems with limited numbers of bytes. If a player's score exceeded that limit, it would cause an integer overflow, causing the display to 'roll over' and start again at the minimum possible score, or sometimes a negative number in 8-bit video games.
+Graphic rendering technique featuring three-dimensional objects.
+frame-perfect
+Games that have some, but not all, features of Roguelike games. Typically they involve a different style of gameplay from the tile-based movement, but retain procedurally-generated levels, resource maps, and permanent death. While games may self-identify as Roguelites, it can also be used as a derogatory term. Often used instead of "Roguelike" by mistake, but the two are different.
+tower dive
+asset flipping
+remorting
+A character's ability that allows them to perform a revive, or a command to use the same. Abbreviation for resurrect.
+A game element that involves searching an entire scene for a single (often pixel-sized) point of interactivity. Common in adventure games, most players consider 'hunt-the-pixel' puzzles to be a tedious chore, borne of inadequate game design. The text-adventure version of this problem is called 'guess-the-verb' or 'syntax puzzle'.
+Matchmaking - A process of being matched with other, unknown players during an online multiplayer session. See also: 'Lobby'
+A usually circular button on the right side of a traditional gamepad that is pressed very frequently in normal gameplay. Modern gamepads usually have four arranged in a diamond formation.
+Invisible walls - Often found at the far edges of levels or maps, 'invisible walls' are impassable boundaries at the edge of the playspace which stop the player venturing further, even when there is nothing to stop them. See also: 'Out-of-bounds'
+freemium
+A series of game levels intended to tell a linear story; some campaigns feature multiple 'paths', with the player's actions deciding which path the story will follow and affecting which choices are available to the player at a later point.
+Ray-tracing - a rendering technique used in game development to simulate the real-world behaviour of light. Sometimes referred to as 'RT', it is most often used to render shadows, reflections, ambient shading and 'bounce lighting' in real-time. Ray-tracing is very computationally expensive and is typically reserved for more powerful hardware.
+heat map
+game mechanics
+Effects that nullify or cancel the effects of buffs.
+Playing the meta, at possible detriment to the story and/or enjoyment of the game. Colloquialism.
+A section of a MUD or MMO's shared environment within which communications may be limited or game mechanics altered to encourage certain types of gameplay.
+telegraphing
+A common game mode in multiplayer video games, where the goal is to capture and retrieve a flag from the opposing side's territory while defending the flag in one's own territory.
+saved game
+mod
+jump
+Server-side lag: A delay appearing only in online multiplayer games, between the client (the player's device) or the server sending information across the internet, and the counterpart receiving said information. This rarely looks like frame lag or rendering lag, and can instead cause a variety of effects such as dropped player inputs, desynchronisation between the player and server's versions of events, rubber-banding (where entities appear to ‘snap’ between different positions), or in worst-case scenarios, the player being removed from the server entirely, or kicked.
+The attract mode for the arcade game San Francisco Rush: The Rock showcasing one of the racetracks available to play in the game
+gamethrowing
+T-pose
+game studies
+mob
+Also Live Service Games.
+zone
+persistent state world (PSW)
+Res - Short for 'ressurection', res is used both as verb and noun to describe the action of one player aiding another downed player, allowing them to return to the action.
+The continue feature was added to arcade games in the mid-1980s due to arcade owners wanting to earn more money from players who played for longer periods of time. The first arcade game to have a continue feature was Fantasy, and the first home console cartridge to have this feature was the Atari 2600 version of Vanguard. 26  As a result of the continue feature, games started to have stories and definite endings; however, those games were designed so that it would be nearly impossible to get to the end of the game without continuing. Salen and Zimmerman argue that the continue feature in games such as Gauntlet was an outlet for conspicuous consumption.
+Refers to competing against other players, as opposed to player versus environment (PvE).
+An invincibility or immunity to damage that occurs after the player takes damage for a short time, indicated by the player-character blinking or buffering.
+The use of design and aesthetics to create a game. Compare with video game design.
+In games with a scoring system, a gameplay element that increases the value of the points earned by the given multiplier value while the multiplier is active. A common feature of most pinball tables.
+Elements of a game that can only be unlocked by making premium digital purchases. The purchase packages can include game currency, resources, special characters, unique items, summoning tickets, character skins that give buffs to their stats, or VIP points if the game has a built-in VIP system – anything that gives the buyer a disproportionate advantage. This monetization scheme can result in an unbalanced experience between players.
+oddball
+A game that involves a large community of players co-existing in an online world, in cooperation or competition with one another.
+Also full perfect combo (FPC).
+overpowered (OP)
+Easter egg - A type of secret hidden within a game by the developers that is there as an amusing aside rather than part of the gameplay or story.
+D-pad
+score attack
+A multiplayer game, usually consisting of a series of short minigames, that can be easily played in a social setting.
+A pejorative used to insult a player who is making mistakes that an experienced player would be expected to avoid. Sometimes spelled as n00b. See newbie.
+min-maxing
+main
+A list or table logging the highest scores achieved in a particular game. See also high score.
+sound test
+toxicity
+An area in a level from which the player will start the level from next time they die, rather than having to start the level over. Checkpoints typically remain in place until the player completes the level or gets a Game Over.
+Used as a metric in some games to allow the player to determine their offensive power, particularly in games where the player's attacks are performed automatically when a target is in range.
+The minimum length of time that the player needs to wait after using an ability before they can use it again. This is commonly done for game balance so less powerful abilities remain relevant.
+conversion kit
+Visual novel - A style of game focused particularly on story elements and dialogue exchange, with few - if any - action elements such as exploration or combat.
+adds
+A controversial but common labor practice in the video game industry where game developers have to work compulsory overtime, often uncompensated, in order to meet deadlines.
+arena mode
+A game mode offered beyond the game's normal play mode that tasks the player(s) to replay parts of the game or special levels under specific conditions that are not normally present or required in the main game, such as finishing a level within a specific time, or using only one type of weapon. If a game doesn't feature a 'challenge mode', players will often create self-imposed challenges by forbidding or restricting the use of certain game mechanics.
+Soulsborne
+local multiplayer
+To use the element of surprise to flank and attack an enemy. More common in multiplayer games, where 'ganking' usually indicates an unwelcome attack on an unwilling or unsuspecting participant.
+F2P - A shorthand for 'free-to-play', a type of game which is free to download and play and which often has optional purchase opportunities included in-game.
+An obstruction in a video game that halts movement in a specific direction, even though terrain and features can be seen beyond the boundary.
+invulnerability
+Competitive multiplayer games where the players do not have to be participating at the same time. Such games are usually turn-based, with each player planning a strategy for the upcoming turn, and then having the game resolve all actions of that turn once each player has submitted their strategies.
+cross-platform play
+A cloud gaming server runs the game, receiving controller input actions from and streaming audio and video to the player's thin client.
+Multiplayer gameplay where the players work together on the same team against computer-controlled opponents or challenges.
+Mobs - Groups of enemy characters, either roaming or static, who may overwhelm or ambush the player character.
+A non-player character that tries to harm the player.
+Central processing unit; the part of the computer or video game which executes the games' program.
+A genre of role-playing video game where battle actions are performed in real-time instead of a turn-based mechanic.
+CRPG - An acronym for 'computer/classic role-playing game', CRPG is a sub-genre of RPG with roots in traditional western RPGs, taking heavy influence from table-top gaming. These often focus on party-based adventures and turn-based combat encounters.
+The process of designing a video game, including content and game mechanics.
+A local cooperative video game that is designed to be played by multiple players on the same display screen, using split-screen.
+real-time corruptor
+rez
+See level and quest.
+analog stick
+A subunit of a player's turn. For example, a game may allow an action to occur only so long as the player has sufficient 'action points' to complete the action.
+graphic content filter
+status effect
+control point (CP)
+A means of selecting certain options—such as a character, weapon, vehicle, or other in-game item—during the course of a game for a specific function, as opposed to selecting a specific character class at the start of the game. Such specialization allows that entity to have access to unique skills or options for that type while denying them access to other options. Some games allow players to re-specialize past choices for some in-game cost and pursue a different specialization. See also theorycraft.
+Shorthand for an expression of sympathy when an unfortunate event occurs. The term originates from an internet meme based on a quicktime event from Call of Duty: Advanced Warfare. The expression is often used in a sarcastic or mocking manner.
+Short for public lobby, as opposed to a private lobby.
+A type of strike that does more damage than usual. Normally a rare occurrence, this may indicate a special attack or a hit on the target's weak point.
+Any enemy that appears to require more firepower than would be considered realistic or reasonable to defeat. This is an allusion to how the enemy can absorb bullets much like a sponge absorbs liquids. For example, an enemy soldier in a first-person shooter that requires several full magazines of ammunition to defeat, in comparison to other soldier types that are defeated in a handful of shots, would be a bullet sponge.
+A program, either provided within the game software or as separate software product, that allows players to place objects or create new levels for a video game.
+animatic
+A positioning of a character model in a video game with the character standing upright and arms up to the side. Typically used as a default position for 3D character models, this is often seen in games as a glitch or result of software bugs.
+A tactic and an effect used during turn-based fights in which a character (usually with high defense or hit points (HP) – see Tank) tricks opponents into attacking him/herself instead of the rest of the team.
+A term for near-death state, typically found in team battle royale games, in which a player becomes incapacitated instead of dying after losing health points. Players in this state can be revived by teammates as long as they still have health.
+PvP
+RP - An acronym for 'role-playing', RP refers to the act of playing an in-game character within the strict bounds of a personality or back-story you've assigned to them. Deciding, for example, that your character has a fear of spiders and therefore running from all spider-like enemies.
+difficulty
+tick
+VR - An acronym for 'virtual reality', VR is a unique hardware feature that involves immersing oneself within the game world, typically by means of a dedicated headset and/or controllers.
+compulsion loop
+End-game - A period of extended play that follows a game's main campaign, typically building upon the mechanics of the main quests with additional - more challenging - content.
+A maneuver in which a player-character gets an enemy NPC to chase after them so as to lead them somewhere else (like a kite on a string). This can be used to separate groups of enemies to prevent the player from becoming overwhelmed or in team-based or cooperative games to allow the player's teammates to attack the opponent, or to lure the opponent into a trap.
+The Konami Code
+moveset
+King of the Hill (KOTH)
+public lobby
+Also damage ring.
+See multiplatform.
+cross-save
+overworld
+arcade game
+debuff
+See health.
+SSD - An acronym for 'solid-state drive', an SSD is a modern type of digital storage solution that alleviates many of the technical limitations of mechanical hard-disk drives. SSDs are much faster than previous storage solutions, allowing for drastic improvements in loading times and data transfer speed.
+screen cheat
+Any item or ability that can be considered the best possible option in a given slot. This can vary between players and playstyles, but commonly, any specific playstyle is likely to have either a single or a small set of items considered to be the best. This may be due to favorable effects, good match-ups against most opponents, or high stats. Typically abbreviated as BiS.
+pack-in game
+A pejorative term when one must shake a controller to do an action, regardless of how the controller is shaken. Usually implies that the controller needs to be shaken wildly. Sometimes extended to motion controls in general, ignoring any precision required.
+In shooter games, a rocket-propelled grenade.
+Cooperative or competitive multiplayer games in which each player will have a different experience arising from differences in gameplay, controls, or in-game character options that are part of the game. This is in contrast to symmetric gameplay where each player will have the same experience, such as in the game Pong. Asymmetric gameplay often arises in competitive games where one player's character is far overpowered but outnumbered by other players that are all competing against them, such as in Pac-Man Vs. Asymmetric gameplay can also arise in multiplayer online battle arenas (MOBAs) and hero shooters, where each player selects a different hero or character class with different gameplay abilities from others.
+conversation tree
+For the video game developer, see Splash Damage.
+Also Buy-to-play.
+walkthrough
+playtesting
+AFK
+In team-based video games, when a player disproportionately contributes to the success of their team. For example, Team A's sole remaining player defeating the rest of Team B, thus saving Team A from a close defeat, would be considered carrying, as would one player on Team A having the most kills among the rest of their team. The term is usually but not always interpreted as indirect slander towards the rest of the team, though the term may also be used generally. Carrying may also be a method experienced players use to win rounds when the rest of their team are less experienced or less efficient at completing tasks; this may entail taking on enemy combatants alone, or using teammates as a distraction while completing objectives for the round.
+Common in strategy games, a 'fog' covers unobservable areas of the map and hides any enemy units in that area.
+See farming.
+See real-time strategy.
+quality assurance
+Ragequit - Terminating a play session due to frustration.
+palette swap
+RPG
+coyote time
+pro
+The action of getting the killing blow on an NPC, receiving gold and experience points that would have been reduced or awarded to someone else. MOBA games, such as League of Legends and Dota 2 use this term and most other games use "kill stealing".
+dialog tree
+Acronym for Hidden Object Puzzle Adventure. See See hidden object game.
+life
+A player in a multiplayer video game who deliberately irritates and harasses other players within the game. Griefers typically use actions permitted in-game; griefers who do not use intended or permitted actions are usually cheating or hacking. Many online multiplayer games enforce rules that forbid griefing.
+360 no-scope.
+leaderboard
+An input device consisting of a stick that pivots on a base and reports its angle or direction to the device it is controlling. Modern gaming joysticks have several buttons and may include a thumb-operated analog stick on top.
+A purchase made in addition to the cost of the base game that generally enables the purchaser access to all downloadable content that is planned for that title without further cost.
+An unofficial, indefinite "waiting period" during which a project is effectively stalled and unable to proceed. Projects that enter development hell are often delayed by several years, but are not usually considered to be formally cancelled by the publisher.
+A genre of video game that is based on exploring dungeons or similar setting, defeating monsters and collecting loot.
+Debug mode
+An option to use a one-time save which takes the player out of the game, allowing them to continue from where they last were and in the state they last were, thereby allowing the player to turn off the console or do something else with it without losing progress, but without gaining anything beyond that compared with not quicksaving. More common in handheld games, where an emphasis on short gameplay sessions encourages developers to give the player a way to play for shorter periods.
+Also backfilling.
+iframes
+hidden object game
+side-scrolling video game
+gacha game
+A number attached to a game item – e.g.: weapon, armor, or clothing – which roughly indicates the item's power, commonly seen in MMORPGs. A character who does not meet the required level of the item would be unable to equip it.
+In co-operative multiplayer games, gameplay feature that allows players on the same team to visibly highlight, or "ping", other features on the map (such as waypoints, enemies, or treasure) to their allied players. While ping systems existed in various genres such as MOBAs before, Apex Legends in the late 2010s was cited with popularizing the system for first-person shooters that enabled effective communication between players without the need for voice chat.
+PVP / PVE - Shorthand for 'player versus player' and 'player versus enemy/environment', PVP and PVE defines with whom the player will be competing: against one another in 'PVP' or against computer controlled enemies in 'PVE'.
+1v1.
+collision detection
+corruptor
+wall jump
+control stick
+real-time strategy (RTS)
+An abbreviation for first-person shooter.
+An abbreviation of 1 versus 1, denoting two players battling against each other. Can be extended to any player versus player grouping, such as '2v2' to mean two teams of two battling each other, or "1v4" to refer to a team of four players against one (as seen in asymmetrical gameplay).
+A popular subgenre of the tile-matching video game genre, where the number of tiles matches a player must make is three. Well-known match-3 games include Bejeweled and Candy Crush Saga.
+In first or third person shooters, the act of shooting someone through a wall or object with bullets or other projectiles that have penetration. Made a popular term by games such as Counter-Strike and Call of Duty.
+NG+ / New Game + - A special mode in which a game can be played over from the beginning whilst keeping the majority of progress from the initial playthrough. Difficulty will normally be increased, or new elements potentially added as part of NG+.
+When a game's story has multiple final outcomes, as compared to a linear story which typically ends with the defeat of the game's final boss. Players may have to meet certain requirements in order to view each ending.
+RNG
+Being able to jump twice in mid-air after leaving the ground, and must then typically touch the ground before being able to mid-air jump again. See also double jump.
+Changing the appearance of gear, such as weapons and armor, typically to that of functionally equivalent gear.
+A game world where the player has much greater freedom in choosing the order that they visit areas within the world, rather than being restricted to a pre-defined or heavily constricted order of visiting areas. While 'open world' and 'sandbox' are sometimes used interchangeably, the terms refer to different concepts and are not synonymous.
+16-bit.
+One of multiple chances that a player has to retry a task after failing. Losing all of one's lives is usually a loss condition and may force the player to start over. It is common in action games for the player-character to have multiple lives and chances to earn more during the game. This way, a player can recover from making a disastrous mistake. Role-playing games and adventure games usually give the player only one life, but allow them to reload a saved game if they fail. A life may similarly be defined as the period between the start and end of play for any character, from creation to destruction.
+aggro
+A specific set of in-game equipment, abilities, power-ups, and other items that a player sets for their character prior to the start of a game's match, round, or mission. Games that feature such loadouts typically allow players to store, recall, and adjust two or more loadouts so they can switch between them quickly.
+shooter
+Also cinematic.
+Found primarily in adventure games, a means of providing a menu of dialog choices to the player when interacting with a non-player character so as to learn more from that character, influence the character's actions, and otherwise progress the game's story. The tree nature comes from typically having multiple branching levels of questions and replies that can be explored.
+Zoning - a play strategy that involves controlling a specific area of a map or arena, forcing opponents to retreat.
+A technique used primarily in massively multiplayer online games to limit or control how many enemies are hostile to the players so they can be picked off more easily. Also see aggro.
+A partially animated storyboard with sound effects used during early game development.
+game design
+An in-game enemy that roams a specific area. Abbreviation of "mobile", it was first used in text-based online games in reference to non-player characters.
+platform game
+fog of war
+A branching series of technologies that can be researched in strategy games, to customize the player's faction. See also skill tree.
+Graphic rendering technique of three-dimensional objects set in a two-dimensional plane of movement. Often includes games where some objects are still rendered as sprites.
+When a game releases exclusively for one platform but may release for other platforms when the exclusivity period expires.
+A game mode where opposing teams try to occupy a single point on the map for a certain amount of time, or for as long as possible until the end of the match.
+pixel-perfect
+horde mode
+theory
+A smaller version of the play area, typically displayed in the corner of a players screen used for navigating the game world. May also display locations of friendly and/or enemy players. See also Minimap.
+duping
+Commonly used in MOBAs to define the act of going into range of the opponent's tower, a defensive structure that damages its opponents, to kill low-health targets.
