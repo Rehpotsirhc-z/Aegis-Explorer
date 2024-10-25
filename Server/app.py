@@ -17,7 +17,7 @@ img_model = YOLO(image_model_path)
 
 tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 text_model = BertForSequenceClassification.from_pretrained(
-    "bert-base-uncased", num_labels=8
+    "bert-base-uncased", num_labels=6
 )
 
 text_model.load_state_dict(
@@ -94,9 +94,9 @@ def predict_text():
             "explicit",
             "gambling",
             "games",
-            "monetary",
+            # "monetary",
             "profanity",
-            "social",
+            # "social",
         }
         idx_to_name = {index: name for index, name in enumerate(class_names)}
 

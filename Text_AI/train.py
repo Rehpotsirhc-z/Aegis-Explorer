@@ -20,9 +20,9 @@ class TextDataset(Dataset):
             "explicit",
             "gambling",
             "games",
-            "monetary",
+            # "monetary",
             "profanity",
-            "social",
+            # "social",
         ]
         category_to_id = {className: id for id, className in enumerate(categories)}
 

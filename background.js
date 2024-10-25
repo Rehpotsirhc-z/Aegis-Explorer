@@ -2,6 +2,28 @@ base_url = "http://localhost:5000";
 image_url = `${base_url}/predict_image`;
 text_url = `${base_url}/predict_text`;
 
+// // set keeping track of image URLs
+// const imageUrls = new Set();
+
+// chrome.webRequest.onBeforeRequest.addListener(
+//     function (details) {
+//         if (details.type === "image") {
+//             console.log("Image request:", details.url);
+
+//             // check if image url is in the set. If not, fetch request and add to the set
+//             if (!imageUrls.has(details.url)) {
+//                 console.log("New image URL:", details.url);
+//                 // send message with request.images to trigger processing
+//                 chrome.runtime.sendMessage({ images: [details.url] });
+//             }
+
+//             imageUrls.add(details.url);
+
+//         }
+//     },
+//     { urls: ["<all_urls>"] },
+// );
+
 function dataUrlToBlob(dataUrl) {
     const [header, data] = dataUrl.split(",");
     const mime = header.match(/:(.*?);/)[1];
@@ -148,8 +170,8 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
                             const categories = {
                                 profanity: "profanity",
-                                social: "social-media-and-forums",
-                                monetary: "monetary-transactions",
+                                // social: "social-media-and-forums",
+                                // monetary: "monetary-transactions",
                                 explicit: "explicit-content",
                                 drugs: "drugs",
                                 games: "web-based-games",
@@ -315,8 +337,8 @@ chrome.runtime.onMessage.addListener(async (request) => {
                         );
                         const categories = {
                             profanity: "profanity",
-                            social: "social-media-and-forums",
-                            monetary: "monetary-transactions",
+                            // social: "social-media-and-forums",
+                            // monetary: "monetary-transactions",
                             explicit: "explicit-content",
                             drugs: "drugs",
                             games: "web-based-games",

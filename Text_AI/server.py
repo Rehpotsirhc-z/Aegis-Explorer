@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=8)
+model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=6)
 
 model.load_state_dict(torch.load('model/model.pth', map_location=torch.device('cpu')), strict=False)
 model.eval()
@@ -29,9 +29,9 @@ def predict():
             2: "explicit",
             3: "gambling",
             4: "games",
-            5: "monetary",
+            # 5: "monetary",
             6: "profanity",
-            7: "social",
+            # 7: "social",
     }
 
     return jsonify({'prediction': idx_to_name[prediction]})

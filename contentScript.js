@@ -1,6 +1,28 @@
 const seenImages = new Set();
 const seenText = new Set();
 
+// set keeping track of image URLs
+const imageUrls = new Set();
+
+chrome.webRequest.onBeforeRequest.addListener(
+    function (details) {
+        if (details.type === "image") {
+            console.log("Image request:", details.url);
+
+            // check if image url is in the set. If not, fetch request and add to the set
+            if (!imageUrls.has(details.url)) {
+                console.log("New image URL:", details.url);
+                // send message with request.images to trigger processing
+                // chrome.runtime.sendMessage({ images: [details.url] });
+            }
+
+            imageUrls.add(details.url);
+
+        }
+    },
+    { urls: ["<all_urls>"] },
+);
+
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
 
@@ -59,16 +81,16 @@ function extractImageLinks() {
     return newImageLinks;
 }
 
-function sendImages() {
-    const imageLinks = extractImageLinks();
-    try {
-        if (imageLinks.length > 0) {
-            chrome.runtime.sendMessage({ images: imageLinks });
-        }
-    } catch (error) {
-        console.error("Error sending images", error);
-    }
-}
+// function sendImages() {
+//     const imageLinks = extractImageLinks();
+//     try {
+//         if (imageLinks.length > 0) {
+//             chrome.runtime.sendMessage({ images: imageLinks });
+//         }
+//     } catch (error) {
+//         console.error("Error sending images", error);
+//     }
+// }
 
 function extractSentences() {
     // const textContent = document.body.innerText;
@@ -90,16 +112,17 @@ function extractSentences() {
 
     // remove duplicates, empty strings, whitespace, and seen text
     sentences = sentences
-        .filter((sentence) => sentence.trim() !== "")
-        .filter((sentence) => !seenText.has(sentence))
-        .map((sentence) => sentence.trim());
+        .map((sentence) => sentence.trim())
+        .filter((sentence) => sentence !== "")
+        .filter((sentence) => !seenText.has(sentence));
 
     return sentences;
 }
 
 function sendText() {
     const textLinks = extractSentences();
-    seenText.add(...textLinks);
+    seenText.add(textLinks.map((text) => text.trim()));
+    console.log(seenText);
 
     console.log(textLinks);
     try {
@@ -112,17 +135,17 @@ function sendText() {
 }
 
 // Set up a MutationObserver to detect change in the DOM
-const observer = new MutationObserver(() => {
-    sendImages();
-    sendText();
-});
+// const observer = new MutationObserver(() => {
+//     sendImages();
+//     sendText();
+// });
 
-observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-    //     // attributes: true,
-    //     // attributesFilter: ["src"],
-});
+// observer.observe(document.body, {
+//     childList: true,
+//     subtree: true,
+//     //     // attributes: true,
+//     //     // attributesFilter: ["src"],
+// });
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message.action === "removeImage" && message.imageLink) {
@@ -215,14 +238,14 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
 });
 
-window.addEventListener("load", () => {
-    sendImages();
-    sendText();
-});
+// window.addEventListener("load", () => {
+//     sendImages();
+//     sendText();
+// });
 
 // document.addEventListener("DOMContentLoaded", () => {
 //     sendImages();
 //     sendText();
 // });
 
-sendImages();
+// sendImages();

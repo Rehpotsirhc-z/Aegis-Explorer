@@ -3,8 +3,8 @@ const ages = ["ages-3-to-5", "ages-6-to-12", "ages-13-to-18", "custom"];
 const blockingCategories = [
     "profanity",
     "web-based-games",
-    "social-media-and-forums",
-    "monetary-transactions",
+    // "social-media-and-forums",
+    // "monetary-transactions",
     "explicit-content",
     "drugs",
     "gambling",
