@@ -205,9 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }),
     ).then(() => {
-        console.log(Object.keys(categoryLog));
-        console.log(Object.values(categoryLog));
-
         // TODO STATISTICS LOGIC
         const ctx = document
             .getElementById("hits-per-category")
@@ -265,8 +262,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const eventLog = [];
 
     Promise.all(
-        [...Object.entries(categories), ["background", "background"]].map(
-            ([key, value]) => {
+        [...Object.values(categories).map(v => `${v}-log`), "background-log"].map(
+            (value) => {
                 return chrome.storage.local.get([value]).then((result) => {
                     // TODO: Figure out the problem
                     try {
@@ -278,17 +275,11 @@ document.addEventListener("DOMContentLoaded", () => {
             },
         ),
     ).then(() => {
-        console.log(eventLog);
-
         // let today = eventLog.filter(
         //     (timestamp) =>
         //         timestamp >= time &&
         //         timestamp < time.getTime() + 24 * 60 * 60000,
         // );
-
-        // console.log("today", today);
-
-        console.log("intervals", getMinuteIntervals(5, date));
 
         let dateIntervals = [];
         let intervals = getMinuteIntervals(5, date);
@@ -301,7 +292,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 ),
             );
         });
-        console.log(dateIntervals.map((interval) => interval.length));
         fiveMinutesLabels = intervals.map((interval) =>
             formatTime(new Date(interval)),
         );
@@ -335,30 +325,19 @@ document.addEventListener("DOMContentLoaded", () => {
             },
         });
         chrome.storage.local.get(["onlineLog"]).then((result) => {
-            console.log(result.onelineLog);
-
             let dateIntervals = [];
             let intervals = getMinuteIntervals(1, date);
             intervals.forEach((interval) => {
                 dateIntervals.push(
-                    eventLog.filter(
+                    result.onlineLog.filter(
                         (timestamp) =>
                             timestamp >= interval &&
                             timestamp < interval + 1 * 60000,
                     ),
                 );
             });
-            console.log(dateIntervals.map((interval) => interval.length));
             oneMinuteLabels = intervals.map((interval) =>
                 formatTime(new Date(interval)),
-            );
-
-            console.log(dateIntervals);
-
-            console.log(
-                dateIntervals.map((timestamp) =>
-                    timestamp.length == 1 ? 1 : 0,
-                ),
             );
 
             const ctx2 = document
@@ -567,7 +546,6 @@ function clearRadioButtons() {
 function setCheckboxes() {
     blockingCategories.forEach((age) => {
         chrome.storage.local.get([age]).then((result) => {
-            console.log(result[age]);
             document.getElementById(`${age}-checkbox`).checked = result[age];
         });
     });
