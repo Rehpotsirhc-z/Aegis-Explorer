@@ -17,11 +17,11 @@ img_model = YOLO(image_model_path)
 
 tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 text_model = BertForSequenceClassification.from_pretrained(
-    "bert-base-uncased", num_labels=6
+    "bert-base-uncased", num_labels=8 # TODO change back to 6 after training new model
 )
 
 text_model.load_state_dict(
-    torch.load("models/text/model_v2.pth", map_location=torch.device("cpu")), strict=False
+    torch.load("models/text/model_v3.pth", map_location=torch.device("cpu")), strict=False
 )
 text_model.eval()
 

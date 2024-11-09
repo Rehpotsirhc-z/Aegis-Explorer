@@ -1,27 +1,38 @@
+const style = document.createElement("style");
+style.textContent = `
+    img:not(.approved) {
+        display: none !important;
+    }
+    *:not(.approved) {
+        background-image: none !important;
+    }
+`;
+document.documentElement.appendChild(style);
+
 const seenImages = new Set();
 const seenText = new Set();
 
 // set keeping track of image URLs
 const imageUrls = new Set();
 
-chrome.webRequest.onBeforeRequest.addListener(
-    function (details) {
-        if (details.type === "image") {
-            console.log("Image request:", details.url);
+// chrome.webRequest.onBeforeRequest.addListener(
+//     function (details) {
+//         if (details.type === "image") {
+//             console.log("Image request:", details.url);
 
-            // check if image url is in the set. If not, fetch request and add to the set
-            if (!imageUrls.has(details.url)) {
-                console.log("New image URL:", details.url);
-                // send message with request.images to trigger processing
-                // chrome.runtime.sendMessage({ images: [details.url] });
-            }
+//             // check if image url is in the set. If not, fetch request and add to the set
+//             if (!imageUrls.has(details.url)) {
+//                 console.log("New image URL:", details.url);
+//                 // send message with request.images to trigger processing
+//                 // chrome.runtime.sendMessage({ images: [details.url] });
+//             }
 
-            imageUrls.add(details.url);
+//             imageUrls.add(details.url);
 
-        }
-    },
-    { urls: ["<all_urls>"] },
-);
+//         }
+//     },
+//     { urls: ["<all_urls>"] },
+// );
 
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
@@ -148,94 +159,166 @@ function sendText() {
 // });
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+    // if (message.images) {
+    //     console.log("Received images", message.images);
+
+    //     message.images.forEach((imageLink) => {
+    //         console.log("Removing image", imageLink);
+
+    //         // get everywhere that this image link occurs not just src
+    //         const allElements = document.querySelectorAll('*');
+    //         allElements.forEach((element) => {
+    //             // go through attributes
+    //             for (let attr of element.attributes) {
+    //                 if (attr.value.includes(imageLink)) {
+    //                     console.log("Removing image from attribute", attr, attr.value, imageLink, element);
+    //                     element.setAttribute(attr.name, "");
+    //                     console.log(attr);
+    //                 }
+    //             }
+    //         })
+    //     });
+    // }
     if (message.action === "removeImage" && message.imageLink) {
-        console.log("Removing image", message.imageLink);
+        // const imageLink = message.imageLink;
 
-        const images = document.querySelectorAll(
-            `img[data-original-src="${message.imageLink}"]`,
-        );
-        images.forEach((image) => {
-            image.src = "";
-            image.alt = "";
-            if (image.srcset === "" && image.dataset.originalSrcset) {
-                image.srcset = "";
-                image.removeAttribute("data-original-srcset");
-            }
-            image.removeAttribute("data-original-src");
-            image.removeAttribute("data-original-alt");
-        });
+        // console.log("REMOVE", imageLink);
 
-        // Handle background images
-        const elements = document.querySelectorAll(
-            `*[data-original-background-image="${message.imageLink}"]`,
-        );
-        elements.forEach((element) => {
-            element.style.backgroundImage = "none";
-            element.removeAttribute("data-original-background-image");
-        });
+        // const images = document.querySelectorAll("img");
+
+        // images.forEach((element) => {
+        //     // go through attributes
+        //     // console.log(element.attributes);
+        //     for (let attr of element.attributes) {
+        //         // console.log(attr);
+        //         if (attr.value.includes(imageLink) || attr.value.includes(imageLink.substring(0, 5))) {
+        //             element.classList.add("approved");
+        //         }
+        //     }
+        // })
+
     } else if (message.action === "revealImage" && message.imageLink) {
-        console.log("Revealing image", message.imageLink);
+        const imageLink = message.imageLink;
 
-        const images = document.querySelectorAll(
-            `img[src=""][data-original-src="${message.imageLink}"]`,
-        );
-        images.forEach((image) => {
-            image.src = image.dataset.originalSrc;
-            image.alt = image.dataset.originalAlt;
-            if (image.srcset === "" && image.dataset.originalSrcset) {
-                image.srcset = image.dataset.originalSrcset;
-                image.removeAttribute("data-original-srcset");
-            }
-            image.dataset.approved = "true";
-            image.removeAttribute("data-original-src");
-            image.removeAttribute("data-original-alt");
-        });
+        console.log("REVEAL", imageLink);
 
-        // Handle background images
-        const elements = document.querySelectorAll(
-            `*[data-original-background-image="${message.imageLink}"]`,
-        );
+        const images = document.querySelectorAll("img");
 
-        elements.forEach((element) => {
-            console.log("Revealing background image", message.imageLink);
-            element.style.backgroundImage = `url(${element.dataset.originalBackgroundImage})`;
-            element.dataset.approved = "true";
-            element.removeAttribute("data-original-background-image");
-        });
-    } else if (message.action === "removeText" && message.text) {
-        // remove all instances of the text in the document
-        const text = message.text.trim();
+        images.forEach((element) => {
+            // go through attributes
+            // console.log(element.attributes);
+            for (let attr of element.attributes) {
+                console.log(attr);
+                console.log("ADD", imageLink.replace(/^https?:\/\//, ""));
 
-        console.log("Removing text", text);
-
-        function removeTextFromNode(node) {
-            if (node.nodeType === Node.TEXT_NODE) {
-                textContent = node.textContent;
-                if (textContent.trim() === "") {
-                    return;
+                if (attr.value.includes(imageLink.replace(/^https?:\/\//, ""))) { // TODO Fix this
+                    element.classList.add("approved");
                 }
-                // console.log("Target:", text);
-                // console.log(node.textContent);
-                // node.textContent = node.textContent.replace(text, "???");
-                if (node.textContent.includes(text)) {
-                    // console.log("Result: ", node.textContent);
-                    console.log(
-                        "new",
-                        node.textContent.replace(new RegExp(text, "gi"), "???"),
-                    );
-                    node.textContent = node.textContent.replace(
-                        new RegExp(text, "gi"),
-                        "???",
-                    );
-                    console.log("Removoing: ", node.textContent);
-                }
-            } else {
-                node.childNodes.forEach((child) => removeTextFromNode(child));
             }
-        }
+        })
 
-        removeTextFromNode(document.body);
     }
+
+    // if (message.action === "removeImage" && message.imageLink) {
+    //     console.log("Removing image", message.imageLink);
+
+    //     const images = document.querySelectorAll(
+    //         `img[data-original-src="${message.imageLink}"]`,
+    //     );
+    //     images.forEach((image) => {
+    //         image.src = "";
+    //         image.alt = "";
+    //         if (image.srcset === "" && image.dataset.originalSrcset) {
+    //             image.srcset = "";
+    //             image.removeAttribute("data-original-srcset");
+    //         }
+    //         image.removeAttribute("data-original-src");
+    //         image.removeAttribute("data-original-alt");
+    //     });
+
+    //     // Handle background images
+    //     const elements = document.querySelectorAll(
+    //         `*[data-original-background-image="${message.imageLink}"]`,
+    //     );
+    //     elements.forEach((element) => {
+    //         element.style.backgroundImage = "none";
+    //         element.removeAttribute("data-original-background-image");
+    //     });
+    // } else if (message.action === "revealImage" && message.imageLink) {
+    //     console.log("Revealing image", message.imageLink);
+
+    //     // reveal <img> elements
+    //     const images  = document.querySelectorAll(`img[src="${message.imageLink}"]`);
+    //     images.forEach((image) => {
+    //         image.classList.add("approved");
+    //     });
+
+    //     // reveal background images
+    //     const elements = document.querySelectorAll(`*[style*="${message.imageLink}"]`);
+    //     elements.forEach((element) => {
+    //         element.classList.add("approved");
+    //     });
+
+    //     // const images = document.querySelectorAll(
+    //     //     `img[src=""][data-original-src="${message.imageLink}"]`,
+    //     // );
+    //     // images.forEach((image) => {
+    //     //     image.src = image.dataset.originalSrc;
+    //     //     image.alt = image.dataset.originalAlt;
+    //     //     if (image.srcset === "" && image.dataset.originalSrcset) {
+    //     //         image.srcset = image.dataset.originalSrcset;
+    //     //         image.removeAttribute("data-original-srcset");
+    //     //     }
+    //     //     image.dataset.approved = "true";
+    //     //     image.removeAttribute("data-original-src");
+    //     //     image.removeAttribute("data-original-alt");
+    //     // });
+
+    //     // // Handle background images
+    //     // const elements = document.querySelectorAll(
+    //     //     `*[data-original-background-image="${message.imageLink}"]`,
+    //     // );
+
+    //     // elements.forEach((element) => {
+    //     //     console.log("Revealing background image", message.imageLink);
+    //     //     element.style.backgroundImage = `url(${element.dataset.originalBackgroundImage})`;
+    //     //     element.dataset.approved = "true";
+    //     //     element.removeAttribute("data-original-background-image");
+    //     // });
+    // } else if (message.action === "removeText" && message.text) {
+    //     // remove all instances of the text in the document
+    //     const text = message.text.trim();
+
+    //     console.log("Removing text", text);
+
+    //     function removeTextFromNode(node) {
+    //         if (node.nodeType === Node.TEXT_NODE) {
+    //             textContent = node.textContent;
+    //             if (textContent.trim() === "") {
+    //                 return;
+    //             }
+    //             // console.log("Target:", text);
+    //             // console.log(node.textContent);
+    //             // node.textContent = node.textContent.replace(text, "???");
+    //             if (node.textContent.includes(text)) {
+    //                 // console.log("Result: ", node.textContent);
+    //                 console.log(
+    //                     "new",
+    //                     node.textContent.replace(new RegExp(text, "gi"), "???"),
+    //                 );
+    //                 node.textContent = node.textContent.replace(
+    //                     new RegExp(text, "gi"),
+    //                     "???",
+    //                 );
+    //                 console.log("Removoing: ", node.textContent);
+    //             }
+    //         } else {
+    //             node.childNodes.forEach((child) => removeTextFromNode(child));
+    //         }
+    //     }
+
+    //     removeTextFromNode(document.body);
+    // }
 });
 
 // window.addEventListener("load", () => {
