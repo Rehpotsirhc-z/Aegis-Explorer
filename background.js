@@ -4,9 +4,50 @@ textUrl = `${baseUrl}/predict_text`;
 
 // set keeping track of image URLs
 const imageUrls = new Set();
+const urlStatuses = new Map();
+
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === "getUrlStatuses") {
+        console.log("Sending URL statuses", urlStatuses);
+
+        const urlStatusesObject = Object.fromEntries(urlStatuses);
+
+        chrome.tabs.query({}, (tabs) => {
+            tabs.forEach((tab) => {
+                chrome.tabs
+                    .sendMessage(
+                        tab.id,
+                        {
+                            urlStatuses: urlStatusesObject, // Sending as a plain object
+                        }
+                    )
+                    .catch((error) => {
+                        console.error(`Error sending URL statuses:`, error);
+                    });
+            });
+        });
+    }
+
+    return true; // Important to keep the message channel open for asynchronous responses
+});;
+
+async function checkUrl(url, image) {
+    var isApproved;
+
+    if (urlStatuses.has(url)) {
+        isApproved = urlStatuses.get(url);
+    } else {
+        // send image to the server for approval
+        isApproved = await sendImageForApproval(image, url);
+    }
+
+    return isApproved;
+
+}
+
 
 chrome.webRequest.onBeforeRequest.addListener(
-    function (details) {
+    async function (details) {
         if (details.type === "image") {
             console.log("Image request:", details.url);
 
@@ -46,14 +87,11 @@ chrome.webRequest.onBeforeRequest.addListener(
             // }
 
             // download image
-            const image = downloadImage(details.url);
+            const image = await downloadImage(details.url);
             if (!image) {
                 console.log("Failed to download image:", details.url);
                 return;
             }
-
-            // send image to the server for approval
-            const isApproved = sendImageForApproval(image, details.url);
 
             // communicate with the content script to remove/reveal the image
 
@@ -62,37 +100,43 @@ chrome.webRequest.onBeforeRequest.addListener(
             console.log("test");
             console.log(imageUrls);
             console.log(imageUrls.has(details.url));
-                // send message with request.images to trigger processing
-                // chrome.runtime.sendMessage({ images: [details.url] });
-            chrome.tabs.query(
-                {},
-                (tabs) => {
-                    tabs.forEach((tab) => {
-                        chrome.tabs
-                            .sendMessage(
-                                tab.id,
-                                {
-                                    action: isApproved ? "revealImage" : "removeImage",
-                                    imageLink: details.url,
-                                },
-                            )
-                            .catch(
-                                (error) => {
-                                    console.error(
-                                        `Error removing image from URL (${details.url}):`,
-                                        error,
-                                    );
-                                },
-                            );
-                    });
-                },
-            );
-            console.log("New image URL:", details.url);
-        }
-        imageUrls.add(details.url);
+            // send message with request.images to trigger processing
+            // chrome.runtime.sendMessage({ images: [details.url] });
 
+            checkUrl(details.url, image).then((isApproved) => {
+                chrome.tabs.query(
+                    {},
+                    (tabs) => {
+                        tabs.forEach((tab) => {
+                            chrome.tabs
+                                .sendMessage(
+                                    tab.id,
+                                    {
+                                        action: isApproved ? "revealImage" : "removeImage",
+                                        imageLink: details.url,
+                                    },
+                                )
+                                .catch(
+                                    (error) => {
+                                        console.error(
+                                            `Error removing image from URL (${details.url}):`,
+                                            error,
+                                        );
+                                    },
+                                );
+                        });
+                    },
+                );
+                console.log("New image URL:", details.url);
+                imageUrls.add(details.url);
+                urlStatuses.set(details.url, isApproved);
+            });
+
+            return {};
+        }
     },
     { urls: ["<all_urls>"] },
+    []
 );
 
 function dataUrlToBlob(dataUrl) {

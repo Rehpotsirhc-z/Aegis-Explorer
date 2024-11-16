@@ -9,6 +9,8 @@ style.textContent = `
 `;
 document.documentElement.appendChild(style);
 
+var urlStatuses;
+
 const seenImages = new Set();
 const seenText = new Set();
 
@@ -33,6 +35,31 @@ const imageUrls = new Set();
 //     },
 //     { urls: ["<all_urls>"] },
 // );
+
+function revealImage(imageLink) {
+        var revealed = false;
+
+        const images = document.querySelectorAll("img");
+
+        filteredImageLink = imageLink.replace(/^https?:\/\//, "");
+
+        images.forEach((element) => {
+            // go through attributes
+            // console.log(element.attributes);
+            for (let attr of element.attributes) {
+                if (attr.value.includes(filteredImageLink)) { // TODO Fix this
+                    revealed = true;
+                    element.classList.add("approved");
+                }
+            }
+        })
+
+        if (!revealed) {
+            console.log("Failed to reveal image", imageLink);
+        } else {
+            console.log("Revaled image", imageLink);
+        }
+}
 
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
@@ -179,7 +206,20 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     //         })
     //     });
     // }
+    if (message.urlStatuses) {
+        // Assuming urlStatuses is a plain object now, you can use it directly
+        urlStatuses = new Map(Object.entries(message.urlStatuses));
+        console.log("URL statuses received", urlStatuses);
+
+        // Convert Map to an array of entries, filter by status, and then process
+        Array.from(urlStatuses.entries())
+            .filter(([url, status]) => status === true)  // Filter by status
+            .forEach(([url]) => {
+                revealImage(url);  // Call revealImage for each approved URL
+            });
+    }
     if (message.action === "removeImage" && message.imageLink) {
+        console.log("REMEMEMEOVMOVMO");
         // const imageLink = message.imageLink;
 
         // console.log("REMOVE", imageLink);
@@ -198,25 +238,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         // })
 
     } else if (message.action === "revealImage" && message.imageLink) {
-        const imageLink = message.imageLink;
-
-        console.log("REVEAL", imageLink);
-
-        const images = document.querySelectorAll("img");
-
-        images.forEach((element) => {
-            // go through attributes
-            // console.log(element.attributes);
-            for (let attr of element.attributes) {
-                console.log(attr);
-                console.log("ADD", imageLink.replace(/^https?:\/\//, ""));
-
-                if (attr.value.includes(imageLink.replace(/^https?:\/\//, ""))) { // TODO Fix this
-                    element.classList.add("approved");
-                }
-            }
-        })
-
+        revealImage(message.imageLink);
     }
 
     // if (message.action === "removeImage" && message.imageLink) {
@@ -319,6 +341,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
     //     removeTextFromNode(document.body);
     // }
+    return true;
 });
 
 // window.addEventListener("load", () => {
@@ -332,3 +355,5 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 // });
 
 // sendImages();
+
+chrome.runtime.sendMessage({ action: "getUrlStatuses" });

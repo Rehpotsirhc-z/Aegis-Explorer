@@ -1,10 +1,11 @@
-AI_Code/training_data
+AI_Code/YOLOv8
 AI_Code/images
+AI_Code/images.zip.gpg
 AI_Code/images_reject
 AI_Code/runs
+AI_Code/training_data
 AI_Code/yolov8n.pt
-AI_Code/YOLOv8
+Server/models
+Server/output
 Text_AI/dataset
 Text_AI/model
-Server/output
-Server/models
