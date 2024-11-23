@@ -4,7 +4,7 @@
     "version": "1.0",
     "description": "Aegis Explorer is a browser extension that protects children online.",
     "options_page": "settings.html",
-    "permissions": ["activeTab", "tabs", "storage", "scripting", "webRequest"],
+    "permissions": ["activeTab", "tabs", "storage", "scripting", "webRequest", "declarativeNetRequest", "declarativeNetRequestFeedback", "declarativeNetRequestWithHostAccess"],
     "host_permissions": ["<all_urls>"],
     "action": {
         "default_popup": "popup.html"

@@ -2,7 +2,8 @@
 
 ## Roadmap
 
--   [ ] Fix the failed to show with urlStatuses
+-   [ ] Fix the declarative net request failing with lazy placeholder
+-   [ ] CANCELED Fix the failed to show with urlStatuses
 -   [ ] Fix the weird https workaround in line 212 of contentScript
 -   [ ] Move the background to inside the webrequest
 -   [ ] Train the text AI without monetary and social and remove all of those from every file

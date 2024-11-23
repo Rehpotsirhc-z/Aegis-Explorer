@@ -1,13 +1,13 @@
-const style = document.createElement("style");
-style.textContent = `
-    img:not(.approved) {
-        display: none !important;
-    }
-    *:not(.approved) {
-        background-image: none !important;
-    }
-`;
-document.documentElement.appendChild(style);
+// const style = document.createElement("style");
+// style.textContent = `
+//     img:not(.approved) {
+//         display: none !important;
+//     }
+//     *:not(.approved) {
+//         background-image: none !important;
+//     }
+// `;
+// document.documentElement.appendChild(style);
 
 var urlStatuses;
 
@@ -206,20 +206,21 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     //         })
     //     });
     // }
-    if (message.urlStatuses) {
-        // Assuming urlStatuses is a plain object now, you can use it directly
-        urlStatuses = new Map(Object.entries(message.urlStatuses));
-        console.log("URL statuses received", urlStatuses);
+    // if (message.urlStatuses) {
+    //     // Assuming urlStatuses is a plain object now, you can use it directly
+    //     urlStatuses = new Map(Object.entries(message.urlStatuses));
+    //     console.log("URL statuses received", urlStatuses);
 
-        // Convert Map to an array of entries, filter by status, and then process
-        Array.from(urlStatuses.entries())
-            .filter(([url, status]) => status === true)  // Filter by status
-            .forEach(([url]) => {
-                revealImage(url);  // Call revealImage for each approved URL
-            });
-    }
+    //     // Convert Map to an array of entries, filter by status, and then process
+    //     Array.from(urlStatuses.entries())
+    //         .filter(([url, status]) => status === true)  // Filter by status
+    //         .forEach(([url]) => {
+    //             revealImage(url);  // Call revealImage for each approved URL
+    //         });
+    // }
     if (message.action === "removeImage" && message.imageLink) {
         console.log("REMEMEMEOVMOVMO");
+        blockImage(message.imageLink);
         // const imageLink = message.imageLink;
 
         // console.log("REMOVE", imageLink);
@@ -238,7 +239,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         // })
 
     } else if (message.action === "revealImage" && message.imageLink) {
-        revealImage(message.imageLink);
+        console.log("REVEAL");
+        // revealImage(message.imageLink);
     }
 
     // if (message.action === "removeImage" && message.imageLink) {
@@ -357,3 +359,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 // sendImages();
 
 chrome.runtime.sendMessage({ action: "getUrlStatuses" });
+
+
+function blockImage(url) {
+    chrome.runtime.sendMessage({ action: "blockImage", imageLink: url})
+}

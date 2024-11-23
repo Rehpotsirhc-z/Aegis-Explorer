@@ -2,11 +2,27 @@ baseUrl = "http://localhost:5000";
 imageUrl = `${baseUrl}/predict_image`;
 textUrl = `${baseUrl}/predict_text`;
 
+self.addEventListener('fetch', (event) => {
+    if (event.requent.destination === 'image') {
+        event.respondWith(handleImageRequest(event.request));
+    }
+});
+
+async function handleImageRequest(request) {
+    console.log("FETCHED Image request:", request.url);
+    const image = await fetch(request.url);
+    return image;
+}
+
 // set keeping track of image URLs
 const imageUrls = new Set();
 const urlStatuses = new Map();
 
 chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === "blockImage") {
+        console.log("Blocking image:", message.imageLink);
+        blockImage(message.imageLink);
+    }
     if (message.action === "getUrlStatuses") {
         console.log("Sending URL statuses", urlStatuses);
 
@@ -546,3 +562,54 @@ setInterval(() => {
 //         });
 //     }
 // });
+
+counter = 0
+function blockImage(url) {
+    counter+=1;
+    chrome.declarativeNetRequest.updateSessionRules({
+        addRules: [
+            {
+                id: generateUniqueId(),
+                // priority: 1,
+                action: { type: "block" },
+                condition: {
+                    urlFilter: url,
+                    resourceTypes: ["image"]
+                }
+            }
+        ],
+        removeRuleIds: [] // No rules to remove
+    }, () => {
+        console.log("added rule")
+        if (chrome.runtime.lastError) {
+            console.log(
+                "KK"
+            )
+            console.error(chrome.runtime.lastError.message);
+        }
+    });
+}
+
+console.log("DATE", Date.now())
+
+chrome.declarativeNetRequest.getSessionRules((rules) => {
+    if (chrome.runtime.lastError) {
+        console.error("Error fetching session rules:", chrome.runtime.lastError.message);
+        return;
+    }
+
+    console.log("Current Session Rules:", rules);
+});
+
+chrome.declarativeNetRequest.getDynamicRules((rules) => {
+    if (chrome.runtime.lastError) {
+        console.error("Error fetching dynamic rules:", chrome.runtime.lastError.message);
+        return;
+    }
+
+    console.log("Current Dynamic Rules:", rules);
+});
+
+function generateUniqueId(){
+    return Math.floor((Math.random() * 2147483647)) + 1;
+}
