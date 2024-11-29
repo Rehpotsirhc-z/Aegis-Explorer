@@ -1,9 +1,0 @@
-// TODO: check chart import issue
-"sandbox": {
-        "pages": [
-          "settings.html"
-        ]
-      },
-    "content_security_policy": {
-        "sandbox": "sandbox allow-scripts; script-src 'unsafe-inline' https://cdn.jsdelivr.net"
-      }

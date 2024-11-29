@@ -2,158 +2,8 @@ baseUrl = "http://localhost:5000";
 imageUrl = `${baseUrl}/predict_image`;
 textUrl = `${baseUrl}/predict_text`;
 
-self.addEventListener('fetch', (event) => {
-    if (event.requent.destination === 'image') {
-        event.respondWith(handleImageRequest(event.request));
-    }
-});
-
-async function handleImageRequest(request) {
-    console.log("FETCHED Image request:", request.url);
-    const image = await fetch(request.url);
-    return image;
-}
-
-// set keeping track of image URLs
-const imageUrls = new Set();
-const urlStatuses = new Map();
-
-chrome.runtime.onMessage.addListener((message) => {
-    if (message.action === "blockImage") {
-        console.log("Blocking image:", message.imageLink);
-        blockImage(message.imageLink);
-    }
-    if (message.action === "getUrlStatuses") {
-        console.log("Sending URL statuses", urlStatuses);
-
-        const urlStatusesObject = Object.fromEntries(urlStatuses);
-
-        chrome.tabs.query({}, (tabs) => {
-            tabs.forEach((tab) => {
-                chrome.tabs
-                    .sendMessage(
-                        tab.id,
-                        {
-                            urlStatuses: urlStatusesObject, // Sending as a plain object
-                        }
-                    )
-                    .catch((error) => {
-                        console.error(`Error sending URL statuses:`, error);
-                    });
-            });
-        });
-    }
-
-    return true; // Important to keep the message channel open for asynchronous responses
-});;
-
-async function checkUrl(url, image) {
-    var isApproved;
-
-    if (urlStatuses.has(url)) {
-        isApproved = urlStatuses.get(url);
-    } else {
-        // send image to the server for approval
-        isApproved = await sendImageForApproval(image, url);
-    }
-
-    return isApproved;
-
-}
-
-
-chrome.webRequest.onBeforeRequest.addListener(
-    async function (details) {
-        if (details.type === "image") {
-            console.log("Image request:", details.url);
-
-            // check if image url is in the set. If not, fetch request and add to the set
-            // if (!imageUrls.has(details.url)) {
-            //     console.log("New image URL:", details.url);
-            //     // send message with request.images to trigger processing
-            //     // chrome.runtime.sendMessage({ images: [details.url] });
-            //     chrome.tabs.query(
-            //         {active: true, currentWindow: true},
-            //         (tabs) => {
-            //             chrome.tabs.sendMessage(tabs[0].id, message);
-            //             // tabs.forEach((tab) => {
-            //             //     chrome.tabs
-            //             //         .sendMessage(
-            //             //             tab.id,
-            //             //             {
-            //             //                 images: [details.url]
-            //             //             },
-            //             //         )
-            //             //         .catch(
-            //             //             (error) => {
-            //             //                 console.error(
-            //             //                     `Error removing image from URL (${details.url}):`,
-            //             //                     error,
-            //             //                 );
-            //             //             },
-            //             //         );
-            //             // });
-            //         },
-            //     );
-            // }
-
-            // if (imageUrls.has(details.url)) {
-            //     console.log("Image URL already processed:", details.url);
-            //     return;
-            // }
-
-            // download image
-            const image = await downloadImage(details.url);
-            if (!image) {
-                console.log("Failed to download image:", details.url);
-                return;
-            }
-
-            // communicate with the content script to remove/reveal the image
-
-            // chrome.tabs.query
-            // check if image url is in the set. If not, fetch request and add to the set
-            console.log("test");
-            console.log(imageUrls);
-            console.log(imageUrls.has(details.url));
-            // send message with request.images to trigger processing
-            // chrome.runtime.sendMessage({ images: [details.url] });
-
-            checkUrl(details.url, image).then((isApproved) => {
-                chrome.tabs.query(
-                    {},
-                    (tabs) => {
-                        tabs.forEach((tab) => {
-                            chrome.tabs
-                                .sendMessage(
-                                    tab.id,
-                                    {
-                                        action: isApproved ? "revealImage" : "removeImage",
-                                        imageLink: details.url,
-                                    },
-                                )
-                                .catch(
-                                    (error) => {
-                                        console.error(
-                                            `Error removing image from URL (${details.url}):`,
-                                            error,
-                                        );
-                                    },
-                                );
-                        });
-                    },
-                );
-                console.log("New image URL:", details.url);
-                imageUrls.add(details.url);
-                urlStatuses.set(details.url, isApproved);
-            });
-
-            return {};
-        }
-    },
-    { urls: ["<all_urls>"] },
-    []
-);
+// // set keeping track of image URLs
+// const imageUrls = new Set();
 
 function dataUrlToBlob(dataUrl) {
     const [header, data] = dataUrl.split(",");
@@ -230,41 +80,6 @@ async function downloadImage(url) {
     }
 }
 
-async function sendImageForApproval(image, url) {
-    try {
-        const formData = new FormData();
-        formData.append("image", image);
-
-        const response = await fetch(imageUrl, {
-            method: "POST",
-            body: formData,
-        });
-
-        const { predictions: [prediction] = [] } = await response.json();
-
-        if (prediction) {
-            const { class: className, confidence } = prediction;
-
-            const isApproved = className === "background";
-
-            if (!isApproved) {
-                console.log(
-                    `URL: ${url} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-                );
-            } else {
-                console.log(`URL: ${url} | Image is approved`);
-            }
-            return isApproved;
-        } else {
-            console.log(`URL: ${url} | Image is approved`);
-            return true;
-        }
-    } catch (error) {
-        console.error(`Error sending image for approval:`, error);
-    }
-    return false;
-}
-
 function recordCategory(category) {
     chrome.storage.local.get([`${category}-log`]).then((result) => {
         let currentTime = new Date().getTime();
@@ -295,321 +110,270 @@ setInterval(() => {
     });
 }, 60000);
 
-// chrome.runtime.onMessage.addListener(async (request) => {
-//     if (request.images) {
-//         console.log(request.images.length, "images to process");
-//         const categoryCount = {};
+chrome.runtime.onMessage.addListener(async (request) => {
+    if (request.images) {
+        console.log(request.images.length, "images to process");
+        const categoryCount = {};
 
-//         // Download all images concurrently and keep track of URLs
-//         const imagePromises = request.images.map(async (imageLink) => {
-//             const image = await downloadImage(imageLink);
-//             return { image, imageLink };
-//         });
+        // Download all images concurrently and keep track of URLs
+        const imagePromises = request.images.map(async (imageLink) => {
+            const image = await downloadImage(imageLink);
+            return { image, imageLink };
+        });
 
-//         const imagesWithUrls = (await Promise.all(imagePromises)).filter(
-//             ({ image }) => image,
-//         );
+        const imagesWithUrls = (await Promise.all(imagePromises)).filter(
+            ({ image }) => image,
+        );
 
-//         console.log(imagesWithUrls.length, "images downloaded");
+        console.log(imagesWithUrls.length, "images downloaded");
 
-//         // Create and send requests for all images concurrently
-//         const predictionPromises = imagesWithUrls.map(
-//             async ({ image, imageLink }) => {
-//                 try {
-//                     const formData = new FormData();
-//                     formData.append("image", image);
+        // Create and send requests for all images concurrently
+        const predictionPromises = imagesWithUrls.map(
+            async ({ image, imageLink }) => {
+                try {
+                    const formData = new FormData();
+                    formData.append("image", image);
 
-//                     const response = await fetch(imageUrl, {
-//                         method: "POST",
-//                         body: formData,
-//                     });
+                    const response = await fetch(imageUrl, {
+                        method: "POST",
+                        body: formData,
+                    });
 
-//                     const { predictions: [prediction] = [] } =
-//                         await response.json();
+                    const { predictions: [prediction] = [] } =
+                        await response.json();
 
-//                     if (prediction) {
-//                         const { class: className, confidence } = prediction;
-//                         if (className !== "background") {
-//                             console.log(
-//                                 `URL: ${imageLink} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-//                             );
+                    if (prediction) {
+                        const { class: className, confidence } = prediction;
+                        if (className !== "background") {
+                            console.log(
+                                `URL: ${imageLink} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
+                            );
 
-//                             const categories = {
-//                                 profanity: "profanity",
-//                                 // social: "social-media-and-forums",
-//                                 // monetary: "monetary-transactions",
-//                                 explicit: "explicit-content",
-//                                 drugs: "drugs",
-//                                 games: "web-based-games",
-//                                 gambling: "gambling",
-//                             };
+                            const categories = {
+                                profanity: "profanity",
+                                // social: "social-media-and-forums",
+                                // monetary: "monetary-transactions",
+                                explicit: "explicit-content",
+                                drugs: "drugs",
+                                games: "web-based-games",
+                                gambling: "gambling",
+                            };
 
-//                             Object.entries(categories).forEach(
-//                                 ([key, value]) => {
-//                                     chrome.storage.local
-//                                         .get([value])
-//                                         .then((result) => {
-//                                             if (
-//                                                 className === key &&
-//                                                 result[value]
-//                                             ) {
-//                                                 console.log(
-//                                                     "Category: ",
-//                                                     value,
-//                                                 );
+                            Object.entries(categories).forEach(
+                                ([key, value]) => {
+                                    chrome.storage.local
+                                        .get([value])
+                                        .then((result) => {
+                                            if (
+                                                className === key &&
+                                                result[value]
+                                            ) {
+                                                console.log(
+                                                    "Category: ",
+                                                    value,
+                                                );
 
-//                                                 recordCategory(value);
+                                                recordCategory(value);
 
-//                                                 chrome.tabs.query(
-//                                                     {},
-//                                                     (tabs) => {
-//                                                         tabs.forEach((tab) => {
-//                                                             chrome.tabs
-//                                                                 .sendMessage(
-//                                                                     tab.id,
-//                                                                     {
-//                                                                         action: "removeImage",
-//                                                                         imageLink,
-//                                                                     },
-//                                                                 )
-//                                                                 .catch(
-//                                                                     (error) => {
-//                                                                         console.error(
-//                                                                             `Error removing image from URL (${imageLink}):`,
-//                                                                             error,
-//                                                                         );
-//                                                                     },
-//                                                                 );
-//                                                         });
-//                                                     },
-//                                                 );
-//                                                 // chrome.runtime.sendMessage({ action: "removeImage", imageLink: imageLink });
-//                                             } else if (
-//                                                 className === key &&
-//                                                 !result[value]
-//                                             ) {
-//                                                 recordCategory("background");
+                                                chrome.tabs.query(
+                                                    {},
+                                                    (tabs) => {
+                                                        tabs.forEach((tab) => {
+                                                            chrome.tabs
+                                                                .sendMessage(
+                                                                    tab.id,
+                                                                    {
+                                                                        action: "removeImage",
+                                                                        imageLink,
+                                                                    },
+                                                                )
+                                                                .catch(
+                                                                    (error) => {
+                                                                        console.error(
+                                                                            `Error removing image from URL (${imageLink}):`,
+                                                                            error,
+                                                                        );
+                                                                    },
+                                                                );
+                                                        });
+                                                    },
+                                                );
+                                                // chrome.runtime.sendMessage({ action: "removeImage", imageLink: imageLink });
+                                            } else if (
+                                                className === key &&
+                                                !result[value]
+                                            ) {
+                                                recordCategory("background");
 
-//                                                 chrome.tabs.query(
-//                                                     {},
-//                                                     (tabs) => {
-//                                                         tabs.forEach((tab) => {
-//                                                             chrome.tabs
-//                                                                 .sendMessage(
-//                                                                     tab.id,
-//                                                                     {
-//                                                                         action: "revealImage",
-//                                                                         imageLink,
-//                                                                     },
-//                                                                 )
-//                                                                 .catch(
-//                                                                     (error) => {
-//                                                                         console.error(
-//                                                                             `Error revealing image from URL (${imageLink}):`,
-//                                                                             error,
-//                                                                         );
-//                                                                     },
-//                                                                 );
-//                                                         });
-//                                                     },
-//                                                 );
-//                                                 // chrome.runtime.sendMessage({ action: "revealImage", imageLink: imageLink });
-//                                             }
-//                                         });
-//                                 },
-//                             );
-//                         } else {
-//                             recordCategory("background");
+                                                chrome.tabs.query(
+                                                    {},
+                                                    (tabs) => {
+                                                        tabs.forEach((tab) => {
+                                                            chrome.tabs
+                                                                .sendMessage(
+                                                                    tab.id,
+                                                                    {
+                                                                        action: "revealImage",
+                                                                        imageLink,
+                                                                    },
+                                                                )
+                                                                .catch(
+                                                                    (error) => {
+                                                                        console.error(
+                                                                            `Error revealing image from URL (${imageLink}):`,
+                                                                            error,
+                                                                        );
+                                                                    },
+                                                                );
+                                                        });
+                                                    },
+                                                );
+                                                // chrome.runtime.sendMessage({ action: "revealImage", imageLink: imageLink });
+                                            }
+                                        });
+                                },
+                            );
+                        } else {
+                            recordCategory("background");
 
-//                             chrome.tabs.query({}, (tabs) => {
-//                                 tabs.forEach((tab) => {
-//                                     chrome.tabs
-//                                         .sendMessage(tab.id, {
-//                                             action: "revealImage",
-//                                             imageLink,
-//                                         })
-//                                         .catch((error) => {
-//                                             console.error(
-//                                                 `Error revealing image from URL (${imageLink}):`,
-//                                                 error,
-//                                             );
-//                                         });
-//                                 });
-//                             });
-//                         }
+                            chrome.tabs.query({}, (tabs) => {
+                                tabs.forEach((tab) => {
+                                    chrome.tabs
+                                        .sendMessage(tab.id, {
+                                            action: "revealImage",
+                                            imageLink,
+                                        })
+                                        .catch((error) => {
+                                            console.error(
+                                                `Error revealing image from URL (${imageLink}):`,
+                                                error,
+                                            );
+                                        });
+                                });
+                            });
+                        }
 
-//                         categoryCount[className] =
-//                             (categoryCount[className] || 0) + 1;
-//                     } else {
-//                         chrome.tabs.query({}, (tabs) => {
-//                             tabs.forEach((tab) => {
-//                                 chrome.tabs
-//                                     .sendMessage(tab.id, {
-//                                         action: "revealImage",
-//                                         imageLink,
-//                                     })
-//                                     .catch((error) => {
-//                                         console.error(
-//                                             `Error revealing image from URL (${imageLink}):`,
-//                                             error,
-//                                         );
-//                                     });
-//                             });
-//                         });
+                        categoryCount[className] =
+                            (categoryCount[className] || 0) + 1;
+                    } else {
+                        chrome.tabs.query({}, (tabs) => {
+                            tabs.forEach((tab) => {
+                                chrome.tabs
+                                    .sendMessage(tab.id, {
+                                        action: "revealImage",
+                                        imageLink,
+                                    })
+                                    .catch((error) => {
+                                        console.error(
+                                            `Error revealing image from URL (${imageLink}):`,
+                                            error,
+                                        );
+                                    });
+                            });
+                        });
 
-//                         categoryCount["background"] =
-//                             (categoryCount["background"] || 0) + 1;
-//                     }
-//                 } catch (error) {
-//                     console.error(
-//                         `Error getting predictions from URL (${imageLink}):`,
-//                         error,
-//                     );
-//                 }
-//             },
-//         );
-
-//         await Promise.all(predictionPromises);
-
-//         console.log("Category counts:");
-//         Object.entries(categoryCount).forEach(([category, count]) => {
-//             console.log(`${category}: ${count}`);
-//         });
-//     } else if (request.text) {
-//         console.log(request.text.length, "text to process");
-//         const categoryCount = {};
-
-//         const predictionPromises = request.text.map(async (text) => {
-//             try {
-//                 if (text.trim().length === 0) {
-//                     return;
-//                 }
-
-//                 const formData = new FormData();
-//                 formData.append("text", text);
-
-//                 const response = await fetch(textUrl, {
-//                     method: "POST",
-//                     body: formData,
-//                 });
-
-//                 const prediction = await response.json();
-
-//                 if (prediction) {
-//                     const { class: className, confidence } = prediction;
-//                     if (className !== "background") {
-//                         console.log(
-//                             `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-//                         );
-//                         const categories = {
-//                             profanity: "profanity",
-//                             // social: "social-media-and-forums",
-//                             // monetary: "monetary-transactions",
-//                             explicit: "explicit-content",
-//                             drugs: "drugs",
-//                             games: "web-based-games",
-//                             gambling: "gambling",
-//                         };
-
-//                         Object.entries(categories).forEach(([key, value]) => {
-//                             chrome.storage.local.get([value]).then((result) => {
-//                                 // console.log("is this running", value, result[value], className);
-//                                 if (
-//                                     className === key &&
-//                                     result[value] &&
-//                                     confidence > 0.5
-//                                 ) {
-//                                     console.log("Category: ", value);
-
-//                                     chrome.tabs.query({}, (tabs) => {
-//                                         tabs.forEach((tab) => {
-//                                             chrome.tabs
-//                                                 .sendMessage(tab.id, {
-//                                                     action: "removeText",
-//                                                     text,
-//                                                 })
-//                                                 .catch((error) => {
-//                                                     console.error(
-//                                                         `Error removing text (${text}):`,
-//                                                         error,
-//                                                     );
-//                                                 });
-//                                         });
-//                                     });
-//                                 }
-//                             });
-//                         });
-
-//                         categoryCount[className] =
-//                             (categoryCount[className] || 0) + 1;
-//                     }
-//                 } else {
-//                     console.log(`Text: ${text} | Prediction: background`);
-//                     categoryCount["background"] =
-//                         (categoryCount["background"] || 0) + 1;
-//                 }
-//             } catch (error) {
-//                 console.log(text);
-//                 console.error(`Error getting predictions`, error);
-//             }
-//         });
-
-//         await Promise.all(predictionPromises);
-
-//         console.log("Category counts:");
-//         Object.entries(categoryCount).forEach(([category, count]) => {
-//             console.log(`${category}: ${count}`);
-//         });
-//     }
-// });
-
-counter = 0
-function blockImage(url) {
-    counter+=1;
-    chrome.declarativeNetRequest.updateSessionRules({
-        addRules: [
-            {
-                id: generateUniqueId(),
-                // priority: 1,
-                action: { type: "block" },
-                condition: {
-                    urlFilter: url,
-                    resourceTypes: ["image"]
+                        categoryCount["background"] =
+                            (categoryCount["background"] || 0) + 1;
+                    }
+                } catch (error) {
+                    console.error(
+                        `Error getting predictions from URL (${imageLink}):`,
+                        error,
+                    );
                 }
+            },
+        );
+
+        await Promise.all(predictionPromises);
+
+        console.log("Category counts:");
+        Object.entries(categoryCount).forEach(([category, count]) => {
+            console.log(`${category}: ${count}`);
+        });
+    } else if (request.text) {
+        console.log(request.text.length, "text to process");
+        const categoryCount = {};
+
+        const predictionPromises = request.text.map(async (text) => {
+            try {
+                if (text.trim().length === 0) {
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("text", text);
+
+                const response = await fetch(textUrl, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const prediction = await response.json();
+
+                if (prediction) {
+                    const { class: className, confidence } = prediction;
+                    if (className !== "background") {
+                        console.log(
+                            `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
+                        );
+                        const categories = {
+                            profanity: "profanity",
+                            // social: "social-media-and-forums",
+                            // monetary: "monetary-transactions",
+                            explicit: "explicit-content",
+                            drugs: "drugs",
+                            games: "web-based-games",
+                            gambling: "gambling",
+                        };
+
+                        Object.entries(categories).forEach(([key, value]) => {
+                            chrome.storage.local.get([value]).then((result) => {
+                                // console.log("is this running", value, result[value], className);
+                                if (
+                                    className === key &&
+                                    result[value] &&
+                                    confidence > 0.5
+                                ) {
+                                    console.log("Category: ", value);
+
+                                    chrome.tabs.query({}, (tabs) => {
+                                        tabs.forEach((tab) => {
+                                            chrome.tabs
+                                                .sendMessage(tab.id, {
+                                                    action: "removeText",
+                                                    text,
+                                                })
+                                                .catch((error) => {
+                                                    console.error(
+                                                        `Error removing text (${text}):`,
+                                                        error,
+                                                    );
+                                                });
+                                        });
+                                    });
+                                }
+                            });
+                        });
+
+                        categoryCount[className] =
+                            (categoryCount[className] || 0) + 1;
+                    }
+                } else {
+                    console.log(`Text: ${text} | Prediction: background`);
+                    categoryCount["background"] =
+                        (categoryCount["background"] || 0) + 1;
+                }
+            } catch (error) {
+                console.log(text);
+                console.error(`Error getting predictions`, error);
             }
-        ],
-        removeRuleIds: [] // No rules to remove
-    }, () => {
-        console.log("added rule")
-        if (chrome.runtime.lastError) {
-            console.log(
-                "KK"
-            )
-            console.error(chrome.runtime.lastError.message);
-        }
-    });
-}
+        });
 
-console.log("DATE", Date.now())
+        await Promise.all(predictionPromises);
 
-chrome.declarativeNetRequest.getSessionRules((rules) => {
-    if (chrome.runtime.lastError) {
-        console.error("Error fetching session rules:", chrome.runtime.lastError.message);
-        return;
+        console.log("Category counts:");
+        Object.entries(categoryCount).forEach(([category, count]) => {
+            console.log(`${category}: ${count}`);
+        });
     }
-
-    console.log("Current Session Rules:", rules);
 });
-
-chrome.declarativeNetRequest.getDynamicRules((rules) => {
-    if (chrome.runtime.lastError) {
-        console.error("Error fetching dynamic rules:", chrome.runtime.lastError.message);
-        return;
-    }
-
-    console.log("Current Dynamic Rules:", rules);
-});
-
-function generateUniqueId(){
-    return Math.floor((Math.random() * 2147483647)) + 1;
-}

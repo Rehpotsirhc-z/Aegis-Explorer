@@ -2,10 +2,10 @@
 
 ## Roadmap
 
--   [ ] Fix the declarative net request failing with lazy placeholder
--   [ ] CANCELED Fix the failed to show with urlStatuses
+-   [ ] Fix the text AI being so slow
+-   [ ] Retrain text AI
 -   [ ] Fix the weird https workaround in line 212 of contentScript
--   [ ] Move the background to inside the webrequest
+-   [ ] CANCELED Move the background to inside the webrequest
 -   [ ] Train the text AI without monetary and social and remove all of those from every file
 -   [ ] Fix the contentscript webrequest image to hide the images
 -   [X] Make text log to pie chart
@@ -13,6 +13,8 @@
 -   [X] Make sure that active extension works as intended
 -   [-] Cache for the text and images
 -   [ ] Figure out line 221 of `settings.js` why there is that error
+-   [ ] CANCELED Fix the declarative net request failing with lazy placeholder
+-   [ ] CANCELED Fix the failed to show with urlStatuses
 
 
 Image Links Workflow
