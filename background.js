@@ -73,7 +73,8 @@ async function downloadImage(url) {
 
         // const filename = url.split("/").pop().split(".").shift() + ".jpg";
 
-        return new File([blob], "image", { type: "image/jpeg" });
+        return new File([blob], "image", { type: blob.type });
+        // return new File([blob], "image", { type: "image" });
     } catch (error) {
         console.error(`Error processing image from URL (${url}):`, error);
         return null;
@@ -117,6 +118,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
         // Download all images concurrently and keep track of URLs
         const imagePromises = request.images.map(async (imageLink) => {
+            console.log ("JDK", imageLink)
             const image = await downloadImage(imageLink);
             return { image, imageLink };
         });
@@ -124,6 +126,8 @@ chrome.runtime.onMessage.addListener(async (request) => {
         const imagesWithUrls = (await Promise.all(imagePromises)).filter(
             ({ image }) => image,
         );
+
+        console.log(imagesWithUrls)
 
         console.log(imagesWithUrls.length, "images downloaded");
 
@@ -189,10 +193,10 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                                                 )
                                                                 .catch(
                                                                     (error) => {
-                                                                        console.error(
-                                                                            `Error removing image from URL (${imageLink}):`,
-                                                                            error,
-                                                                        );
+                                                                        // console.error(
+                                                                        //     `Error removing image from URL (${imageLink}):`,
+                                                                        //     error,
+                                                                        // );
                                                                     },
                                                                 );
                                                         });
@@ -219,10 +223,10 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                                                 )
                                                                 .catch(
                                                                     (error) => {
-                                                                        console.error(
-                                                                            `Error revealing image from URL (${imageLink}):`,
-                                                                            error,
-                                                                        );
+                                                                        // console.error(
+                                                                        //     `Error revealing image from URL (${imageLink}):`,
+                                                                        //     error,
+                                                                        // );
                                                                     },
                                                                 );
                                                         });
@@ -244,10 +248,10 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                             imageLink,
                                         })
                                         .catch((error) => {
-                                            console.error(
-                                                `Error revealing image from URL (${imageLink}):`,
-                                                error,
-                                            );
+                                            // console.error(
+                                            //     `Error revealing image from URL (${imageLink}):`,
+                                            //     error,
+                                            // );
                                         });
                                 });
                             });
@@ -264,10 +268,10 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                         imageLink,
                                     })
                                     .catch((error) => {
-                                        console.error(
-                                            `Error revealing image from URL (${imageLink}):`,
-                                            error,
-                                        );
+                                        // console.error(
+                                        //     `Error revealing image from URL (${imageLink}):`,
+                                        //     error,
+                                        // );
                                     });
                             });
                         });

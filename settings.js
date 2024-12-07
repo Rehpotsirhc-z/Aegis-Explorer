@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     try {
                         eventLog.push(...result[value]);
                     } catch (e) {
-                        console.log(e);
+                        console.log(value, e);
                     }
                 });
             },

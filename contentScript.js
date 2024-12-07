@@ -53,7 +53,7 @@ function extractImageLinks() {
                     element.style.backgroundImage = "none";
                 }
             } catch (error) {
-                console.error("Error extracting background image");
+                // console.error("Error extracting background image", error);
             }
         }
     });

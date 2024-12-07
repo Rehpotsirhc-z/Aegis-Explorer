@@ -68,6 +68,7 @@ def predict_image():
 
         # saveImgToFile(img, f"output/{file_name}.jpg")
 
+        # print(img_model.names[int(pred.cls)], float(pred.conf))
         return jsonify(response), 200
 
     except Exception as e:
