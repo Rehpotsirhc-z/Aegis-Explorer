@@ -10,26 +10,30 @@ function extractImageLinks() {
     const newImageLinks = Array.from(images)
         .filter((img) => img.dataset.approved !== "true")
         .map((img) => {
-            if (!img.dataset.originalSrc) {
-                // Only set the originalSrc once, when it has the correct value
-                // The browser resets the src to the URL of the webpage, so
-                // what happens is that it hasn't been added to the seenImages,
-                // and so when this function is rerun, it resets it with the
-                // wrong value.
-                img.dataset.originalSrc = img.src;
-            }
-            img.dataset.originalAlt = img.alt;
-            if (img.srcset !== "") {
-                img.dataset.originalSrcset = img.srcset;
-                img.srcset = "";
-            }
-            img.src = "";
-            // // TODO
-            img.alt = "";
+            if (!img.src.startsWith("data:image/gif")) {
+                if (!img.dataset.originalSrc) {
+                    // Only set the originalSrc once, when it has the correct value
+                    // The browser resets the src to the URL of the webpage, so
+                    // what happens is that it hasn't been added to the seenImages,
+                    // and so when this function is rerun, it resets it with the
+                    // wrong value.
+                    img.dataset.originalSrc = img.src;
+                }
+                img.dataset.originalAlt = img.alt;
+                if (img.srcset !== "") {
+                    img.dataset.originalSrcset = img.srcset;
+                    img.srcset = "";
+                }
+                img.src = "";
+                // // TODO
+                img.alt = "";
 
-            return img.dataset.originalSrc;
+                return img.dataset.originalSrc;
+            } else {
+                return "";
+            }
         })
-        .filter((src) => !seenImages.has(src)); // We do this after so that they still disappear if not approved
+        .filter((src) => src !== "" && !seenImages.has(src)); // We do this after so that they still disappear if not approved
 
     newImageLinks.forEach((src) => seenImages.add(src));
 
@@ -168,6 +172,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 image.removeAttribute("data-original-srcset");
             }
             image.dataset.approved = "true";
+            image.style.display = "block";
+            console.log("APPROVEEEE", message.imageLink);
             image.removeAttribute("data-original-src");
             image.removeAttribute("data-original-alt");
         });
@@ -181,6 +187,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             console.log("Revealing background image", message.imageLink);
             element.style.backgroundImage = `url(${element.dataset.originalBackgroundImage})`;
             element.dataset.approved = "true";
+            element.style.display = "block";
             element.removeAttribute("data-original-background-image");
         });
     } else if (message.action === "removeText" && message.text) {

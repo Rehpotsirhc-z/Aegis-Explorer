@@ -118,7 +118,6 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
         // Download all images concurrently and keep track of URLs
         const imagePromises = request.images.map(async (imageLink) => {
-            console.log ("JDK", imageLink)
             const image = await downloadImage(imageLink);
             return { image, imageLink };
         });
