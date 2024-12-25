@@ -12,4 +12,9 @@ if __name__ == "__main__":
     while command != "quit":
         command = input("Enter text: ")
         result = predict_text(command)
-        print(f"Prediction: {result['prediction']}")
+        if "error" in result:
+            print(f"Error: {result['error']}")
+        elif "prediction" in result:
+            print(f"Prediction: {result['prediction']}")
+        else:
+            print("Unknown response")

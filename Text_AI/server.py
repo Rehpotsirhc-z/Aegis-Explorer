@@ -3,38 +3,60 @@ from flask_cors import CORS
 from transformers import BertTokenizer, BertForSequenceClassification
 import torch
 
+# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
+# Set the device (GPU if available, otherwise CPU)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+
+# Load tokenizer and model
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=6)
 
-model.load_state_dict(torch.load('model/model.pth', map_location=torch.device('cpu')), strict=False)
+# Load model weights and move to the selected device
+model.load_state_dict(torch.load('model/model.pth', map_location=device), strict=False)
+model.to(device)
 model.eval()
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.json
-    text = data['text']
-    inputs = tokenizer(text, return_tensors='pt', padding=True, truncation=True)
-    outputs = model(**inputs)
-    prediction = torch.argmax(outputs.logits, dim=1).item()
+    try:
+        # Parse input text from the request
+        data = request.json
+        text = data.get('text')
+        if not text:
+            return jsonify({'error': 'No text provided'}), 400
 
-    # confidence = torch.nn.functional.softmax(outputs.logits, dim=1).tolist()[0]
+        # Tokenize input and move to the correct device
+        inputs = tokenizer(text, return_tensors='pt', padding=True, truncation=True)
+        input_ids = inputs['input_ids'].to(device)
+        attention_mask = inputs['attention_mask'].to(device)
 
+        # Perform prediction
+        outputs = model(input_ids, attention_mask=attention_mask)
+        prediction = torch.argmax(outputs.logits, dim=1).item()
+        print(prediction)
 
-    idx_to_name = {
+        # Define class labels
+        idx_to_name = {
             0: "good",
             1: "drugs",
             2: "explicit",
             3: "gambling",
             4: "games",
             # 5: "monetary",
-            6: "profanity",
+            5: "profanity",
             # 7: "social",
-    }
+        }
 
-    return jsonify({'prediction': idx_to_name[prediction]})
+        # Return the prediction as JSON
+        return jsonify({'prediction': idx_to_name[prediction]})
+    except Exception as e:
+        print(f"Error predicting text: {e}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
+    # Start the Flask app
     app.run(debug=True)
