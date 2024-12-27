@@ -1,4 +1,5 @@
 import os
+import time
 from pathlib import Path
 from flask import Flask, request, jsonify
 from transformers import BertTokenizer, BertForSequenceClassification, BertTokenizerFast
@@ -7,6 +8,10 @@ from ultralytics import YOLO
 import torch
 from PIL import Image
 from io import BytesIO
+from torch.quantization import quantize_dynamic
+
+# set number of threads to 8
+# torch.set_num_threads(8)
 
 app = Flask(__name__)
 CORS(app)
@@ -23,6 +28,10 @@ text_model = BertForSequenceClassification.from_pretrained(
 text_model.load_state_dict(
     torch.load("models/text/model_v4.pth", map_location=torch.device("cpu")), strict=False
 )
+
+text_model = quantize_dynamic(text_model, {torch.nn.Linear}, dtype=torch.qint8)
+
+
 text_model.eval()
 
 
@@ -83,14 +92,16 @@ def predict_text():
     text = request.form["text"]
 
     try:
-        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+        start_time = time.time()
+        inputs = tokenizer(text, return_tensors="pt", max_length=128, padding=True, truncation=True)
         outputs = text_model(**inputs)
         prediction = torch.argmax(outputs.logits, dim=1).item()
 
-        confidence = torch.nn.functional.softmax(outputs.logits, dim=1).tolist()[0]
+        # confidence = torch.nn.functional.softmax(outputs.logits, dim=1).tolist()[0]
+        confidence = torch.softmax(outputs.logits, dim=1).tolist()[0]
 
         class_names = {
-            "good",
+            # "good",
             "drugs",
             "explicit",
             "gambling",
@@ -106,7 +117,12 @@ def predict_text():
             "confidence": confidence[prediction],
         }
 
-        print(response)
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+
+        print(f"{response} ({elapsed_time:.4f})")
+
+        # print(response, end_time - start_time)
 
         return jsonify(response), 200
     except Exception as e:
