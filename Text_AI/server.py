@@ -13,7 +13,7 @@ print(f"Using device: {device}")
 
 # Load tokenizer and model
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=6)
+model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=5)
 
 # Load model weights and move to the selected device
 model.load_state_dict(torch.load('model/model.pth', map_location=device), strict=False)
@@ -37,22 +37,23 @@ def predict():
         # Perform prediction
         outputs = model(input_ids, attention_mask=attention_mask)
         prediction = torch.argmax(outputs.logits, dim=1).item()
-        print(prediction)
+        confidence = torch.softmax(outputs.logits, dim=1).tolist()[0]
+        print(prediction, confidence)
 
         # Define class labels
         idx_to_name = {
-            0: "good",
-            1: "drugs",
-            2: "explicit",
-            3: "gambling",
-            4: "games",
+            # 0: "good",
+            0: "drugs",
+            1: "explicit",
+            2: "gambling",
+            3: "games",
             # 5: "monetary",
-            5: "profanity",
+            4: "profanity",
             # 7: "social",
         }
 
         # Return the prediction as JSON
-        return jsonify({'prediction': idx_to_name[prediction]})
+        return jsonify({'prediction': idx_to_name[prediction], 'confidence': confidence[prediction]})
     except Exception as e:
         print(f"Error predicting text: {e}")
         return jsonify({'error': str(e)}), 500

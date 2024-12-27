@@ -7,7 +7,7 @@ nltk.download('punkt')
 nltk.download('punkt_tab')
 from nltk.tokenize import sent_tokenize
 
-categories = ["drugs", "explicit", "gambling", "games", "good", "profanity"]
+categories = ["drugs", "explicit", "gambling", "games", "profanity"]
 # categories = ["drugs", "explicit", "gambling", "games", "good", "monetary", "profanity", "social"]
 
 class Ratio:
@@ -67,7 +67,7 @@ def split_dataset(src_dir, dest_dir, ratio=Ratio()):
         file_path = src_dir / f'{category}.txt'
         
         # Read and tokenize the content of the file into sentences
-        content = file_path.read_text()
+        content = file_path.read_text(encoding="utf-8").strip().lower()
         sentences = sent_tokenize(content)
 
         print(f"Category: {category}")

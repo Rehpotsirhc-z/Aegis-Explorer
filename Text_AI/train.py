@@ -16,7 +16,7 @@ class TextDataset(Dataset):
         self.labels = []
 
         categories = [
-            "good",
+            # "good",
             "drugs",
             "explicit",
             "gambling",
@@ -31,7 +31,7 @@ class TextDataset(Dataset):
             category_dir = data_path / category
             for file_path in category_dir.iterdir():
                 if file_path.is_file():
-                    text = file_path.read_text(encoding="utf-8").strip().lower()
+                    text = file_path.read_text().strip().lower()
                     self.data.append(text)
                     self.labels.append(category_to_id[category])
 
@@ -136,7 +136,7 @@ def train(train_dir, val_dir, model_dir, batch_size=16, epochs=60, learning_rate
     print(f"Using device: {device}")
     tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
     model = BertForSequenceClassification.from_pretrained(
-        "bert-base-uncased", num_labels=6
+        "bert-base-uncased", num_labels=5
     ).to(device)
 
     train_dataset = TextDataset(train_dir, tokenizer)
@@ -187,7 +187,7 @@ def train(train_dir, val_dir, model_dir, batch_size=16, epochs=60, learning_rate
     print(f"Validation F1: {f1}")
 
     # Save the model to ONNX format
-    save_onnx(model, tokenizer, Path("model/model.onnx"), device)
+    # save_onnx(model, tokenizer, Path("model/model.onnx"), device)
 
 
 if __name__ == "__main__":

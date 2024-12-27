@@ -16,5 +16,6 @@ if __name__ == "__main__":
             print(f"Error: {result['error']}")
         elif "prediction" in result:
             print(f"Prediction: {result['prediction']}")
+            print(f"Confidence: {result['confidence']}")
         else:
             print("Unknown response")
