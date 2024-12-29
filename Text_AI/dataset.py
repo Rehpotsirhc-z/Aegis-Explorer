@@ -78,7 +78,7 @@ def split_dataset(src_dir, dest_dir, ratio=Ratio()):
         def save_sentences(sentences, file_path):
             for i, sentence in enumerate(sentences):
                 filename = file_path / f"{category}_{i}.txt"
-                filename.write_text(sentence)
+                filename.write_text(sentence, encoding="utf-8")
                     
         save_sentences(train, dest_dir / "train" / category)
         save_sentences(validation, dest_dir / "validation" / category)
@@ -97,4 +97,4 @@ for dir in [train_dir, validation_dir, test_dir]:
         path.mkdir(exist_ok=True, parents=True)
 
 
-split_dataset("source", destination)
+split_dataset("alt_source", destination)

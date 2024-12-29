@@ -31,7 +31,7 @@ class TextDataset(Dataset):
             category_dir = data_path / category
             for file_path in category_dir.iterdir():
                 if file_path.is_file():
-                    text = file_path.read_text().strip().lower()
+                    text = file_path.read_text(encoding="utf-8").strip().lower()
                     self.data.append(text)
                     self.labels.append(category_to_id[category])
 
@@ -131,7 +131,7 @@ def evaluate(model, data_loader, device):
 
 
 
-def train(train_dir, val_dir, model_dir, batch_size=16, epochs=60, learning_rate=1e-5):
+def train(train_dir, val_dir, model_dir, batch_size=16, epochs=15, learning_rate=1e-5):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
