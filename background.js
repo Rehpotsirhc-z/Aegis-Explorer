@@ -126,7 +126,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
             ({ image }) => image,
         );
 
-        console.log(imagesWithUrls)
+        console.log(imagesWithUrls);
 
         console.log(imagesWithUrls.length, "images downloaded");
 

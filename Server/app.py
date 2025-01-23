@@ -16,20 +16,26 @@ from torch.quantization import quantize_dynamic
 app = Flask(__name__)
 CORS(app)
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+
 # Load the model
 image_model_path = Path("models/image/model_v9.pt")
 img_model = YOLO(image_model_path)
+img_model.to(device)
 
 tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 text_model = BertForSequenceClassification.from_pretrained(
-    "bert-base-uncased", num_labels=6 # TODO change back to 6 after training new model
+    "bert-base-uncased", num_labels=5
 )
 
 text_model.load_state_dict(
-    torch.load("models/text/model_v4.pth", map_location=torch.device("cpu")), strict=False
+    torch.load("models/text/model_v5.pth", map_location=device),
+    strict=False,
 )
 
-text_model = quantize_dynamic(text_model, {torch.nn.Linear}, dtype=torch.qint8)
+# text_model = quantize_dynamic(text_model, {torch.nn.Linear}, dtype=torch.qint8)
+text_model.to(device)
 
 
 text_model.eval()
@@ -93,7 +99,9 @@ def predict_text():
 
     try:
         start_time = time.time()
-        inputs = tokenizer(text, return_tensors="pt", max_length=128, padding=True, truncation=True)
+        inputs = tokenizer(
+            text, return_tensors="pt", max_length=128, padding=True, truncation=True
+        ).to(device)
         outputs = text_model(**inputs)
         prediction = torch.argmax(outputs.logits, dim=1).item()
 
