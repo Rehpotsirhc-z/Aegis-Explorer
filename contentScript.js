@@ -82,11 +82,41 @@ function extractSentences() {
     // const sentences = textContent.match(/[^.!?]*[.!?]/g) || [];
     // return sentences;
     sentences = [];
+
+    const excludedTags = new Set([
+        "script",
+        "style",
+        "noscript",
+        "iframe",
+        "code",
+        "pre",
+        "svg",
+        "object",
+        "embed",
+    ]);
+
+    function isVisible(node) {
+        const style = window.getComputedStyle(node);
+        return (
+            style &&
+            style.display !== "none" &&
+            style.visibility !== "hidden" &&
+            parseFloat(style.opacity) > 0
+        );
+    }
+
     function extractTextFromNode(node) {
         if (node.nodeType === Node.TEXT_NODE) {
-            textContent = node.textContent;
-            if (textContent.trim() !== "") {
-                sentences.push(node.textContent);
+            const parent = node.parentElement;
+            if (
+                parent &&
+                isVisible(parent) &&
+                !excludedTags.has(parent.tagName.toLowerCase())
+            ) {
+                textContent = node.textContent.trim();
+                if (textContent !== "") {
+                    sentences.push(textContent);
+                }
             }
         } else {
             node.childNodes.forEach((child) => extractTextFromNode(child));
@@ -99,6 +129,7 @@ function extractSentences() {
     sentences = sentences
         .map((sentence) => sentence.trim())
         .filter((sentence) => sentence !== "")
+        .filter((sentence) => !sentence.includes("???"))
         .filter((sentence) => !seenText.has(sentence));
 
     return sentences;
@@ -106,10 +137,11 @@ function extractSentences() {
 
 function sendText() {
     const textLinks = extractSentences();
-    seenText.add(textLinks.map((text) => text.trim()));
-    console.log(seenText);
+    textLinks.forEach((text) => seenText.add(text.trim()));
 
-    console.log(textLinks);
+    console.log("textLinks", textLinks);
+    console.log("seenText", seenText);
+
     try {
         if (textLinks.length > 0) {
             chrome.runtime.sendMessage({ text: textLinks });
@@ -119,10 +151,14 @@ function sendText() {
     }
 }
 
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}
+
 // Set up a MutationObserver to detect change in the DOM
 const observer = new MutationObserver(() => {
     sendImages();
-    // sendText();
+    sendText();
 });
 
 observer.observe(document, {
@@ -173,7 +209,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             }
             image.dataset.approved = "true";
             image.style.display = "block";
-            console.log("APPROVEEEE", message.imageLink);
             image.removeAttribute("data-original-src");
             image.removeAttribute("data-original-alt");
         });
@@ -193,8 +228,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     } else if (message.action === "removeText" && message.text) {
         // remove all instances of the text in the document
         const text = message.text.trim();
-
-        console.log("Removing text", text);
+        console.log("Removing: ", text);
 
         function removeTextFromNode(node) {
             if (node.nodeType === Node.TEXT_NODE) {
@@ -207,15 +241,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 // node.textContent = node.textContent.replace(text, "???");
                 if (node.textContent.includes(text)) {
                     // console.log("Result: ", node.textContent);
-                    console.log(
-                        "new",
-                        node.textContent.replace(new RegExp(text, "gi"), "???"),
-                    );
                     node.textContent = node.textContent.replace(
-                        new RegExp(text, "gi"),
+                        new RegExp(escapeRegExp(text), "gi"),
                         "???",
                     );
-                    console.log("Removoing: ", node.textContent);
                 }
             } else {
                 node.childNodes.forEach((child) => removeTextFromNode(child));
@@ -228,12 +257,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
 window.addEventListener("load", () => {
     sendImages();
-    // sendText();
+    sendText();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
     sendImages();
-    // sendText();
+    sendText();
 });
 
 sendImages();

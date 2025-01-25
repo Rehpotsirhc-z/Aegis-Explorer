@@ -2,6 +2,9 @@
 
 ## Roadmap
 
+-   [ ] STRT Text sending too much
+-   [ ] Set the age to 3--5
+-   [ ] Text AI use confidence
 -   [ ] Fix the data images changing themselves to the URL of the website (extract running more than once)
 -   [ ] Fix the text AI being so slow
 -   [ ] Retrain text AI

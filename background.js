@@ -1,9 +1,17 @@
-baseUrl = "http://localhost:5000";
+baseUrl = "http://104.167.17.9:48706";
 imageUrl = `${baseUrl}/predict_image`;
 textUrl = `${baseUrl}/predict_text`;
 
 // // set keeping track of image URLs
 // const imageUrls = new Set();
+
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+    if (reason === "install") {
+        chrome.tabs.create({
+            url: "barrier.html",
+        });
+    }
+});
 
 function dataUrlToBlob(dataUrl) {
     const [header, data] = dataUrl.split(",");
@@ -169,7 +177,8 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                         .then((result) => {
                                             if (
                                                 className === key &&
-                                                result[value]
+                                                (result[value] ||
+                                                    result[value] === undefined)
                                             ) {
                                                 console.log(
                                                     "Category: ",
@@ -204,7 +213,10 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                                 // chrome.runtime.sendMessage({ action: "removeImage", imageLink: imageLink });
                                             } else if (
                                                 className === key &&
-                                                !result[value]
+                                                !(
+                                                    result[value] ||
+                                                    result[value] === undefined
+                                                )
                                             ) {
                                                 recordCategory("background");
 
@@ -331,10 +343,10 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
                         Object.entries(categories).forEach(([key, value]) => {
                             chrome.storage.local.get([value]).then((result) => {
-                                // console.log("is this running", value, result[value], className);
                                 if (
                                     className === key &&
-                                    result[value] &&
+                                    (result[value] ||
+                                        result[value] === undefined) &&
                                     confidence > 0.5
                                 ) {
                                     console.log("Category: ", value);
