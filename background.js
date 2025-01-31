@@ -1,4 +1,4 @@
-baseUrl = "http://104.167.17.9:48706";
+baseUrl = "http://171.240.133.62:41305";
 imageUrl = `${baseUrl}/predict_image`;
 textUrl = `${baseUrl}/predict_text`;
 

@@ -130,6 +130,7 @@ function extractSentences() {
         .map((sentence) => sentence.trim())
         .filter((sentence) => sentence !== "")
         .filter((sentence) => !sentence.includes("???"))
+        .filter((sentence) => !sentence.includes(":"))
         .filter((sentence) => !seenText.has(sentence));
 
     return sentences;
