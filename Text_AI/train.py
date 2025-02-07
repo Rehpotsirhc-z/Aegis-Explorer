@@ -23,6 +23,7 @@ class TextDataset(Dataset):
             "games",
             # "monetary",
             "profanity",
+            "good",
             # "social",
         ]
         category_to_id = {className: id for id, className in enumerate(categories)}
@@ -54,7 +55,7 @@ class TextDataset(Dataset):
 def save_onnx(model, tokenizer, output_path, device):
     """
     Exports the model to ONNX format.
-    
+
     Args:
         model (torch.nn.Module): The PyTorch model to export.
         tokenizer (transformers.PreTrainedTokenizer): The tokenizer for generating dummy inputs.
@@ -66,7 +67,9 @@ def save_onnx(model, tokenizer, output_path, device):
 
     # Create dummy input for export
     dummy_text = "This is a sample input."
-    dummy_inputs = tokenizer(dummy_text, return_tensors="pt", padding=True, truncation=True)
+    dummy_inputs = tokenizer(
+        dummy_text, return_tensors="pt", padding=True, truncation=True
+    )
     dummy_input_ids = dummy_inputs["input_ids"].to(device)
     dummy_attention_mask = dummy_inputs["attention_mask"].to(device)
 
@@ -75,9 +78,9 @@ def save_onnx(model, tokenizer, output_path, device):
         torch.onnx.export(
             model,
             (dummy_input_ids, dummy_attention_mask),  # Model inputs
-            output_path,                              # File path to save ONNX model
+            output_path,  # File path to save ONNX model
             input_names=["input_ids", "attention_mask"],  # Input names
-            output_names=["logits"],                    # Output names
+            output_names=["logits"],  # Output names
             dynamic_axes={
                 "input_ids": {0: "batch_size"},  # Variable batch size
                 "attention_mask": {0: "batch_size"},
@@ -128,7 +131,6 @@ def evaluate(model, data_loader, device):
     f1 = f1_score(true_labels, predictions, average="weighted")
 
     return accuracy, precision, recall, f1
-
 
 
 def train(train_dir, val_dir, model_dir, batch_size=16, epochs=15, learning_rate=1e-5):

@@ -2,11 +2,11 @@
 
 ## Roadmap
 
--   [ ] STRT Text sending too much
--   [ ] Set the age to 3--5
--   [ ] Text AI use confidence
+-   [X] Text AI use confidence
+-   [X] STRT Text sending too much
+-   [X] Set the age to 3--5
 -   [ ] Fix the data images changing themselves to the URL of the website (extract running more than once)
--   [ ] Fix the text AI being so slow
+-   [-] Fix the text AI being so slow
 -   [ ] Retrain text AI
 
 -   [X] Train the text AI without monetary and social and remove all of those from every file

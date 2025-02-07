@@ -26,11 +26,11 @@ img_model.to(device)
 
 tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 text_model = BertForSequenceClassification.from_pretrained(
-    "bert-base-uncased", num_labels=5
+    "bert-base-uncased", num_labels=6
 )
 
 text_model.load_state_dict(
-    torch.load("models/text/model_v5.pth", map_location=device),
+    torch.load("models/text/model_v7.pth", map_location=device),
     strict=False,
 )
 
@@ -116,6 +116,7 @@ def predict_text():
             "games",
             # "monetary",
             "profanity",
+            "good",
             # "social",
         }
         idx_to_name = {index: name for index, name in enumerate(class_names)}

@@ -153,143 +153,162 @@ chrome.runtime.onMessage.addListener(async (request) => {
                     const { predictions: [prediction] = [] } =
                         await response.json();
 
-                    if (prediction) {
-                        const { class: className, confidence } = prediction;
-                        if (className !== "background") {
-                            console.log(
-                                `URL: ${imageLink} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-                            );
+                    chrome.storage.local.get(["confidence"]).then((result) => {
+                        confidenceThreshold = result.confidence || 0.5;
 
-                            const categories = {
-                                profanity: "profanity",
-                                // social: "social-media-and-forums",
-                                // monetary: "monetary-transactions",
-                                explicit: "explicit-content",
-                                drugs: "drugs",
-                                games: "web-based-games",
-                                gambling: "gambling",
-                            };
+                        if (prediction) {
+                            const { class: className, confidence } = prediction;
+                            if (confidence > confidenceThreshold) {
+                                if (className !== "background") {
+                                    console.log(
+                                        `URL: ${imageLink} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
+                                    );
 
-                            Object.entries(categories).forEach(
-                                ([key, value]) => {
-                                    chrome.storage.local
-                                        .get([value])
-                                        .then((result) => {
-                                            if (
-                                                className === key &&
-                                                (result[value] ||
-                                                    result[value] === undefined)
-                                            ) {
-                                                console.log(
-                                                    "Category: ",
-                                                    value,
-                                                );
+                                    const categories = {
+                                        profanity: "profanity",
+                                        // social: "social-media-and-forums",
+                                        // monetary: "monetary-transactions",
+                                        explicit: "explicit-content",
+                                        drugs: "drugs",
+                                        games: "web-based-games",
+                                        gambling: "gambling",
+                                        good: "good",
+                                    };
 
-                                                recordCategory(value);
+                                    Object.entries(categories).forEach(
+                                        ([key, value]) => {
+                                            chrome.storage.local
+                                                .get([value])
+                                                .then((result) => {
+                                                    if (
+                                                        className === key &&
+                                                        (result[value] ||
+                                                            result[value] ===
+                                                                undefined)
+                                                    ) {
+                                                        console.log(
+                                                            "Category: ",
+                                                            value,
+                                                        );
 
-                                                chrome.tabs.query(
-                                                    {},
-                                                    (tabs) => {
-                                                        tabs.forEach((tab) => {
-                                                            chrome.tabs
-                                                                .sendMessage(
-                                                                    tab.id,
-                                                                    {
-                                                                        action: "removeImage",
-                                                                        imageLink,
-                                                                    },
-                                                                )
-                                                                .catch(
-                                                                    (error) => {
-                                                                        // console.error(
-                                                                        //     `Error removing image from URL (${imageLink}):`,
-                                                                        //     error,
-                                                                        // );
-                                                                    },
-                                                                );
-                                                        });
-                                                    },
-                                                );
-                                                // chrome.runtime.sendMessage({ action: "removeImage", imageLink: imageLink });
-                                            } else if (
-                                                className === key &&
-                                                !(
-                                                    result[value] ||
-                                                    result[value] === undefined
-                                                )
-                                            ) {
-                                                recordCategory("background");
+                                                        recordCategory(value);
 
-                                                chrome.tabs.query(
-                                                    {},
-                                                    (tabs) => {
-                                                        tabs.forEach((tab) => {
-                                                            chrome.tabs
-                                                                .sendMessage(
-                                                                    tab.id,
-                                                                    {
-                                                                        action: "revealImage",
-                                                                        imageLink,
-                                                                    },
-                                                                )
-                                                                .catch(
-                                                                    (error) => {
-                                                                        // console.error(
-                                                                        //     `Error revealing image from URL (${imageLink}):`,
-                                                                        //     error,
-                                                                        // );
+                                                        chrome.tabs.query(
+                                                            {},
+                                                            (tabs) => {
+                                                                tabs.forEach(
+                                                                    (tab) => {
+                                                                        chrome.tabs
+                                                                            .sendMessage(
+                                                                                tab.id,
+                                                                                {
+                                                                                    action: "removeImage",
+                                                                                    imageLink,
+                                                                                },
+                                                                            )
+                                                                            .catch(
+                                                                                (
+                                                                                    error,
+                                                                                ) => {
+                                                                                    // console.error(
+                                                                                    //     `Error removing image from URL (${imageLink}):`,
+                                                                                    //     error,
+                                                                                    // );
+                                                                                },
+                                                                            );
                                                                     },
                                                                 );
-                                                        });
-                                                    },
-                                                );
-                                                // chrome.runtime.sendMessage({ action: "revealImage", imageLink: imageLink });
-                                            }
-                                        });
-                                },
-                            );
-                        } else {
-                            recordCategory("background");
+                                                            },
+                                                        );
+                                                        // chrome.runtime.sendMessage({ action: "removeImage", imageLink: imageLink });
+                                                    } else if (
+                                                        className === key &&
+                                                        !(
+                                                            result[value] ||
+                                                            result[value] ===
+                                                                undefined
+                                                        )
+                                                    ) {
+                                                        recordCategory(
+                                                            "background",
+                                                        );
 
-                            chrome.tabs.query({}, (tabs) => {
-                                tabs.forEach((tab) => {
-                                    chrome.tabs
-                                        .sendMessage(tab.id, {
-                                            action: "revealImage",
-                                            imageLink,
-                                        })
-                                        .catch((error) => {
-                                            // console.error(
-                                            //     `Error revealing image from URL (${imageLink}):`,
-                                            //     error,
-                                            // );
-                                        });
-                                });
-                            });
-                        }
+                                                        chrome.tabs.query(
+                                                            {},
+                                                            (tabs) => {
+                                                                tabs.forEach(
+                                                                    (tab) => {
+                                                                        chrome.tabs
+                                                                            .sendMessage(
+                                                                                tab.id,
+                                                                                {
+                                                                                    action: "revealImage",
+                                                                                    imageLink,
+                                                                                },
+                                                                            )
+                                                                            .catch(
+                                                                                (
+                                                                                    error,
+                                                                                ) => {
+                                                                                    // console.error(
+                                                                                    //     `Error revealing image from URL (${imageLink}):`,
+                                                                                    //     error,
+                                                                                    // );
+                                                                                },
+                                                                            );
+                                                                    },
+                                                                );
+                                                            },
+                                                        );
+                                                        // chrome.runtime.sendMessage({ action: "revealImage", imageLink: imageLink });
+                                                    }
+                                                });
+                                        },
+                                    );
+                                } else {
+                                    recordCategory("background");
 
-                        categoryCount[className] =
-                            (categoryCount[className] || 0) + 1;
-                    } else {
-                        chrome.tabs.query({}, (tabs) => {
-                            tabs.forEach((tab) => {
-                                chrome.tabs
-                                    .sendMessage(tab.id, {
-                                        action: "revealImage",
-                                        imageLink,
-                                    })
-                                    .catch((error) => {
-                                        // console.error(
-                                        //     `Error revealing image from URL (${imageLink}):`,
-                                        //     error,
-                                        // );
+                                    chrome.tabs.query({}, (tabs) => {
+                                        tabs.forEach((tab) => {
+                                            chrome.tabs
+                                                .sendMessage(tab.id, {
+                                                    action: "revealImage",
+                                                    imageLink,
+                                                })
+                                                .catch((error) => {
+                                                    // console.error(
+                                                    //     `Error revealing image from URL (${imageLink}):`,
+                                                    //     error,
+                                                    // );
+                                                });
+                                        });
                                     });
-                            });
-                        });
+                                }
 
-                        categoryCount["background"] =
-                            (categoryCount["background"] || 0) + 1;
-                    }
+                                categoryCount[className] =
+                                    (categoryCount[className] || 0) + 1;
+                            } else {
+                                chrome.tabs.query({}, (tabs) => {
+                                    tabs.forEach((tab) => {
+                                        chrome.tabs
+                                            .sendMessage(tab.id, {
+                                                action: "revealImage",
+                                                imageLink,
+                                            })
+                                            .catch((error) => {
+                                                // console.error(
+                                                //     `Error revealing image from URL (${imageLink}):`,
+                                                //     error,
+                                                // );
+                                            });
+                                    });
+                                });
+
+                                categoryCount["background"] =
+                                    (categoryCount["background"] || 0) + 1;
+                            }
+                        }
+                    });
                 } catch (error) {
                     console.error(
                         `Error getting predictions from URL (${imageLink}):`,
@@ -325,59 +344,87 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
                 const prediction = await response.json();
 
-                if (prediction) {
-                    const { class: className, confidence } = prediction;
-                    if (className !== "background") {
-                        console.log(
-                            `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-                        );
-                        const categories = {
-                            profanity: "profanity",
-                            // social: "social-media-and-forums",
-                            // monetary: "monetary-transactions",
-                            explicit: "explicit-content",
-                            drugs: "drugs",
-                            games: "web-based-games",
-                            gambling: "gambling",
-                        };
+                chrome.storage.local.get(["confidence"]).then((result) => {
+                    confidenceThreshold = result.confidence || 0.5;
 
-                        Object.entries(categories).forEach(([key, value]) => {
-                            chrome.storage.local.get([value]).then((result) => {
-                                if (
-                                    className === key &&
-                                    (result[value] ||
-                                        result[value] === undefined) &&
-                                    confidence > 0.5
-                                ) {
-                                    console.log("Category: ", value);
+                    if (prediction) {
+                        const { class: className, confidence } = prediction;
+                        if (confidence > confidenceThreshold) {
+                            if (className !== "background") {
+                                console.log(
+                                    `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
+                                );
+                                const categories = {
+                                    profanity: "profanity",
+                                    // social: "social-media-and-forums",
+                                    // monetary: "monetary-transactions",
+                                    explicit: "explicit-content",
+                                    drugs: "drugs",
+                                    games: "web-based-games",
+                                    gambling: "gambling",
+                                    good: "good",
+                                };
 
-                                    chrome.tabs.query({}, (tabs) => {
-                                        tabs.forEach((tab) => {
-                                            chrome.tabs
-                                                .sendMessage(tab.id, {
-                                                    action: "removeText",
-                                                    text,
-                                                })
-                                                .catch((error) => {
-                                                    console.error(
-                                                        `Error removing text (${text}):`,
-                                                        error,
+                                Object.entries(categories).forEach(
+                                    ([key, value]) => {
+                                        chrome.storage.local
+                                            .get([value])
+                                            .then((result) => {
+                                                if (
+                                                    className === key &&
+                                                    (result[value] ||
+                                                        result[value] ===
+                                                            undefined)
+                                                ) {
+                                                    console.log(
+                                                        "Category: ",
+                                                        value,
                                                     );
-                                                });
-                                        });
-                                    });
-                                }
-                            });
-                        });
 
-                        categoryCount[className] =
-                            (categoryCount[className] || 0) + 1;
+                                                    chrome.tabs.query(
+                                                        {},
+                                                        (tabs) => {
+                                                            tabs.forEach(
+                                                                (tab) => {
+                                                                    chrome.tabs
+                                                                        .sendMessage(
+                                                                            tab.id,
+                                                                            {
+                                                                                action: "removeText",
+                                                                                text,
+                                                                            },
+                                                                        )
+                                                                        .catch(
+                                                                            (
+                                                                                error,
+                                                                            ) => {
+                                                                                console.error(
+                                                                                    `Error removing text (${text}):`,
+                                                                                    error,
+                                                                                );
+                                                                            },
+                                                                        );
+                                                                },
+                                                            );
+                                                        },
+                                                    );
+                                                }
+                                            });
+                                    },
+                                );
+
+                                categoryCount[className] =
+                                    (categoryCount[className] || 0) + 1;
+                            }
+                        } else {
+                            console.log(
+                                `Text: ${text} | Prediction: background`,
+                            );
+                            categoryCount["background"] =
+                                (categoryCount["background"] || 0) + 1;
+                        }
                     }
-                } else {
-                    console.log(`Text: ${text} | Prediction: background`);
-                    categoryCount["background"] =
-                        (categoryCount["background"] || 0) + 1;
-                }
+                });
             } catch (error) {
                 console.log(text);
                 console.error(`Error getting predictions`, error);

@@ -3,12 +3,14 @@ from pathlib import Path
 import shutil
 from sklearn.model_selection import train_test_split
 import nltk
-nltk.download('punkt')
-nltk.download('punkt_tab')
+
+nltk.download("punkt")
+nltk.download("punkt_tab")
 from nltk.tokenize import sent_tokenize
 
-categories = ["drugs", "explicit", "gambling", "games", "profanity"]
+categories = ["drugs", "explicit", "gambling", "games", "profanity", "good"]
 # categories = ["drugs", "explicit", "gambling", "games", "good", "monetary", "profanity", "social"]
+
 
 class Ratio:
     train: float
@@ -62,10 +64,10 @@ def split_dataset(src_dir, dest_dir, ratio=Ratio()):
     train_ratio = ratio.train
     validation_ratio = ratio.validation
     test_ratio = ratio.test
-    
+
     for category in categories:
-        file_path = src_dir / f'{category}.txt'
-        
+        file_path = src_dir / f"{category}.txt"
+
         # Read and tokenize the content of the file into sentences
         content = file_path.read_text(encoding="utf-8").strip().lower()
         sentences = sent_tokenize(content)
@@ -73,16 +75,19 @@ def split_dataset(src_dir, dest_dir, ratio=Ratio()):
         print(f"Category: {category}")
 
         train, temp = train_test_split(sentences, train_size=train_ratio)
-        validation, test = train_test_split(temp, train_size=validation_ratio/(validation_ratio + test_ratio))
+        validation, test = train_test_split(
+            temp, train_size=validation_ratio / (validation_ratio + test_ratio)
+        )
 
         def save_sentences(sentences, file_path):
             for i, sentence in enumerate(sentences):
                 filename = file_path / f"{category}_{i}.txt"
                 filename.write_text(sentence, encoding="utf-8")
-                    
+
         save_sentences(train, dest_dir / "train" / category)
         save_sentences(validation, dest_dir / "validation" / category)
         save_sentences(test, dest_dir / "test" / category)
+
 
 destination = Path("dataset")
 train_dir = destination / "train"
