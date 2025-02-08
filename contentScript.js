@@ -129,8 +129,11 @@ function extractSentences() {
     sentences = sentences
         .map((sentence) => sentence.trim())
         .filter((sentence) => sentence !== "")
-        .filter((sentence) => !sentence.includes("???"))
-        .filter((sentence) => !sentence.includes(":"))
+        .filter((sentence) => sentence !== "???")
+        .filter((sentence) => sentence !== ":")
+        .filter((sentence) => sentence !== "-")
+        // .filter((sentence) => !sentence.includes("???"))
+        // .filter((sentence) => !sentence.includes(":"))
         .filter((sentence) => !seenText.has(sentence));
 
     return sentences;
