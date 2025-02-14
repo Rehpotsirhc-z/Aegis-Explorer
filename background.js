@@ -1,4 +1,4 @@
-baseUrl = "http://171.240.133.62:41305";
+baseUrl = "http://27.75.143.67:41305";
 // baseUrl = "http://localhost:5000";
 imageUrl = `${baseUrl}/predict_image`;
 textUrl = `${baseUrl}/predict_text`;
