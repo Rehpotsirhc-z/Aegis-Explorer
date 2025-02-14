@@ -138,7 +138,7 @@ def train(train_dir, val_dir, model_dir, batch_size=16, epochs=15, learning_rate
     print(f"Using device: {device}")
     tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
     model = BertForSequenceClassification.from_pretrained(
-        "bert-base-uncased", num_labels=5
+        "bert-base-uncased", num_labels=6
     ).to(device)
 
     train_dataset = TextDataset(train_dir, tokenizer)
