@@ -155,7 +155,7 @@ def predict_text():
         # confidence = torch.nn.functional.softmax(outputs.logits, dim=1).tolist()[0]
         confidence = torch.softmax(outputs.logits, dim=1).tolist()[0]
 
-        class_names = {
+        class_names = [
             "drugs",
             "explicit",
             "gambling",
@@ -164,7 +164,7 @@ def predict_text():
             "profanity",
             "background",
             # "social",
-        }
+        ]
         idx_to_name = {index: name for index, name in enumerate(class_names)}
 
         response = {
