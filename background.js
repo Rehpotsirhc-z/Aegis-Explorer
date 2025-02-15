@@ -308,6 +308,12 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                 categoryCount["background"] =
                                     (categoryCount["background"] || 0) + 1;
                             }
+                        } else {
+                            console.log(
+                                `Text: ${text} | Prediction: background`,
+                            );
+                            categoryCount["background"] =
+                                (categoryCount["background"] || 0) + 1;
                         }
                     });
                 } catch (error) {
@@ -416,6 +422,12 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
                                 categoryCount[className] =
                                     (categoryCount[className] || 0) + 1;
+                            } else {
+                                console.log(
+                                    `Text: ${text} | Prediction: background`,
+                                );
+                                categoryCount["background"] =
+                                    (categoryCount["background"] || 0) + 1;
                             }
                         } else {
                             console.log(
