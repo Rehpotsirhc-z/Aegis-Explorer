@@ -5,11 +5,11 @@ import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=5)
+model = BertForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=6)
 
 # Load model weights and move to the selected device
 model.load_state_dict(
-    torch.load("model/model_v5.pth", map_location=device), strict=False
+    torch.load("model/model_v7.pth", map_location=device), strict=False
 )
 model.to(device)
 model.eval()

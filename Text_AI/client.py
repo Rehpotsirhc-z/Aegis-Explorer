@@ -1,7 +1,7 @@
 import requests
 
 def predict_text(text):
-    url = "http://127.0.0.1:5000/predict"
+    url = "http://127.0.0.1:5000/predict_text"
     data = {"text": text}
     response = requests.post(url, json=data)
     return response.json()

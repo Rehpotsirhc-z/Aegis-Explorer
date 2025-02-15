@@ -2,13 +2,19 @@ import os
 import time
 from pathlib import Path
 from flask import Flask, request, jsonify
-from transformers import BertTokenizer, BertForSequenceClassification, BertTokenizerFast
+from transformers import (
+    BertTokenizer,
+    BertForSequenceClassification,
+    BertTokenizerFast,
+    BertForTokenClassification,
+)
 from flask_cors import CORS
 from ultralytics import YOLO
 import torch
 from PIL import Image
 from io import BytesIO
 from torch.quantization import quantize_dynamic
+import difflib
 
 # set number of threads to 8
 # torch.set_num_threads(8)
@@ -24,7 +30,13 @@ image_model_path = Path("models/image/model_v9.pt")
 img_model = YOLO(image_model_path)
 img_model.to(device)
 
+# Load supplementary model
+SUPPLEMENTARY_MODEL_PATH = "models/results"
 tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
+text_supp_model = BertForTokenClassification.from_pretrained(SUPPLEMENTARY_MODEL_PATH)
+text_supp_model.eval()
+
+# tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 text_model = BertForSequenceClassification.from_pretrained(
     "bert-base-uncased", num_labels=6
 )
@@ -39,6 +51,41 @@ text_model.to(device)
 
 
 text_model.eval()
+
+
+def censor_text(text, max_length=128):
+    """
+    Run the text through the model to predict banned tokens.
+    For each token flagged as banned, indicate location so we can send that snippet to the main text model.
+    """
+    # Tokenize the input text.
+    encoding = tokenizer(
+        text,
+        return_tensors="pt",
+        truncation=True,
+        padding="max_length",
+        max_length=max_length,
+        return_offsets_mapping=True,
+    )
+    offset_mapping = encoding.pop("offset_mapping")[0]  # shape: (seq_length, 2)
+
+    with torch.no_grad():
+        outputs = text_supp_model(**encoding)
+    # Get predictions: shape (1, seq_length, num_labels).
+    logits = outputs.logits
+    predictions = torch.argmax(logits, dim=-1)[0].tolist()
+
+    # Prepare to build the censored text.
+    banned_log = []  # list marking suspicious locations
+
+    for idx, (pred, offset) in enumerate(zip(predictions, offset_mapping.tolist())):
+        start, end = offset
+        if start == end:
+            continue  # Skip special tokens and padding.
+        if pred == 1:  # If predicted as banned.
+            token_str = text[start:end]
+            banned_log.append(f"{start}-{end}")
+    return banned_log
 
 
 def saveImgToFile(img, path):
@@ -109,14 +156,13 @@ def predict_text():
         confidence = torch.softmax(outputs.logits, dim=1).tolist()[0]
 
         class_names = {
-            # "good",
             "drugs",
             "explicit",
             "gambling",
             "games",
             # "monetary",
             "profanity",
-            "good",
+            "background",
             # "social",
         }
         idx_to_name = {index: name for index, name in enumerate(class_names)}
@@ -135,6 +181,7 @@ def predict_text():
 
         return jsonify(response), 200
     except Exception as e:
+        print(str(e))
         return jsonify({"error": str(e)}), 500
 
 

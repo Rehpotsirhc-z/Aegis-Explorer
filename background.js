@@ -1,4 +1,4 @@
-baseUrl = "http://27.75.143.67:41305";
+baseUrl = "http://14.187.67.90:10984";
 // baseUrl = "http://localhost:5000";
 imageUrl = `${baseUrl}/predict_image`;
 textUrl = `${baseUrl}/predict_text`;
@@ -173,7 +173,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                         drugs: "drugs",
                                         games: "web-based-games",
                                         gambling: "gambling",
-                                        good: "good",
+                                        background: "background",
                                     };
 
                                     Object.entries(categories).forEach(
@@ -363,7 +363,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                     drugs: "drugs",
                                     games: "web-based-games",
                                     gambling: "gambling",
-                                    good: "good",
+                                    background: "background",
                                 };
 
                                 Object.entries(categories).forEach(

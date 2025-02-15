@@ -8,8 +8,8 @@ nltk.download("punkt")
 nltk.download("punkt_tab")
 from nltk.tokenize import sent_tokenize
 
-categories = ["drugs", "explicit", "gambling", "games", "profanity", "good"]
-# categories = ["drugs", "explicit", "gambling", "games", "good", "monetary", "profanity", "social"]
+categories = ["drugs", "explicit", "gambling", "games", "profanity", "background"]
+# categories = ["drugs", "explicit", "gambling", "games", "background", "monetary", "profanity", "social"]
 
 
 class Ratio:

@@ -108,7 +108,7 @@ def split_dataset(src_dir, dest_dir, ratios=Ratio()):
         "games",
         # "monetary",
         "profanity",
-        "good",
+        # "good",
         # "social",
     ]
     class_to_id = {class_name: idx for idx, class_name in enumerate(class_names)}
