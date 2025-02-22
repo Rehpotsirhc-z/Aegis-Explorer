@@ -30,8 +30,19 @@ def classify_text(input_text):
     # Get the predicted class and confidence score
     predicted_class = torch.argmax(probabilities).item()
     confidence = probabilities[predicted_class].item()
+    class_names = [
+        "drugs",
+        "explicit",
+        "gambling",
+        "games",
+        # "monetary",
+        "profanity",
+        "background",
+        # "social",
+    ]
+    idx_to_name = {index: name for index, name in enumerate(class_names)}
 
-    return predicted_class, confidence
+    return idx_to_name[predicted_class], predicted_class, confidence
 
 
 # User input loop
@@ -41,5 +52,5 @@ while True:
     if user_input.lower() == "exit":
         break
 
-    predicted_class, confidence = classify_text(user_input)
-    print(f"Predicted Class: {predicted_class}, Confidence: {confidence:.2f}")
+    predicted_class, class_id, confidence = classify_text(user_input)
+    print(f"Predicted Class: {predicted_class}, ID: {class_id}, Confidence: {confidence:.2f}")

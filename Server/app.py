@@ -19,6 +19,9 @@ import difflib
 # set number of threads to 8
 # torch.set_num_threads(8)
 
+WHITELIST_FILE = "whitelist.txt"
+BLACKLIST_FILE = "blacklist.txt"
+
 app = Flask(__name__)
 CORS(app)
 
@@ -36,7 +39,7 @@ tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 text_supp_model = BertForTokenClassification.from_pretrained(SUPPLEMENTARY_MODEL_PATH)
 text_supp_model.eval()
 
-# tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
+tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 text_model = BertForSequenceClassification.from_pretrained(
     "bert-base-uncased", num_labels=6
 )
@@ -51,6 +54,19 @@ text_model.to(device)
 
 
 text_model.eval()
+
+
+def load_word_set(file_path):
+    word_set = set()
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            word_set = {line.strip().lower() for line in f if line.strip()}
+    except FileNotFoundError:
+        print(f"Warning: {file_path} not found; ignoring.")
+    return word_set
+
+
+banned_words = load_word_set(BLACKLIST_FILE)
 
 
 def censor_text(text, max_length=128):
@@ -146,9 +162,44 @@ def predict_text():
 
     try:
         start_time = time.time()
+
+        # banned_log = censor_text(text)
+        # print(f"Banned log: {banned_log}")
+        # if len(banned_log) > 0:
+        #     for element in banned_log:
+        #         start, end = element.split("-")
+        #         start, end = int(start), int(end)
+        #         print(f"Original Text: {text}")
+        #         print(f"Flagged Text: {text[start:end]}")
+
+        # for word in banned_words:
+        #     if word in text.lower():
+
         inputs = tokenizer(
             text, return_tensors="pt", max_length=128, padding=True, truncation=True
         ).to(device)
+
+        okay = True
+
+        # for word in banned_words:
+        #     if word in text.lower():
+        #         okay = False
+        #         break
+
+        for token in tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]):
+            if token.lower() in banned_words:
+                okay = False
+                break
+        if okay:
+            # no banned words found, return the prediction
+            response = {
+                "class": "background",
+                "confidence": 1,
+            }
+            return jsonify(response), 200
+
+        print(tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]))
+
         outputs = text_model(**inputs)
         prediction = torch.argmax(outputs.logits, dim=1).item()
 
