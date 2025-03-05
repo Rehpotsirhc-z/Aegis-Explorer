@@ -2,6 +2,7 @@
 
 ## Roadmap
 
+-   [ ] Why is text AI training script not using test dataset?
 -   [X] Text AI use confidence
 -   [X] STRT Text sending too much
 -   [X] Set the age to 3--5
