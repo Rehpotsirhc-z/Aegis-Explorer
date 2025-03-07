@@ -310,7 +310,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
                             }
                         } else {
                             console.log(
-                                `Text: ${text} | Prediction: background`,
+                                `URL: ${imageLink} | Prediction: background`,
                             );
                             categoryCount["background"] =
                                 (categoryCount["background"] || 0) + 1;

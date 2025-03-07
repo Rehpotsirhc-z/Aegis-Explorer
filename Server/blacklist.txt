@@ -14,3 +14,6 @@ pot
 drug
 drugs
 bitch
+snort
+inject
+smoke

@@ -130,23 +130,9 @@ def predict_image():
                     "confidence": float(pred.conf),
                 }
                 for pred in predictions
-                if float(pred.conf) >= 0.5
             ]
         }
 
-        # save the image with prediction as the name
-        file_name = response["predictions"][0]["class"]
-
-        # check if file is aready there, add number to end if so
-        # i = 1
-        # while os.path.isfile(f"output/{file_name}.jpg"):
-        #     file_name = response['predictions'][0]['class'] + str(i)
-        #     i+=1
-        # print(f"FILENAME: {file_name}")
-
-        # saveImgToFile(img, f"output/{file_name}.jpg")
-
-        # print(img_model.names[int(pred.cls)], float(pred.conf))
         return jsonify(response), 200
 
     except Exception as e:
@@ -162,18 +148,6 @@ def predict_text():
 
     try:
         start_time = time.time()
-
-        # banned_log = censor_text(text)
-        # print(f"Banned log: {banned_log}")
-        # if len(banned_log) > 0:
-        #     for element in banned_log:
-        #         start, end = element.split("-")
-        #         start, end = int(start), int(end)
-        #         print(f"Original Text: {text}")
-        #         print(f"Flagged Text: {text[start:end]}")
-
-        # for word in banned_words:
-        #     if word in text.lower():
 
         inputs = tokenizer(
             text, return_tensors="pt", max_length=128, padding=True, truncation=True
