@@ -81,7 +81,7 @@ if __name__ == "__main__":
     model = BannedWordClassifier(vocab_size, output_dim=len(categories))
     
     # Train the model
-    trained_model = train_model(model, train_loader, val_loader, epochs=10, lr=1e-3)
+    trained_model = train_model(model, train_loader, val_loader, epochs=30, lr=1e-3)
     
     # Save the standard trained model weights (if needed)
     torch.save(trained_model.state_dict(), "banned_classifier.pt")

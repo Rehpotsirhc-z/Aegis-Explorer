@@ -6,12 +6,12 @@ from dataset import BannedWordDataset, categories
 app = Flask(__name__)
 
 # Configuration
-BANNED_DIR = "source"
+BANNED_DIR = "source"           # Directory containing banned term files.
 CORPUS_FILE = "corpus.txt"
 SCRIPTED_MODEL_PATH = "banned_classifier_torchscript.pt"
-MAX_LEN = 128
+MAX_LEN = 128                   # Increased max_len to accommodate longer terms.
 
-# Rebuild the vocabulary using the same dataset settings as training.
+# Rebuild the vocabulary using the same settings as training.
 dataset = BannedWordDataset(BANNED_DIR, CORPUS_FILE, max_len=MAX_LEN)
 vocab = dataset.vocab
 vocab_size = len(vocab)
@@ -26,17 +26,18 @@ model.eval()
 print(f"Model loaded on {device}.")
 
 def encode_word(word):
-    """Encodes a single word into a fixed-length tensor and moves it to the correct device."""
+    """Encodes a single word/phrase into a fixed-length tensor and moves it to the correct device."""
     return dataset.encode_word(word).unsqueeze(0).to(device)
 
 def encode_words(words):
-    """Encodes a list of words into a batch tensor and moves it to the correct device."""
+    """Encodes a list of words/phrases into a batch tensor and moves it to the correct device."""
     tensors = [dataset.encode_word(word) for word in words]
     batch = torch.stack(tensors).to(device)
     return batch
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    # Endpoint for single-word prediction.
     data = request.get_json()
     if not data or 'word' not in data:
         return jsonify({"error": "Please provide a 'word' field in the JSON payload."}), 400
@@ -49,7 +50,6 @@ def predict():
         predicted = torch.argmax(probs, dim=1).item()
         confidence = probs[0, predicted].item()
     
-    # Label 1 indicates a banned word.
     result = {
         "word": word,
         "category": categories[predicted],
@@ -60,7 +60,8 @@ def predict():
 @app.route('/predict_batch', methods=['POST'])
 def predict_batch():
     """
-    Endpoint for processing a batch of words. Expects a JSON payload with a "words" field (a list).
+    Endpoint for processing a batch of words/phrases.
+    Expects a JSON payload with a "words" field containing a list.
     """
     data = request.get_json()
     if not data or 'words' not in data:
@@ -70,6 +71,7 @@ def predict_batch():
     if not isinstance(words, list):
         return jsonify({"error": "'words' should be a list."}), 400
     
+    # Lowercase all words for consistency.
     words = [w.lower() for w in words]
     input_tensor = encode_words(words)
     with torch.no_grad():
@@ -88,5 +90,5 @@ def predict_batch():
     return jsonify(results)
 
 if __name__ == '__main__':
-    # Run the server on port 5000
+    # Run the server on port 5000.
     app.run(host='0.0.0.0', port=5000)
