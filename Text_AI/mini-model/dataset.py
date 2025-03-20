@@ -13,6 +13,8 @@ class BannedWordDataset(Dataset):
         Reads banned words from txt files in banned_dir and extracts words from corpus_file.
         Each word is labeled by the index of the category if it is banned and 0 (background) otherwise.
         A simple character-level representation is used.
+
+        Multi-word phrases in the banned files are preserved.
         """
         self.banned_words = dict()
 
@@ -21,7 +23,7 @@ class BannedWordDataset(Dataset):
             with open(os.path.join(banned_dir, text_file), 'r', encoding='utf-8') as f:
                 category = os.path.splitext(os.path.basename(text_file))[0]
                 print(category)
-                self.banned_words[category] = set(line.strip() for line in f if line.strip())
+                self.banned_words[category] = set(line.strip().lower() for line in f if line.strip().lower())
 
         # Read the corpus and extract words
         corpus_words = []
@@ -39,17 +41,22 @@ class BannedWordDataset(Dataset):
                 if word in self.banned_words.get(category, set()):
                     label = idx
                     print(label)
+                    break
 
             self.examples.append((word, label))
             
         # Ensure that all banned words are included (in case they never appear in the corpus)
-        for word in self.banned_words:
-            word_label = 0
-            for idx, category in enumerate(categories):
-                if word in self.banned_words.get(category, set()):
-                    word_label = idx
-                    break
-            self.examples.append((word, word_label))
+        # for word in self.banned_words:
+        #     word_label = 0
+        #     for idx, category in enumerate(categories):
+        #         if word in self.banned_words.get(category, set()):
+        #             word_label = idx
+        #             break
+        #     self.examples.append((word, word_label))
+        for cat, banned_set in self.banned_words.items():
+            for term in banned_set:
+                label = categories.index(cat) if cat in categories else 0
+                self.examples.append((term, label))
             
         self.max_len = max_len
 

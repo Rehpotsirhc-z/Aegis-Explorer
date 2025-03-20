@@ -29,6 +29,7 @@ def main():
         if response.status_code == 200:
             results = response.json()
             for result in results:
+                print(result)
                 print(f"Word: {result['word']}")
                 print(f"Category: {result['category']}")
                 print(f"Confidence: {result['confidence']:.4f}")
