@@ -22,7 +22,7 @@ class BannedWordDataset(Dataset):
             # Load banned words (assumed to be one per line, already lowercased)
             with open(os.path.join(banned_dir, text_file), 'r', encoding='utf-8') as f:
                 category = os.path.splitext(os.path.basename(text_file))[0]
-                print(category)
+                # print(category)
                 self.banned_words[category] = set(line.strip().lower() for line in f if line.strip().lower())
 
         # Read the corpus and extract words
@@ -40,7 +40,7 @@ class BannedWordDataset(Dataset):
             for idx, category in enumerate(categories):
                 if word in self.banned_words.get(category, set()):
                     label = idx
-                    print(label)
+                    # print(label)
                     break
 
             self.examples.append((word, label))
