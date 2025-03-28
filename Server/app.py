@@ -155,15 +155,15 @@ def predict_text():
 
         okay = True
 
-        # for word in banned_words:
-        #     if word in text.lower():
-        #         okay = False
-        #         break
-
-        for token in tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]):
-            if token.lower() in banned_words:
+        for word in banned_words:
+            if word in text.lower():
                 okay = False
                 break
+
+        # for token in tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]):
+        #     if token.lower() in banned_words:
+        #         okay = False
+        #         break
         if okay:
             # no banned words found, return the prediction
             response = {

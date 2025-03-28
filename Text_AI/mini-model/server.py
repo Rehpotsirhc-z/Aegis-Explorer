@@ -77,6 +77,7 @@ def predict_batch():
     with torch.no_grad():
         outputs = model(input_tensor)
         probs = torch.softmax(outputs, dim=1)
+        print(probs)
         predicted = torch.argmax(probs, dim=1).tolist()
         confidences = probs.max(dim=1)[0].tolist()
     

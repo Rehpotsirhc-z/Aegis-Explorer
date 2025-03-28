@@ -103,4 +103,6 @@ def get_datasets(banned_dir, corpus_file, train_ratio=0.8, max_len=20):
     train_size = int(len(dataset) * train_ratio)
     val_size = len(dataset) - train_size
     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+
+    val_dataset.dataset.vocab = train_dataset.dataset.vocab
     return train_dataset, val_dataset

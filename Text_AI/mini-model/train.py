@@ -2,9 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from dataset import get_datasets
-
-categories = ["background", "drugs", "explicit", "gambling", "games", "profanity"] # TODO Maybe add background
+from dataset import get_datasets, categories
 
 class BannedWordClassifier(nn.Module):
     def __init__(self, vocab_size, embedding_dim=32, hidden_dim=64, output_dim=6):
@@ -35,11 +33,27 @@ def train_model(model, train_loader, val_loader, epochs=10, lr=1e-3):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     
+    idx_to_word = {idx: word for word, idx in train_loader.dataset.dataset.vocab.items()}
+    
     for epoch in range(epochs):
         model.train()
         train_loss = 0.0
         for inputs, labels in train_loader:
             inputs, labels = inputs.to(device), labels.to(device)
+
+              # Convert input tensors back to words for readability
+            input_phrases = []
+            for seq in inputs.cpu().numpy():  # Iterate through each sequence in batch
+                words = [idx_to_word.get(idx, "<UNK>") for idx in seq if idx != 0]  # Ignore padding (0)
+                input_phrases.append(" ".join(words))  # Join words into a readable phrase
+            
+            # Convert labels to category names
+            label_categories = [categories[label.item()] for label in labels.cpu()]
+
+            # Print readable input phrases and categories
+            for phrase, category in zip(input_phrases, label_categories):
+                print(f"Phrase: '{phrase}' → Category: {category}")
+
             optimizer.zero_grad()
             outputs = model(inputs)
             loss = criterion(outputs, labels)
