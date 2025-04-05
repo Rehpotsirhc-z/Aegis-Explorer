@@ -148,7 +148,7 @@ function sendText() {
 
     try {
         if (textLinks.length > 0) {
-            chrome.runtime.sendMessage({ text: textLinks });
+            chrome.runtime.sendMessage({ texts: textLinks });
         }
     } catch (error) {
         console.error("Error sending text", error);

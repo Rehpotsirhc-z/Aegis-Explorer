@@ -1,11 +1,3 @@
-Beyblade Burst
-Fire Emblem Fates
-Frozen: Olaf's Quest
-Haikyu!! Cross Team Match!
-Tales of Xillia 2
-Shakabula *
-That Bastard Is Trying To Steal Our Gold
-Wild Russia
 !AnyWay!
 !LABrpgUP!
 #!/bin/bash
@@ -23,7 +15,6 @@ Wild Russia
 #monstercakes
 #tacticalunderground arcade
 $1 Ride
-1st Core: The Zombie Killing Cyborg
 '98 Koshien
 'Member the Alamo?
 'Member the Alamo? VR EDITION
@@ -35,9 +26,6 @@ $1 Ride
 (square)
 (the) Gnorp Apologue
 (val)iant: or, val's guide to having a broken vag
-SCUFFED BHOP SIMULATION 2026 GOTY EDITION
-SCUFFED EPIC BHOP SIMULATOR 2023 (POG CHAMP)
-SCUFFED EPIC VISUAL NOVEL
 - Arcane Raise -
 - Doki Doki Family - 特異体質者のドキドキ家族生活
 - Mischief Dungeon Life - 異世界転生した俺のイタズラダンジョンライフ
@@ -114,7 +102,7 @@ SCUFFED EPIC VISUAL NOVEL
 1-2-Swift
 1-Bit Revival: The Residuals of Null
 1/2 Red Riding Hood
-1/2 Summer 
+1/2 Summer
 1/8192
 10 Miles To Safety
 10 Minute Barbarian
@@ -445,6 +433,7 @@ SCUFFED EPIC VISUAL NOVEL
 1WEEK
 1bitHeart
 1f y0u're a gh0st ca11 me here! 幽铃热线
+1st Core: The Zombie Killing Cyborg
 1v1 Deathmatch
 1v1.LOL
 1vs1: Battle Royale for the throne
@@ -2698,7 +2687,7 @@ Adventure Time: Finn & Jake Investigations
 Adventure Time: Finn and Jake's Epic Quest
 Adventure Time: Magic Man's Head Games
 Adventure Time: Pirates of the Enchiridion
-Adventure Time: The Secret of the Nameless 
+Adventure Time: The Secret of the Nameless
 Adventure Time: The Secret of the Nameless Kingdom
 Adventure Trip: Amazing World 2 Collector's Edition
 Adventure Trip: Amazing World 3 Collector's Edition
@@ -9318,6 +9307,7 @@ Bewitched Balls
 Bewitched game
 Bewitching Sinners
 BeyBlade VForce: Super Tournament Battle
+Beyblade Burst
 Beyblade Evolution
 Beyblade G-Revolution
 Beyblade VForce: Ultimate Blader Jam
@@ -24784,7 +24774,7 @@ Dragon Ball GT: Final Bout
 Dragon Ball GT: Game Boy Advance Video Volume 1
 Dragon Ball GT: Transformation
 Dragon Ball Heroes: Ultimate Mission
-Dragon Ball Heroes: Ultimate Mission 2 
+Dragon Ball Heroes: Ultimate Mission 2
 Dragon Ball Kai: Ultimate Butouden
 Dragon Ball Z
 Dragon Ball Z Hyper Dimension
@@ -25174,7 +25164,7 @@ Dream Bright
 Dream C Club
 Dream C Club Portable
 Dream C Club Zero
-Dream C Club: GoGo 
+Dream C Club: GoGo
 Dream Car Builder
 Dream Catcher
 Dream Catcher Chronicles: Manitou
@@ -26910,7 +26900,7 @@ EatWell
 Eaten Alive
 Eaten by Darkness
 Ebenezer and the Invisible World
-Ebikore Photo Kano Kiss 
+Ebikore Photo Kano Kiss
 EbonSide
 Ebony Spire: Heresy
 Ebullition LBVR
@@ -30662,7 +30652,7 @@ Fast Food Rampage
 Fast Food Simulator
 Fast Fruit
 Fast Jump
-Fast Racing Neo 
+Fast Racing Neo
 Fast Running
 Fast Travel: Loot Delivery Service
 Fast Typing Master
@@ -31500,6 +31490,7 @@ Fire Commander Playtest
 Fire Commander: First Response
 Fire Dogs
 Fire Emblem
+Fire Emblem Fates
 Fire Emblem: Awakening
 Fire Emblem: Fuuin no Tsurugi
 Fire Emblem: Monsh? no Nazo
@@ -33505,6 +33496,7 @@ Frozen State
 Frozen Synapse
 Frozen Synapse 2
 Frozen Synapse Prime
+Frozen: Olaf's Quest
 Frozenheim
 Frozenheim Playtest
 Frqncy
@@ -38117,6 +38109,7 @@ Haha Doodle
 Haiki
 Haiku, the Robot
 Haikuna
+Haikyu!! Cross Team Match!
 Haikyuu!! Tsunage! Itadaki no Keshiki!!
 Hail To The King
 Hail to the Chimp
@@ -46742,7 +46735,7 @@ Killing Bullet
 Killing Floor
 Killing Floor - Toy Master
 Killing Floor 2
-Killing Floor 2 
+Killing Floor 2
 Killing Floor: Incursion
 Killing Room
 Killing Sun / 抗日大刀队：日军总部
@@ -50852,7 +50845,7 @@ Love Notes
 Love Once: Mermaid's Tears
 Love Photo Studio/真爱照相馆
 Love Plus
-Love Plus 
+Love Plus
 Love Potion
 Love Puzzle
 Love Quest
@@ -56616,7 +56609,7 @@ MotoGP 07
 MotoGP 08
 MotoGP 09/10
 MotoGP 10/11
-MotoGP 14 
+MotoGP 14
 MotoGP 15
 MotoGP 2
 MotoGP 2: Ultimate Racing Technology
@@ -59001,7 +58994,7 @@ Nazi Labs
 NaziShoot
 NaziShootout
 Nazo Waku Yakata: Oto no Ma ni Ma ni
-Nazotoki Battle Tore! Densetsu no Makyuu o Fukkatsu Saseyo! 
+Nazotoki Battle Tore! Densetsu no Makyuu o Fukkatsu Saseyo!
 NaÀra: Contos de Resistência
 Ne Padai!
 Ne Touchez Pas 5
@@ -66077,7 +66070,7 @@ Pointless
 Poisonous Abyss
 Pokaban
 PokePark 2: Wonders Beyond
-Pokemon Art Academy 
+Pokemon Art Academy
 Pokemon Battle Revolution
 Pokemon Black 2/Pokemon White 2
 Pokemon Black/Pokemon White
@@ -66677,7 +66670,7 @@ Power Pushout Playtest
 Power Quest Survivors Playtest
 Power Rangers Double Pack
 Power Rangers Samurai
-Power Rangers Super Megaforce 
+Power Rangers Super Megaforce
 Power Rangers: Battle for the Grid
 Power Rangers: Dino Thunder
 Power Rangers: Ninja Storm
@@ -73619,6 +73612,9 @@ SCRAP RUSH!!
 SCRUMLORDS
 SCS deORBIT
 SCUFF(ED)
+SCUFFED BHOP SIMULATION 2026 GOTY EDITION
+SCUFFED EPIC BHOP SIMULATOR 2023 (POG CHAMP)
+SCUFFED EPIC VISUAL NOVEL
 SCUM
 SCUOS
 SD GUNDAM BATTLE ALLIANCE
@@ -75983,7 +75979,7 @@ Sengoku Jidai: Shadow of the Shogun
 Sengoku Musou 3 Empires
 Sengoku Musou 3 Z
 Sengoku Musou 3 Z Special
-Sengoku Musou 3: Moushouden 
+Sengoku Musou 3: Moushouden
 Sengoku Neet
 Sengoku Otome: Legend Battle
 Sengoku:Battle Royal
@@ -75998,7 +75994,7 @@ Senpai Arena
 Senpai Puzzle: Waifu Summer
 Senpai Teaches Me Japanese
 Senpai and the Mysterious Dungeon
-Senran Kagura 2: Deep Crimson 
+Senran Kagura 2: Deep Crimson
 Senran Kagura Burst: Guren no Sh?jo-tachi
 Senran Kagura Shinovi Versus: Sh?jo-tachi no Sh?mei
 Senran Kagura: Bon App��tit!
@@ -76619,6 +76615,7 @@ Shady Part of Me
 Shahmaran
 Shahrzad - The Storyteller
 Shajra Namla
+Shakabula *
 Shake Ground
 Shakedown: Hawaii
 Shakes and Fidget
@@ -78740,7 +78737,7 @@ Sloth Tales
 Sloth: Heart to Heart
 Slotracers VR
 Slotracers VR Playtest
-Slotter Mania P: Tetsuya Shinjuku vs Ueno 
+Slotter Mania P: Tetsuya Shinjuku vs Ueno
 SlovSurvival Playtest
 Slow Down, Bull
 Slow Rise
@@ -86004,6 +86001,7 @@ Tales of Vogar - Lost Descendants
 Tales of Wedding Rings VR
 Tales of Winds: Tomb of the Sol Empire
 Tales of Xillia
+Tales of Xillia 2
 Tales of Yore
 Tales of Zestiria
 Tales of a Rabbit: The Story of Willie Hop
@@ -86999,6 +86997,7 @@ Thanksgiving Day Mosaic
 Tharaba
 Tharn
 Tharsis
+That Bastard Is Trying To Steal Our Gold
 That Castle
 That Dam Level redux
 That Damn Goat
@@ -93449,7 +93448,7 @@ Touch Love
 Touch Maze
 Touch Me
 Touch Mechanic
-Touch My Katamari 
+Touch My Katamari
 Touch My Spinner
 Touch Shot! Love Application
 Touch Some Grass
@@ -95660,7 +95659,7 @@ Uncensor Quest
 Uncensor Quest Neon
 UnchainBlades EXXiV
 Unchained
-Unchained Blades 
+Unchained Blades
 Uncharted 2: Among Thieves
 Uncharted 3: Drake's Deception
 Uncharted 4: A Thief's End
@@ -100124,6 +100123,7 @@ Wild River Run
 Wild Romance
 Wild Romance: Mofu Mofu Edition
 Wild Runs
+Wild Russia
 Wild Seas
 Wild Season
 Wild Shot
@@ -100372,7 +100372,7 @@ Winning Post 7 2012
 Winning Post 7 2013
 Winning Post 7 Maximum 2008
 Winning Post 7: Maximum 2007
-Winning Post 8 
+Winning Post 8
 Winning Post 8 2015
 Winning Post 8 2016
 Winning Post World
@@ -100434,7 +100434,7 @@ Winx Club
 Winx Club: Mission Enchantix
 Winx Club: Quest for the Codex
 Winx Club: Rockstars
-Winx Club: Saving Alfea 
+Winx Club: Saving Alfea
 WipEout
 WipEout 3
 WipEout 64
@@ -107413,6 +107413,13 @@ zzzzz
 행불행 : 행복의 시작은 지금부터 리메이크
 회사 키우기
 흡혈귀의 연애방법
+３つの無窮動 -Trois Mouvements perpétuels-
+４人打ちアクション麻雀 / ACTION MAHJONG
+＜/reality＞
+Ａクラス
+～ Innocent Stuck-up Girls! ～ 肉食ギャルは清純派！？
+～Daydream～蝶が舞う頃に
+��Shin Chan Flipa en colores!
 🐰RabbiruN🐰
 👑 Idle Calibur 👑（选王之剑）
 👑万千网友共修仙👑
@@ -107422,10 +107429,3 @@ zzzzz
 🚀👾Absolute Blue 👾🚀
 🧠 OUT OF THE BOX
 𣸩
-３つの無窮動 -Trois Mouvements perpétuels-
-４人打ちアクション麻雀 / ACTION MAHJONG
-＜/reality＞
-Ａクラス
-～ Innocent Stuck-up Girls! ～ 肉食ギャルは清純派！？
-～Daydream～蝶が舞う頃に
-��Shin Chan Flipa en colores!

@@ -2,6 +2,7 @@
 baseUrl = "http://localhost:5000";
 imageUrl = `${baseUrl}/predict_image`;
 textUrl = `${baseUrl}/predict_text`;
+suppTextUrl = `${baseUrl}/predict_text_supplementary`;
 
 // // set keeping track of image URLs
 // const imageUrls = new Set();
@@ -331,11 +332,11 @@ chrome.runtime.onMessage.addListener(async (request) => {
         Object.entries(categoryCount).forEach(([category, count]) => {
             console.log(`${category}: ${count}`);
         });
-    } else if (request.text) {
-        console.log(request.text.length, "text to process");
+    } else if (request.texts) {
+        console.log(request.texts.length, "text to process");
         const categoryCount = {};
 
-        const predictionPromises = request.text.map(async (text) => {
+        const predictionPromises = request.texts.map(async (text) => {
             try {
                 if (text.trim().length === 0) {
                     return;
@@ -349,7 +350,23 @@ chrome.runtime.onMessage.addListener(async (request) => {
                     body: formData,
                 });
 
+                
+                const suppFormData = {"texts": [text]};
+
+                const suppResponse = await fetch(suppTextUrl, {
+                    method: "POST",
+                    body: JSON.stringify(suppFormData), 
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+
                 const prediction = await response.json();
+                const suppPrediction = await suppResponse.json();
+
+                console.log("Text: ", text);
+                console.log("Prediction: ", prediction);
+                console.log("Supplementary Prediction: ", suppPrediction);
 
                 chrome.storage.local.get(["confidence"]).then((result) => {
                     confidenceThreshold = result.confidence || 0.5;
