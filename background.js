@@ -371,90 +371,117 @@ chrome.runtime.onMessage.addListener(async (request) => {
                 chrome.storage.local.get(["confidence"]).then((result) => {
                     confidenceThreshold = result.confidence || 0.5;
 
-                    if (prediction) {
-                        const { class: className, confidence } = prediction;
+                    // Supplementary prediction
+                    const originalText = suppPrediction[0].text;
+                    const categories = suppPrediction[0].flags;
+
+                    console.log("Original Text: ", originalText);
+                    console.log("Categories: ", categories);
+
+                    localCategoryCounter = {
+                        profanity: 0,
+                        explicit: 0,
+                        drugs: 0,
+                        games: 0,
+                        gambling: 0,
+                    }
+
+                    categories.forEach((entry) => {
+                        const confidence = entry.confidence;
                         if (confidence > confidenceThreshold) {
-                            if (className !== "background") {
-                                console.log(
-                                    `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-                                );
-                                const categories = {
-                                    profanity: "profanity",
-                                    // social: "social-media-and-forums",
-                                    // monetary: "monetary-transactions",
-                                    explicit: "explicit-content",
-                                    drugs: "drugs",
-                                    games: "web-based-games",
-                                    gambling: "gambling",
-                                    background: "background",
-                                };
+                            localCategoryCounter[entry.category] += 1;
+                        }
+                    });
 
-                                Object.entries(categories).forEach(
-                                    ([key, value]) => {
-                                        chrome.storage.local
-                                            .get([value])
-                                            .then((result) => {
-                                                if (
-                                                    className === key &&
-                                                    (result[value] ||
-                                                        result[value] ===
-                                                            undefined)
-                                                ) {
-                                                    console.log(
-                                                        "Category: ",
-                                                        value,
-                                                    );
+                    console.log(localCategoryCounter, originalText);
 
-                                                    chrome.tabs.query(
-                                                        {},
-                                                        (tabs) => {
-                                                            tabs.forEach(
-                                                                (tab) => {
-                                                                    chrome.tabs
-                                                                        .sendMessage(
-                                                                            tab.id,
-                                                                            {
-                                                                                action: "removeText",
-                                                                                text,
-                                                                            },
-                                                                        )
-                                                                        .catch(
-                                                                            (
-                                                                                error,
-                                                                            ) => {
-                                                                                console.error(
-                                                                                    `Error removing text (${text}):`,
-                                                                                    error,
-                                                                                );
-                                                                            },
+                    maxFlagged = Object.entries(localCategoryCounter).reduce((a,b) => (b[1] > a[1] ? b : a), [null, 0])[0];
+                    console.log("maxFlagged", maxFlagged);
+                    
+                    if (!maxFlagged) {
+                        console.log(`Text: ${text} | Prediction: background`);
+                        categoryCount["background"] =
+                            (categoryCount["background"] || 0) + 1;
+                    } else {
+                        const className = maxFlagged;
+                        // const { class: className, confidence } = prediction;
+
+
+
+                        // if (confidence > confidenceThreshold) {
+                        console.log(
+                            `Text ${text} | Prediction: ${className}`,
+                        );
+                        const categories = {
+                            profanity: "profanity",
+                            // social: "social-media-and-forums",
+                            // monetary: "monetary-transactions",
+                            explicit: "explicit-content",
+                            drugs: "drugs",
+                            games: "web-based-games",
+                            gambling: "gambling",
+                            background: "background",
+                        };
+
+                        Object.entries(categories).forEach(
+                            ([key, value]) => {
+                                chrome.storage.local
+                                    .get([value])
+                                    .then((result) => {
+                                        if (
+                                            className === key &&
+                                            (result[value] ||
+                                                result[value] ===
+                                                undefined)
+                                        ) {
+                                            console.log(
+                                                "Category: ",
+                                                value,
+                                            );
+
+                                            chrome.tabs.query(
+                                                {},
+                                                (tabs) => {
+                                                    tabs.forEach(
+                                                        (tab) => {
+                                                            chrome.tabs
+                                                                .sendMessage(
+                                                                    tab.id,
+                                                                    {
+                                                                        action: "removeText",
+                                                                        text,
+                                                                    },
+                                                                )
+                                                                .catch(
+                                                                    (
+                                                                        error,
+                                                                    ) => {
+                                                                        console.error(
+                                                                            `Error removing text (${text}):`,
+                                                                            error,
                                                                         );
-                                                                },
-                                                            );
+                                                                    },
+                                                                );
                                                         },
                                                     );
-                                                }
-                                            });
-                                    },
-                                );
+                                                },
+                                            );
+                                        }
+                                    });
+                            },
+                        );
 
-                                categoryCount[className] =
-                                    (categoryCount[className] || 0) + 1;
-                            } else {
-                                console.log(
-                                    `Text: ${text} | Prediction: background`,
-                                );
-                                categoryCount["background"] =
-                                    (categoryCount["background"] || 0) + 1;
-                            }
-                        } else {
-                            console.log(
-                                `Text: ${text} | Prediction: background`,
-                            );
-                            categoryCount["background"] =
-                                (categoryCount["background"] || 0) + 1;
-                        }
-                    }
-                });
+                        categoryCount[className] =
+                            (categoryCount[className] || 0) + 1;
+                        // } else {
+                        //     console.log(
+                        //         `Text: ${text} | Prediction: background`,
+                        //     );
+                        //     categoryCount["background"] =
+                        //         (categoryCount["background"] || 0) + 1;
+                        // }
+                    }}
+                );
             } catch (error) {
                 console.log(text);
                 console.error(`Error getting predictions`, error);

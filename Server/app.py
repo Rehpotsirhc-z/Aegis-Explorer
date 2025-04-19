@@ -122,8 +122,13 @@ def decode_labels(label_seq, token_confidences, label_to_category, min_span_leng
     for i, label in enumerate(label_seq):
         if label != 0:
             cat = label_to_category.get(label, "unknown")
+            # Get confidence for the current token:
+            confidence = token_confidences[i]
+
+            print(f"Token: {label}, Confidence: {confidence}")
             if current_span is None:
                 current_span = {"start": i, "end": i, "category": cat}
+                current_span["confidence"] = confidence
             else:
                 if current_span["category"] == cat:
                     current_span["end"] = i
@@ -325,10 +330,15 @@ def predict_text_supplementary():
     token_confidences = max_probs.cpu().tolist()
     preds = preds.cpu().tolist()
     results = []
-    for text, pred_seq in zip(texts, preds):
+    for idx, (text, pred_seq) in enumerate(zip(texts, preds)):
+        # Extract this sample's token confidences.
+        sample_confidences = token_confidences[idx]
+
         effective_length = min(len(text), MAX_LEN)
         pred_seq = pred_seq[:effective_length]
-        spans = decode_labels(pred_seq, token_confidences, label_to_category, min_span_length=3)
+        sample_confidences = sample_confidences[:effective_length]
+        print(f"Decoding: {text}")
+        spans = decode_labels(pred_seq, sample_confidences, label_to_category, min_span_length=3)
 
         for span in spans:
             original_phrase = text[span["start"]:span["end"] + 1]
@@ -344,6 +354,8 @@ def predict_text_supplementary():
             new_phrase = text[new_start:new_end + 1]
             if new_phrase.strip().lower() in ALLOWED_WORDS_SET:
                 spans.remove(span)
+            else:
+                text = new_phrase
 
         results.append({"text": text, "flags": spans})
     return jsonify(results)
