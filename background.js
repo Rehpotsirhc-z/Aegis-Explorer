@@ -353,6 +353,8 @@ chrome.runtime.onMessage.addListener(async (request) => {
                 
                 const suppFormData = {"texts": [text]};
 
+                console.log("Supplementary Form Data: ", suppFormData);
+
                 const suppResponse = await fetch(suppTextUrl, {
                     method: "POST",
                     body: JSON.stringify(suppFormData), 
@@ -363,10 +365,6 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
                 const prediction = await response.json();
                 const suppPrediction = await suppResponse.json();
-
-                console.log("Text: ", text);
-                console.log("Prediction: ", prediction);
-                console.log("Supplementary Prediction: ", suppPrediction);
 
                 chrome.storage.local.get(["confidence"]).then((result) => {
                     confidenceThreshold = result.confidence || 0.5;
@@ -393,10 +391,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
                         }
                     });
 
-                    console.log(localCategoryCounter, originalText);
-
                     maxFlagged = Object.entries(localCategoryCounter).reduce((a,b) => (b[1] > a[1] ? b : a), [null, 0])[0];
-                    console.log("maxFlagged", maxFlagged);
                     
                     if (!maxFlagged) {
                         console.log(`Text: ${text} | Prediction: background`);

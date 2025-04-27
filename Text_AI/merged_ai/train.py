@@ -42,7 +42,8 @@ class CNNClassifier(nn.Module):
         return logits
 
 def train_model(model, train_loader, val_loader, num_epochs, learning_rate, device):
-    criterion = nn.CrossEntropyLoss(ignore_index=0)
+    class_weights = torch.tensor([0.05] + [1.0]*len(CATEGORIES), device=device)
+    criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
