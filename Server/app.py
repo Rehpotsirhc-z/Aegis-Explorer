@@ -17,6 +17,7 @@ from torch.quantization import quantize_dynamic
 from dataset import BannedWordDataset
 from text_model import CNNClassifier, MAX_LEN, EMBEDDING_DIM, NUM_CLASSES
 import difflib
+import json
 
 # set number of threads to 8
 # torch.set_num_threads(8)
@@ -34,6 +35,7 @@ try:
 except FileNotFoundError:
     print(f"Whitelist file missing")
 BLACKLIST_FILE = "blacklist.txt"
+BLACKLIST_JSON_FILE = "blacklist.json"
 
 app = Flask(__name__)
 CORS(app)
@@ -97,7 +99,7 @@ def load_word_set(file_path):
 
 
 banned_words = load_word_set(BLACKLIST_FILE)
-
+banned_dict = json.load(open(BLACKLIST_JSON_FILE, "r", encoding="utf-8")) if Path(BLACKLIST_JSON_FILE).exists() else {}
 
 
 def encode_text(text, vocab, max_len):
@@ -151,13 +153,24 @@ def expand_to_word_boundaries(text, start, end):
     A word is defined as a contiguous sequence of non-whitespace characters.
     Returns (new_start, new_end) indices.
     """
+
+    bounded_start = min(start, len(text)-1)
+    bounded_end = max(end, 0)
+
     # Expand to the left.
-    while start > 0 and not text[start - 1].isspace():
-        start -= 1
+    while bounded_start > 0 and not text[bounded_start - 1].isspace():
+        bounded_start -= 1
     # Expand to the right.
-    while end < len(text) - 1 and not text[end + 1].isspace():
-        end += 1
-    return start, end
+    while bounded_end < len(text) - 1 and not text[bounded_end + 1].isspace():
+        bounded_end += 1
+    
+    # Reduce to the left.
+
+    if bounded_end < bounded_start:
+        # If the end index is before the start index, swap them.
+        bounded_start, bounded_end = bounded_end, bounded_start
+
+    return bounded_start, bounded_end
 
 
 # def censor_text(text, max_length=128):
@@ -241,29 +254,29 @@ def predict_text():
         start_time = time.time()
 
         inputs = tokenizer(
-            text, return_tensors="pt", max_length=128, padding=True, truncation=True
+            text, return_tensors="pt", max_length=MAX_LEN, padding=True, truncation=True
         ).to(device)
-
-        okay = True
 
         # for word in banned_words:
         #     if word in text.lower():
+        #         return {
+        #             "class": "profanity",
+        #             "confidence": 1.0,
+        #         }
+            
+        for class_name in banned_dict:
+            for word in banned_dict[class_name]:
+                if word in text.lower():
+                    return {
+                        "class": class_name,
+                        "confidence": 1.0,
+                    }
+
+        # for token in tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]):
+        #     if token.lower() in banned_words:
         #         okay = False
         #         break
-
-        for token in tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]):
-            if token.lower() in banned_words:
-                okay = False
-                break
         # if not okay:
-
-        # if okay:
-        #     # no banned words found, return the prediction
-        #     response = {
-        #         "class": "background",
-        #         "confidence": 1,
-        #     }
-        #     return jsonify(response), 200
 
         print(tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]))
 

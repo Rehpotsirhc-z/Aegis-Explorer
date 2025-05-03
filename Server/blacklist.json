@@ -1,0 +1,25 @@
+{
+    "drugs": [
+        "drunk",
+        "cannabis",
+        "tobacco",
+        "weed",
+        "pot",
+        "inject",
+        "smoke",
+        "booze",
+        "marijuana",
+        "cocaine"
+    ],
+    "explicit": [
+        "fuck",
+        "kill"
+    ],
+    "gambling": [],
+    "games": [],
+    "profanity": [
+        "loser",
+        "shit",
+        "bitch"
+    ]
+}

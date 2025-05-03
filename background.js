@@ -336,20 +336,26 @@ chrome.runtime.onMessage.addListener(async (request) => {
         console.log(request.texts.length, "text to process");
         const categoryCount = {};
 
-        const predictionPromises = request.texts.map(async (text) => {
-            try {
-                if (text.trim().length === 0) {
-                    return;
-                }
+        const allSentences = request.texts.flatMap(rawText => {
+            return rawText
+            .split(/(?<=[.!?])\s+/)
+            .map(s => s.trim())
+            .filter(s => s.length > 0)
+        })
 
+        console.log("sentences", allSentences);
+
+        const predictionPromises = allSentences.map(async (text) => {
+            try {
                 const formData = new FormData();
                 formData.append("text", text);
 
-                const response = await fetch(textUrl, {
-                    method: "POST",
-                    body: formData,
-                });
+                // const response = await fetch(textUrl, {
+                //     method: "POST",
+                //     body: formData,
+                // });
 
+                console.log("Text Data: ", text);
                 
                 const suppFormData = {"texts": [text]};
 
@@ -363,7 +369,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
                     }
                 });
 
-                const prediction = await response.json();
+                // const prediction = await response.json();
                 const suppPrediction = await suppResponse.json();
 
                 chrome.storage.local.get(["confidence"]).then((result) => {

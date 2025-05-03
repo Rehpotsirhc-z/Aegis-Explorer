@@ -2,13 +2,14 @@
 
 ## Roadmap
 
+-   [ ] Update the blacklist layer to use a dictionary so that we can correctly categorize
 -   [ ] Why is text AI training script not using test dataset?
 -   [X] Text AI use confidence
 -   [X] STRT Text sending too much
 -   [X] Set the age to 3--5
 -   [ ] Fix the data images changing themselves to the URL of the website (extract running more than once)
 -   [-] Fix the text AI being so slow
--   [ ] Retrain text AI
+-   [-] Retrain text AI
 
 -   [X] Train the text AI without monetary and social and remove all of those from every file
 -   [X] Make text log to pie chart
