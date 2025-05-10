@@ -2,6 +2,7 @@
 
 ## Roadmap
 
+-   [ ] Fix lazy loading causing images to not disappear
 -   [ ] Update the blacklist layer to use a dictionary so that we can correctly categorize
 -   [ ] Why is text AI training script not using test dataset?
 -   [X] Text AI use confidence

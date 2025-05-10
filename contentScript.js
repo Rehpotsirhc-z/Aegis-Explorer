@@ -4,12 +4,23 @@ const seenText = new Set();
 // set keeping track of image URLs
 const imageUrls = new Set();
 
+const allRealSrcs = new Set();
+
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
 
     const newImageLinks = Array.from(images)
         .filter((img) => img.dataset.approved !== "true")
         .map((img) => {
+
+            const realSrc = img.dataset.src
+                || img.dataset.originalSrc
+                || img.dataset.lazySrc
+                || img.dataset.originalSrc
+                || img.src;
+
+            allRealSrcs.add(realSrc);
+
             if (!img.src.startsWith("data:image/gif")) {
                 if (!img.dataset.originalSrc) {
                     // Only set the originalSrc once, when it has the correct value
@@ -25,7 +36,6 @@ function extractImageLinks() {
                     img.srcset = "";
                 }
                 img.src = "";
-                // // TODO
                 img.alt = "";
 
                 return img.dataset.originalSrc;
@@ -68,6 +78,7 @@ function extractImageLinks() {
 
 function sendImages() {
     const imageLinks = extractImageLinks();
+    console.log(allRealSrcs)
     try {
         if (imageLinks.length > 0) {
             chrome.runtime.sendMessage({ images: imageLinks });
@@ -259,14 +270,57 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
 });
 
-window.addEventListener("load", () => {
-    sendImages();
-    sendText();
-});
+// window.addEventListener("load", () => {
+//     sendImages();
+//     sendText();
+// });
 
-document.addEventListener("DOMContentLoaded", () => {
-    sendImages();
-    sendText();
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//     sendImages();
+//     sendText();
+// });
 
-sendImages();
+// sendImages();
+
+
+function debounce(func, wait = 100) {
+    let t;
+    return () => {
+        clearTimeout(t);
+        t = setTimeout(func, wait);
+    };
+}
+
+;(function() {
+    const lazySend = debounce(() => sendImages(), 1000);
+
+    const srcDesc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+
+    const seenElements = new WeakSet();
+
+    // function resetSeenElements() {
+    //     seenElements.clear();
+    // }
+
+    Object.defineProperty(HTMLImageElement.prototype, 'src', {
+        ...srcDesc,
+        set(value) {
+            console.log('[IMG LOG] Setting src:', value, ' on ', this);
+            srcDesc.set.call(this, value);
+            // sendImages();
+            // if (this.dataset.approved !== 'true' && !seenElements.has(this) && value !== '') {
+                // seenElements.add(this);
+                // lazySend();
+            // }
+
+            if (this.dataset.approved === 'true') return;
+
+            // if (seenElements.has(this)) return;
+
+            // seenElements.add(this);
+            if (value !== '') {
+                lazySend();
+            }
+        }
+    });
+})();
