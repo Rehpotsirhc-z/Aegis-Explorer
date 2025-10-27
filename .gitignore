@@ -7,6 +7,7 @@ AI_Code/training_data
 AI_Code/yolov8n.pt
 Server/models
 Server/output
+Server/local_secrets.py
 Text_AI/dataset
 Text_AI/dataset12_26
 Text_AI/dataset12_27
