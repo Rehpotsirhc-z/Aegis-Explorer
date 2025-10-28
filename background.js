@@ -336,160 +336,110 @@ chrome.runtime.onMessage.addListener(async (request) => {
         console.log(request.texts.length, "text to process");
         const categoryCount = {};
 
+        // Keep existing sentence splitting for accuracy
         const allSentences = request.texts.flatMap(rawText => {
             return rawText
-            .split(/(?<=[.!?])\s+/)
-            .map(s => s.trim())
-            .filter(s => s.length > 0)
-        })
+                .split(/(?<=[.!?])\s+/)
+                .map(s => s.trim())
+                .filter(s => s.length > 0)
+        });
 
         console.log("sentences", allSentences);
 
-        const predictionPromises = allSentences.map(async (text) => {
+        if (allSentences.length === 0) return;
+
+        // Read confidence threshold once
+        const { confidence: storedConfidence } = await chrome.storage.local.get(["confidence"]);
+        const confidenceThreshold = storedConfidence ?? 0.5;
+
+        // Preload content-category toggles once
+        const categories = {
+            profanity: "profanity",
+            explicit: "explicit-content",
+            drugs: "drugs",
+            games: "web-based-games",
+            gambling: "gambling",
+            background: "background",
+        };
+        const categoryKeys = Object.values(categories);
+        const categoryToggles = await chrome.storage.local.get(categoryKeys);
+
+        // Batch sentences to reduce API calls
+        const BATCH_SIZE = 50;
+        const batches = chunk(allSentences, BATCH_SIZE);
+
+        for (const batch of batches) {
             try {
-                const formData = new FormData();
-                formData.append("text", text);
-
-                // const response = await fetch(textUrl, {
-                //     method: "POST",
-                //     body: formData,
-                // });
-
-                console.log("Text Data: ", text);
-                
-                const suppFormData = {"texts": [text]};
-
-                console.log("Supplementary Form Data: ", suppFormData);
-
+                const suppFormData = { texts: batch };
                 const suppResponse = await fetch(suppTextUrl, {
                     method: "POST",
-                    body: JSON.stringify(suppFormData), 
-                    headers: {
-                        "Content-Type": "application/json",
-                    }
+                    body: JSON.stringify(suppFormData),
+                    headers: { "Content-Type": "application/json" },
                 });
 
-                // const prediction = await response.json();
-                const suppPrediction = await suppResponse.json();
+                const suppPredictions = await suppResponse.json(); // [{ text, flags: [{category, confidence}]}]
 
-                chrome.storage.local.get(["confidence"]).then((result) => {
-                    confidenceThreshold = result.confidence || 0.5;
+                // Process each text result
+                for (const result of suppPredictions) {
+                    const text = result.text;
+                    const flags = Array.isArray(result.flags) ? result.flags : [];
 
-                    // Supplementary prediction
-                    const originalText = suppPrediction[0].text;
-                    const categories = suppPrediction[0].flags;
-
-                    console.log("Original Text: ", originalText);
-                    console.log("Categories: ", categories);
-
-                    localCategoryCounter = {
+                    const localCategoryCounter = {
                         profanity: 0,
                         explicit: 0,
                         drugs: 0,
                         games: 0,
                         gambling: 0,
-                    }
+                    };
 
-                    categories.forEach((entry) => {
-                        const confidence = entry.confidence;
-                        if (confidence > confidenceThreshold) {
-                            localCategoryCounter[entry.category] += 1;
+                    flags.forEach((entry) => {
+                        const cat = entry.category;
+                        const conf = Number(entry.confidence) || 0;
+                        if (conf > confidenceThreshold && localCategoryCounter.hasOwnProperty(cat)) {
+                            localCategoryCounter[cat] += 1;
                         }
                     });
 
-                    maxFlagged = Object.entries(localCategoryCounter).reduce((a,b) => (b[1] > a[1] ? b : a), [null, 0])[0];
-                    
+                    // Pick category with most flags above threshold
+                    let maxFlagged = null;
+                    let maxCount = 0;
+                    for (const [cat, cnt] of Object.entries(localCategoryCounter)) {
+                        if (cnt > maxCount) {
+                            maxFlagged = cat;
+                            maxCount = cnt;
+                        }
+                    }
+
                     if (!maxFlagged) {
                         console.log(`Text: ${text} | Prediction: background`);
-                        categoryCount["background"] =
-                            (categoryCount["background"] || 0) + 1;
+                        categoryCount["background"] = (categoryCount["background"] || 0) + 1;
+                        continue;
+                    }
+
+                    const className = maxFlagged;
+                    const storageKey = categories[className];
+                    const isEnabled = categoryToggles[storageKey] ?? true; // default-on behavior
+
+                    if (isEnabled) {
+                        console.log(`Text ${text} | Prediction: ${className}`);
+                        chrome.tabs.query({}, (tabs) => {
+                            tabs.forEach((tab) => {
+                                chrome.tabs.sendMessage(tab.id, {
+                                    action: "removeText",
+                                    text,
+                                }).catch(() => {});
+                            });
+                        });
+                        categoryCount[className] = (categoryCount[className] || 0) + 1;
                     } else {
-                        const className = maxFlagged;
-                        // const { class: className, confidence } = prediction;
-
-
-
-                        // if (confidence > confidenceThreshold) {
-                        console.log(
-                            `Text ${text} | Prediction: ${className}`,
-                        );
-                        const categories = {
-                            profanity: "profanity",
-                            // social: "social-media-and-forums",
-                            // monetary: "monetary-transactions",
-                            explicit: "explicit-content",
-                            drugs: "drugs",
-                            games: "web-based-games",
-                            gambling: "gambling",
-                            background: "background",
-                        };
-
-                        Object.entries(categories).forEach(
-                            ([key, value]) => {
-                                chrome.storage.local
-                                    .get([value])
-                                    .then((result) => {
-                                        if (
-                                            className === key &&
-                                            (result[value] ||
-                                                result[value] ===
-                                                undefined)
-                                        ) {
-                                            console.log(
-                                                "Category: ",
-                                                value,
-                                            );
-
-                                            chrome.tabs.query(
-                                                {},
-                                                (tabs) => {
-                                                    tabs.forEach(
-                                                        (tab) => {
-                                                            chrome.tabs
-                                                                .sendMessage(
-                                                                    tab.id,
-                                                                    {
-                                                                        action: "removeText",
-                                                                        text,
-                                                                    },
-                                                                )
-                                                                .catch(
-                                                                    (
-                                                                        error,
-                                                                    ) => {
-                                                                        console.error(
-                                                                            `Error removing text (${text}):`,
-                                                                            error,
-                                                                        );
-                                                                    },
-                                                                );
-                                                        },
-                                                    );
-                                                },
-                                            );
-                                        }
-                                    });
-                            },
-                        );
-
-                        categoryCount[className] =
-                            (categoryCount[className] || 0) + 1;
-                        // } else {
-                        //     console.log(
-                        //         `Text: ${text} | Prediction: background`,
-                        //     );
-                        //     categoryCount["background"] =
-                        //         (categoryCount["background"] || 0) + 1;
-                        // }
-                    }}
-                );
+                        // Disabled category: treat as background for UI purposes
+                        categoryCount["background"] = (categoryCount["background"] || 0) + 1;
+                    }
+                }
             } catch (error) {
-                console.log(text);
                 console.error(`Error getting predictions`, error);
             }
-        });
-
-        await Promise.all(predictionPromises);
+        }
 
         console.log("Category counts:");
         Object.entries(categoryCount).forEach(([category, count]) => {
@@ -497,3 +447,10 @@ chrome.runtime.onMessage.addListener(async (request) => {
         });
     }
 });
+
+// Small chunk helper for batching
+function chunk(arr, size) {
+    const out = [];
+    for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+    return out;
+}

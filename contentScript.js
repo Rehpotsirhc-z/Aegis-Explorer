@@ -6,6 +6,45 @@ const imageUrls = new Set();
 
 const allRealSrcs = new Set();
 
+// Add a small text queue with debounce + max batch size
+const textQueue = [];
+let textFlushTimer = null;
+const TEXT_BATCH_SIZE = 200;     // max items per message to the background
+const TEXT_FLUSH_DELAY = 400;    // debounce flush delay (ms)
+
+function flushTextQueue() {
+    const batch = textQueue.splice(0, TEXT_BATCH_SIZE);
+    if (batch.length) {
+        try {
+            chrome.runtime.sendMessage({ texts: batch });
+        } catch (e) {
+            console.error("Error sending text batch", e);
+        }
+    }
+    if (textQueue.length) {
+        textFlushTimer = setTimeout(flushTextQueue, TEXT_FLUSH_DELAY);
+    } else {
+        textFlushTimer = null;
+    }
+}
+
+function queueTexts(texts) {
+    const newOnes = [];
+    texts.forEach((t) => {
+        const s = (t || "").trim();
+        if (s && !seenText.has(s)) {
+            seenText.add(s);
+            newOnes.push(s);
+        }
+    });
+    if (newOnes.length) {
+        textQueue.push(...newOnes);
+        if (!textFlushTimer) {
+            textFlushTimer = setTimeout(flushTextQueue, TEXT_FLUSH_DELAY);
+        }
+    }
+}
+
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
 
@@ -152,18 +191,11 @@ function extractSentences() {
 
 function sendText() {
     const textLinks = extractSentences();
-    textLinks.forEach((text) => seenText.add(text.trim()));
+    // enqueue instead of sending immediately
+    queueTexts(textLinks);
 
-    console.log("textLinks", textLinks);
+    console.log("textLinks (queued)", textLinks);
     console.log("seenText", seenText);
-
-    try {
-        if (textLinks.length > 0) {
-            chrome.runtime.sendMessage({ texts: textLinks });
-        }
-    } catch (error) {
-        console.error("Error sending text", error);
-    }
 }
 
 function escapeRegExp(string) {

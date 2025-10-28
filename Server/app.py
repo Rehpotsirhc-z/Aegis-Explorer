@@ -2,20 +2,20 @@ import os
 import time
 from pathlib import Path
 from flask import Flask, request, jsonify
-from transformers import (
-    BertTokenizer,
-    BertForSequenceClassification,
-    BertTokenizerFast,
-    BertForTokenClassification,
-)
+# from transformers import (
+#     BertTokenizer,
+#     BertForSequenceClassification,
+#     BertTokenizerFast,
+#     BertForTokenClassification,
+# )
 from flask_cors import CORS
 from ultralytics import YOLO
 import torch
 from PIL import Image
 from io import BytesIO
-from torch.quantization import quantize_dynamic
-from dataset import BannedWordDataset
-from text_model import CNNClassifier, MAX_LEN, EMBEDDING_DIM, NUM_CLASSES
+# from torch.quantization import quantize_dynamic
+# from dataset import BannedWordDataset
+# from text_model import CNNClassifier, MAX_LEN, EMBEDDING_DIM, NUM_CLASSES
 import difflib
 import json
 from openai import OpenAI
@@ -127,38 +127,38 @@ img_model.to(device)
 # text_supp_model = BertForTokenClassification.from_pretrained(SUPPLEMENTARY_MODEL_PATH)
 # text_supp_model.eval()
 
-CORPUS_FILE = "corpus.txt"
-MAX_LEN = 256
-CONFIDENCE_THRESHOLD = 0.99  # if max probability is below this, mark as background
+# CORPUS_FILE = "corpus.txt"
+# MAX_LEN = 256
+# CONFIDENCE_THRESHOLD = 0.99  # if max probability is below this, mark as background
 
-# Load the dataset (to get vocabulary and label mapping)
-dataset_obj = BannedWordDataset(BANNED_DIR, CORPUS_FILE, max_len=MAX_LEN)
-vocab = dataset_obj.vocab
-label_to_category = dataset_obj.label_to_category
+# # Load the dataset (to get vocabulary and label mapping)
+# dataset_obj = BannedWordDataset(BANNED_DIR, CORPUS_FILE, max_len=MAX_LEN)
+# vocab = dataset_obj.vocab
+# label_to_category = dataset_obj.label_to_category
 
 # Build model.
-vocab_size = len(vocab)
-supp_text_model = CNNClassifier(vocab_size, EMBEDDING_DIM, NUM_CLASSES, MAX_LEN)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-supp_text_model.load_state_dict(torch.load("cnn_model.pt", map_location=device))
-supp_text_model.to(device)
-supp_text_model.eval()
+# vocab_size = len(vocab)
+# supp_text_model = CNNClassifier(vocab_size, EMBEDDING_DIM, NUM_CLASSES, MAX_LEN)
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# supp_text_model.load_state_dict(torch.load("cnn_model.pt", map_location=device))
+# supp_text_model.to(device)
+# supp_text_model.eval()
 
-tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
-text_model = BertForSequenceClassification.from_pretrained(
-    "bert-base-uncased", num_labels=6
-)
+# tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
+# text_model = BertForSequenceClassification.from_pretrained(
+#     "bert-base-uncased", num_labels=6
+# )
 
-text_model.load_state_dict(
-    torch.load("models/text/model_v7.pth", map_location=device),
-    strict=False,
-)
+# text_model.load_state_dict(
+#     torch.load("models/text/model_v7.pth", map_location=device),
+#     strict=False,
+# )
 
-# text_model = quantize_dynamic(text_model, {torch.nn.Linear}, dtype=torch.qint8)
-text_model.to(device)
+# # text_model = quantize_dynamic(text_model, {torch.nn.Linear}, dtype=torch.qint8)
+# text_model.to(device)
 
 
-text_model.eval()
+# text_model.eval()
 
 
 def load_word_set(file_path):
