@@ -1,8 +1,6 @@
-// baseUrl = "http://14.187.67.90:10984";
-baseUrl = "http://localhost:5000";
+baseUrl = "https://aegisexplorer.org/server";
 imageUrl = `${baseUrl}/predict_image`;
 textUrl = `${baseUrl}/predict_text`;
-suppTextUrl = `${baseUrl}/predict_text_supplementary`;
 
 // // set keeping track of image URLs
 // const imageUrls = new Set();
@@ -97,7 +95,6 @@ function recordCategory(category) {
         let log = Array.from(result[`${category}-log`] || []).filter(
             (time) => time > thirtyDaysAgo(),
         );
-        console.log("Log: ", result);
         chrome.storage.local.set({
             [`${category}-log`]: [...log, currentTime],
         });
@@ -113,7 +110,6 @@ function thirtyDaysAgo() {
 setInterval(() => {
     chrome.storage.local.get(["onlineLog"]).then((result) => {
         log = Array.from(result.onlineLog || []);
-        console.log(log);
 
         let time = new Date().getTime();
         log.push(time);
@@ -337,19 +333,19 @@ chrome.runtime.onMessage.addListener(async (request) => {
         const categoryCount = {};
 
         // Keep existing sentence splitting for accuracy
-        const allSentences = request.texts.flatMap(rawText => {
+        const allSentences = request.texts.flatMap((rawText) => {
             return rawText
                 .split(/(?<=[.!?])\s+/)
-                .map(s => s.trim())
-                .filter(s => s.length > 0)
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0);
         });
-
-        console.log("sentences", allSentences);
 
         if (allSentences.length === 0) return;
 
         // Read confidence threshold once
-        const { confidence: storedConfidence } = await chrome.storage.local.get(["confidence"]);
+        const { confidence: storedConfidence } = await chrome.storage.local.get(
+            ["confidence"],
+        );
         const confidenceThreshold = storedConfidence ?? 0.5;
 
         // Preload content-category toggles once
@@ -370,19 +366,21 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
         for (const batch of batches) {
             try {
-                const suppFormData = { texts: batch };
-                const suppResponse = await fetch(suppTextUrl, {
+                const textFormData = { texts: batch };
+                const textResponse = await fetch(textUrl, {
                     method: "POST",
-                    body: JSON.stringify(suppFormData),
+                    body: JSON.stringify(textFormData),
                     headers: { "Content-Type": "application/json" },
                 });
 
-                const suppPredictions = await suppResponse.json(); // [{ text, flags: [{category, confidence}]}]
+                const textPredictions = await textResponse.json(); // [{ text, flags: [{category, confidence}]}]
 
                 // Process each text result
-                for (const result of suppPredictions) {
+                for (const result of textPredictions) {
                     const text = result.text;
-                    const flags = Array.isArray(result.flags) ? result.flags : [];
+                    const flags = Array.isArray(result.flags)
+                        ? result.flags
+                        : [];
 
                     const localCategoryCounter = {
                         profanity: 0,
@@ -395,7 +393,10 @@ chrome.runtime.onMessage.addListener(async (request) => {
                     flags.forEach((entry) => {
                         const cat = entry.category;
                         const conf = Number(entry.confidence) || 0;
-                        if (conf > confidenceThreshold && localCategoryCounter.hasOwnProperty(cat)) {
+                        if (
+                            conf > confidenceThreshold &&
+                            localCategoryCounter.hasOwnProperty(cat)
+                        ) {
                             localCategoryCounter[cat] += 1;
                         }
                     });
@@ -403,7 +404,9 @@ chrome.runtime.onMessage.addListener(async (request) => {
                     // Pick category with most flags above threshold
                     let maxFlagged = null;
                     let maxCount = 0;
-                    for (const [cat, cnt] of Object.entries(localCategoryCounter)) {
+                    for (const [cat, cnt] of Object.entries(
+                        localCategoryCounter,
+                    )) {
                         if (cnt > maxCount) {
                             maxFlagged = cat;
                             maxCount = cnt;
@@ -411,8 +414,8 @@ chrome.runtime.onMessage.addListener(async (request) => {
                     }
 
                     if (!maxFlagged) {
-                        console.log(`Text: ${text} | Prediction: background`);
-                        categoryCount["background"] = (categoryCount["background"] || 0) + 1;
+                        categoryCount["background"] =
+                            (categoryCount["background"] || 0) + 1;
                         continue;
                     }
 
@@ -424,16 +427,20 @@ chrome.runtime.onMessage.addListener(async (request) => {
                         console.log(`Text ${text} | Prediction: ${className}`);
                         chrome.tabs.query({}, (tabs) => {
                             tabs.forEach((tab) => {
-                                chrome.tabs.sendMessage(tab.id, {
-                                    action: "removeText",
-                                    text,
-                                }).catch(() => {});
+                                chrome.tabs
+                                    .sendMessage(tab.id, {
+                                        action: "removeText",
+                                        text,
+                                    })
+                                    .catch(() => {});
                             });
                         });
-                        categoryCount[className] = (categoryCount[className] || 0) + 1;
+                        categoryCount[className] =
+                            (categoryCount[className] || 0) + 1;
                     } else {
                         // Disabled category: treat as background for UI purposes
-                        categoryCount["background"] = (categoryCount["background"] || 0) + 1;
+                        categoryCount["background"] =
+                            (categoryCount["background"] || 0) + 1;
                     }
                 }
             } catch (error) {

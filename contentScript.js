@@ -9,8 +9,8 @@ const allRealSrcs = new Set();
 // Add a small text queue with debounce + max batch size
 const textQueue = [];
 let textFlushTimer = null;
-const TEXT_BATCH_SIZE = 200;     // max items per message to the background
-const TEXT_FLUSH_DELAY = 400;    // debounce flush delay (ms)
+const TEXT_BATCH_SIZE = 200; // max items per message to the background
+const TEXT_FLUSH_DELAY = 400; // debounce flush delay (ms)
 
 function flushTextQueue() {
     const batch = textQueue.splice(0, TEXT_BATCH_SIZE);
@@ -51,12 +51,12 @@ function extractImageLinks() {
     const newImageLinks = Array.from(images)
         .filter((img) => img.dataset.approved !== "true")
         .map((img) => {
-
-            const realSrc = img.dataset.src
-                || img.dataset.originalSrc
-                || img.dataset.lazySrc
-                || img.dataset.originalSrc
-                || img.src;
+            const realSrc =
+                img.dataset.src ||
+                img.dataset.originalSrc ||
+                img.dataset.lazySrc ||
+                img.dataset.originalSrc ||
+                img.src;
 
             allRealSrcs.add(realSrc);
 
@@ -96,7 +96,6 @@ function extractImageLinks() {
             try {
                 url = backgroundImage.match(/url\(["']?([^"']*)["']?\)/)[1];
                 if (element.dataset.approved !== "true") {
-                    console.log("Background image found:", url);
                     // seenImages.add(url);
                     // if (!seenImages.has(url)) {
                     newImageLinks.push(url);
@@ -111,13 +110,11 @@ function extractImageLinks() {
         }
     });
 
-    console.log(`${newImageLinks.length} new images`);
     return newImageLinks;
 }
 
 function sendImages() {
     const imageLinks = extractImageLinks();
-    console.log(allRealSrcs)
     try {
         if (imageLinks.length > 0) {
             chrome.runtime.sendMessage({ images: imageLinks });
@@ -156,6 +153,8 @@ function extractSentences() {
     }
 
     function extractTextFromNode(node) {
+        if (!node) return; // Add null check
+
         if (node.nodeType === Node.TEXT_NODE) {
             const parent = node.parentElement;
             if (
@@ -163,7 +162,7 @@ function extractSentences() {
                 isVisible(parent) &&
                 !excludedTags.has(parent.tagName.toLowerCase())
             ) {
-                textContent = node.textContent.trim();
+                const textContent = node.textContent.trim();
                 if (textContent !== "") {
                     sentences.push(textContent);
                 }
@@ -193,9 +192,6 @@ function sendText() {
     const textLinks = extractSentences();
     // enqueue instead of sending immediately
     queueTexts(textLinks);
-
-    console.log("textLinks (queued)", textLinks);
-    console.log("seenText", seenText);
 }
 
 function escapeRegExp(string) {
@@ -314,7 +310,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
 // sendImages();
 
-
 function debounce(func, wait = 100) {
     let t;
     return () => {
@@ -323,10 +318,13 @@ function debounce(func, wait = 100) {
     };
 }
 
-;(function() {
+(function () {
     const lazySend = debounce(() => sendImages(), 1000);
 
-    const srcDesc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    const srcDesc = Object.getOwnPropertyDescriptor(
+        HTMLImageElement.prototype,
+        "src",
+    );
 
     const seenElements = new WeakSet();
 
@@ -334,25 +332,24 @@ function debounce(func, wait = 100) {
     //     seenElements.clear();
     // }
 
-    Object.defineProperty(HTMLImageElement.prototype, 'src', {
+    Object.defineProperty(HTMLImageElement.prototype, "src", {
         ...srcDesc,
         set(value) {
-            console.log('[IMG LOG] Setting src:', value, ' on ', this);
             srcDesc.set.call(this, value);
             // sendImages();
             // if (this.dataset.approved !== 'true' && !seenElements.has(this) && value !== '') {
-                // seenElements.add(this);
-                // lazySend();
+            // seenElements.add(this);
+            // lazySend();
             // }
 
-            if (this.dataset.approved === 'true') return;
+            if (this.dataset.approved === "true") return;
 
             // if (seenElements.has(this)) return;
 
             // seenElements.add(this);
-            if (value !== '') {
+            if (value !== "") {
                 lazySend();
             }
-        }
+        },
     });
 })();

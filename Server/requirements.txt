@@ -1,5 +1,4 @@
-Flask
-Flask-Cors
+fastapi[standard]
 nltk
 numpy
 pandas
@@ -11,3 +10,4 @@ torchvision
 transformers
 Werkzeug
 ultralytics
+openai

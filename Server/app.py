@@ -1,29 +1,35 @@
 import os
+
 import time
 from pathlib import Path
-from flask import Flask, request, jsonify
+
 # from transformers import (
 #     BertTokenizer,
 #     BertForSequenceClassification,
 #     BertTokenizerFast,
 #     BertForTokenClassification,
 # )
-from flask_cors import CORS
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from ultralytics import YOLO
 import torch
 from PIL import Image
 from io import BytesIO
+
 # from torch.quantization import quantize_dynamic
 # from dataset import BannedWordDataset
 # from text_model import CNNClassifier, MAX_LEN, EMBEDDING_DIM, NUM_CLASSES
 import difflib
 import json
 from openai import OpenAI
+
 try:
     from local_secrets import OPENAI_API_KEY as _OPENAI_API_KEY
 except Exception:
     _OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=_OPENAI_API_KEY) if _OPENAI_API_KEY else OpenAI()
+
 
 # Helper: classify texts with OpenAI and return your expected shape
 def classify_texts_openai(texts):
@@ -32,7 +38,10 @@ def classify_texts_openai(texts):
     Categories allowed: profanity, explicit, drugs, games, gambling
     """
     # Hard clamp input length for cost/safety
-    items = [{"id": i, "text": (t if isinstance(t, str) else str(t))[:1000]} for i, t in enumerate(texts)]
+    items = [
+        {"id": i, "text": (t if isinstance(t, str) else str(t))[:1000]}
+        for i, t in enumerate(texts)
+    ]
 
     system_prompt = (
         "You are a strict K-12 content safety classifier. "
@@ -40,19 +49,17 @@ def classify_texts_openai(texts):
         "profanity, explicit, drugs, games, gambling. "
         "Definitions: "
         "- profanity: vulgar or obscene language and slurs; "
-        "- explicit: sexual content, sexual acts, nudity, sexting; anything sexual involving minors is explicit; "
+        "- explicit: sexual content, sexual acts, nudity, sexting; anything sexual involving minors is explicit; ALSO INCLUDES: graphic violence, gore, severe physical harm, and detailed depictions of injury or death; "
         "- drugs: illegal drugs, misuse of prescription drugs, paraphernalia; "
         "- games: references that primarily direct to or discuss web-based or online games; "
         "- gambling: betting, wagering, casinos, lotteries. "
         "If none apply, return an empty flags array. "
-        "Output JSON only with a top-level object: {\"results\":[{"
-        "\"id\": number, \"flags\":[{\"category\": string, \"confidence\": number}] }...]}. "
+        'Output JSON only with a top-level object: {"results":[{'
+        '"id": number, "flags":[{"category": string, "confidence": number}] }...]}. '
         "confidence is a number in [0,1]. Do not rewrite or summarize the text."
     )
 
-    user_payload = {
-        "items": items
-    }
+    user_payload = {"items": items}
 
     # Use JSON mode for structured output
     resp = client.chat.completions.create(
@@ -61,7 +68,7 @@ def classify_texts_openai(texts):
         response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": json.dumps(user_payload, ensure_ascii=False)}
+            {"role": "user", "content": json.dumps(user_payload, ensure_ascii=False)},
         ],
     )
 
@@ -72,13 +79,17 @@ def classify_texts_openai(texts):
         # Fallback: everything safe
         return [{"text": t, "flags": []} for t in texts]
 
-    results_by_id = {r.get("id"): r for r in data.get("results", []) if isinstance(r, dict)}
+    results_by_id = {
+        r.get("id"): r for r in data.get("results", []) if isinstance(r, dict)
+    }
     allowed = {"profanity", "explicit", "drugs", "games", "gambling"}
 
     out = []
     for i, t in enumerate(texts):
         entry = results_by_id.get(i, {})
-        flags_raw = entry.get("flags", []) if isinstance(entry.get("flags", []), list) else []
+        flags_raw = (
+            entry.get("flags", []) if isinstance(entry.get("flags", []), list) else []
+        )
         flags = []
         for f in flags_raw:
             try:
@@ -92,6 +103,7 @@ def classify_texts_openai(texts):
         out.append({"text": t, "flags": flags})
     return out
 
+
 # set number of threads to 8
 # torch.set_num_threads(8)
 
@@ -100,7 +112,7 @@ BANNED_DIR = "banned"
 ALLOWED_WORDS_SET = set()
 # Load allowed words from the whitelist file
 try:
-    with open(WHITELIST_FILE, 'r') as f:
+    with open(WHITELIST_FILE, "r") as f:
         for line in f:
             word = line.strip().lower()
             if word:  # Ensure it's not empty
@@ -110,8 +122,15 @@ except FileNotFoundError:
 BLACKLIST_FILE = "blacklist.txt"
 BLACKLIST_JSON_FILE = "blacklist.json"
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
@@ -172,7 +191,11 @@ def load_word_set(file_path):
 
 
 banned_words = load_word_set(BLACKLIST_FILE)
-banned_dict = json.load(open(BLACKLIST_JSON_FILE, "r", encoding="utf-8")) if Path(BLACKLIST_JSON_FILE).exists() else {}
+banned_dict = (
+    json.load(open(BLACKLIST_JSON_FILE, "r", encoding="utf-8"))
+    if Path(BLACKLIST_JSON_FILE).exists()
+    else {}
+)
 
 
 def encode_text(text, vocab, max_len):
@@ -185,6 +208,7 @@ def encode_text(text, vocab, max_len):
     else:
         indices = indices[:max_len]
     return torch.tensor(indices, dtype=torch.long)
+
 
 def decode_labels(label_seq, token_confidences, label_to_category, min_span_length=3):
     """
@@ -217,8 +241,11 @@ def decode_labels(label_seq, token_confidences, label_to_category, min_span_leng
     if current_span is not None:
         spans.append(current_span)
     # Filter out spans shorter than min_span_length.
-    spans = [span for span in spans if (span["end"] - span["start"] + 1) >= min_span_length]
+    spans = [
+        span for span in spans if (span["end"] - span["start"] + 1) >= min_span_length
+    ]
     return spans
+
 
 def expand_to_word_boundaries(text, start, end):
     """
@@ -227,7 +254,7 @@ def expand_to_word_boundaries(text, start, end):
     Returns (new_start, new_end) indices.
     """
 
-    bounded_start = min(start, len(text)-1)
+    bounded_start = min(start, len(text) - 1)
     bounded_end = max(end, 0)
 
     # Expand to the left.
@@ -236,7 +263,7 @@ def expand_to_word_boundaries(text, start, end):
     # Expand to the right.
     while bounded_end < len(text) - 1 and not text[bounded_end + 1].isspace():
         bounded_end += 1
-    
+
     # Reduce to the left.
 
     if bounded_end < bounded_start:
@@ -285,18 +312,12 @@ def saveImgToFile(img, path):
     img.save(path)
 
 
-@app.route("/predict_image", methods=["POST"])
-def predict_image():
-    if "image" not in request.files:
-        return jsonify({"error": "No image part"}), 400
-
-    file = request.files["image"]
-
-    if file.filename == "":
-        return jsonify({"error": "No selected image"}), 400
-
+@app.post("/predict_image")
+async def predict_image(image: UploadFile = File(...)):
     try:
-        img = Image.open(BytesIO(file.read()))
+        img_bytes = await image.read()
+        img = Image.open(BytesIO(img_bytes))
+
         results = img_model(img)
         predictions = results[0].boxes
 
@@ -310,177 +331,24 @@ def predict_image():
             ]
         }
 
-        return jsonify(response), 200
+        return JSONResponse(response)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return JSONResponse({"error": str(e)}, status_code=500)
 
 
-# @app.route("/predict_text", methods=["POST"])
-# def predict_text():
-#     if "text" not in request.form:
-#         return jsonify({"error": "No text part"}), 400
+@app.post("/predict_text")
+async def predict_text(payload: dict):
+    if "texts" not in payload:
+        return JSONResponse({"error": "Missing 'texts' field"}, status_code=400)
 
-#     text = request.form["text"]
-
-#     try:
-#         start_time = time.time()
-
-#         inputs = tokenizer(
-#             text, return_tensors="pt", max_length=MAX_LEN, padding=True, truncation=True
-#         ).to(device)
-
-#         # for word in banned_words:
-#         #     if word in text.lower():
-#         #         return {
-#         #             "class": "profanity",
-#         #             "confidence": 1.0,
-#         #         }
-            
-#         for class_name in banned_dict:
-#             for word in banned_dict[class_name]:
-#                 if word in text.lower():
-#                     return {
-#                         "class": class_name,
-#                         "confidence": 1.0,
-#                     }
-
-#         # for token in tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]):
-#         #     if token.lower() in banned_words:
-#         #         okay = False
-#         #         break
-#         # if not okay:
-
-#         print(tokenizer.convert_ids_to_tokens(inputs["input_ids"][0]))
-
-#         outputs = text_model(**inputs)
-#         prediction = torch.argmax(outputs.logits, dim=1).item()
-
-#         # confidence = torch.nn.functional.softmax(outputs.logits, dim=1).tolist()[0]
-#         confidence = torch.softmax(outputs.logits, dim=1).tolist()[0]
-
-#         class_names = [
-#             "drugs",
-#             "explicit",
-#             "gambling",
-#             "games",
-#             # "monetary",
-#             "profanity",
-#             "background",
-#             # "social",
-#         ]
-#         idx_to_name = {index: name for index, name in enumerate(class_names)}
-
-#         response = {
-#             "class": idx_to_name[prediction],
-#             "confidence": confidence[prediction],
-#         }
-
-#         end_time = time.time()
-#         elapsed_time = end_time - start_time
-
-#         print(f"{response} ({elapsed_time:.4f})")
-
-#         # print(response, end_time - start_time)
-
-#         return jsonify(response), 200
-#     except Exception as e:
-#         print(str(e))
-#         return jsonify({"error": str(e)}), 500
-
-# @app.route('/predict_text_supplementary', methods=['POST'])
-# def predict_text_supplementary():
-#     data = request.get_json()
-#     if not data or "texts" not in data:
-#         return jsonify({"error": "Provide a JSON payload with a 'texts' key containing a list of texts."}), 400
-#     texts = data["texts"]
-#     if not isinstance(texts, list):
-#         return jsonify({"error": "'texts' must be a list."}), 400
-
-#     # Encode texts into tensor batch.
-#     batch = []
-#     for text in texts:
-#         encoded = encode_text(text, vocab, MAX_LEN)
-#         batch.append(encoded)
-#     batch = torch.stack(batch)  # [batch_size, MAX_LEN]
-#     batch = batch.to(device)
-
-#     with torch.no_grad():
-#         logits = supp_text_model(batch)  # [batch_size, MAX_LEN, NUM_CLASSES]
-#         probs = torch.softmax(logits, dim=-1)  # [batch_size, MAX_LEN, NUM_CLASSES]
-#         max_probs, preds = torch.max(probs, dim=-1)  # both: [batch_size, MAX_LEN]
-#         # If confidence is low, set the prediction to background (0).
-#         # print(max_probs)
-#         preds[max_probs < CONFIDENCE_THRESHOLD] = 0
-
-#     token_confidences = max_probs.cpu().tolist()
-#     preds = preds.cpu().tolist()
-#     results = []
-#     for idx, (text, pred_seq) in enumerate(zip(texts, preds)):
-#         # Extract this sample's token confidences.
-#         sample_confidences = token_confidences[idx]
-
-#         effective_length = min(len(text), MAX_LEN)
-#         pred_seq = pred_seq[:effective_length]
-#         sample_confidences = sample_confidences[:effective_length]
-#         print(f"Decoding: {text}")
-#         spans = decode_labels(pred_seq, sample_confidences, label_to_category, min_span_length=3)
-
-#         for span in spans:
-#             original_phrase = text[span["start"]:span["end"] + 1]
-#             if original_phrase.strip().lower() in ALLOWED_WORDS_SET:
-#                 spans.remove(span)  # Remove this span if it's in the whitelist
-
-#         # Expand spans to word boundaries
-#         for span in spans:
-#             start, end = span["start"], span["end"]
-#             new_start, new_end = expand_to_word_boundaries(text, start, end)
-#             span["start"], span["end"] = new_start, new_end
-            
-#             new_phrase = text[new_start:new_end + 1]
-#             if new_phrase.strip().lower() in ALLOWED_WORDS_SET:
-#                 spans.remove(span)
-#             else:
-#                 text = new_phrase
-
-#         results.append({"text": text, "flags": spans})
-#     return jsonify(results)
-
-@app.route('/predict_text_supplementary', methods=['POST'])
-def predict_text_supplementary():
-    data = request.get_json()
-    if not data or "texts" not in data:
-        return jsonify({"error": "Provide a JSON payload with a 'texts' key containing a list of texts."}), 400
-    texts = data["texts"]
+    texts = payload["texts"]
     if not isinstance(texts, list):
-        return jsonify({"error": "'texts' must be a list."}), 400
+        return JSONResponse({"error": "'texts' must be a list"}, status_code=400)
 
     try:
         results = classify_texts_openai(texts)
-        return jsonify(results), 200
+        return JSONResponse(results)
     except Exception as e:
-        print(f"OpenAI classification error: {e}")
-        # Graceful fallback: mark everything as background (no flags)
-        return jsonify([{"text": t, "flags": []} for t in texts]), 200
-
-# Optional: also route /predict_text through OpenAI for single-text compatibility
-@app.route("/predict_text", methods=["POST"])
-def predict_text():
-    if "text" not in request.form:
-        return jsonify({"error": "No text part"}), 400
-    text = request.form["text"]
-    try:
-        result = classify_texts_openai([text])[0]
-        # Keep existing response shape for this endpoint: { class, confidence }
-        # Pick the max-confidence category if any, else background.
-        if result["flags"]:
-            best = max(result["flags"], key=lambda f: f["confidence"])
-            return jsonify({"class": best["category"], "confidence": best["confidence"]}), 200
-        return jsonify({"class": "background", "confidence": 1.0}), 200
-    except Exception as e:
-        print(f"OpenAI classification error: {e}")
-        return jsonify({"class": "background", "confidence": 1.0}), 200
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+        print("OpenAI classification error:", e)
+        return JSONResponse([{"text": t, "flags": []} for t in texts])
