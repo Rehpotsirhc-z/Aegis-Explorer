@@ -1,0 +1,77 @@
+baseURL: https://aegisexplorer.org/
+languageCode: en-us
+title: Aegis Explorer
+
+module:
+  imports:
+    - path: github.com/imfing/hextra
+
+params:
+  navbar:
+    displayTitle: true
+    displayLogo: true
+    logo:
+      path: /logo.png
+      # dark: images/logo-dark.svg
+      link: /
+      width: 40
+      height: 40
+    width: wide
+
+  footer:
+    enable: true
+    displayCopyright: false
+    displayPoweredBy: false
+    width: normal
+
+  page:
+    # full (100%), wide (90rem), normal (80rem)
+    width: normal
+    # tabs:
+    #   sync: true
+
+  theme:
+    # light | dark | system
+    default: system
+    displayToggle: true
+
+markup:
+  highlight:
+    noClasses: false
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      passthrough:
+        delimiters:
+          block: [['\[', '\]'], ["$$", "$$"]]
+          inline: [['\(', '\)']]
+        enable: true
+
+menu:
+  main:
+    - identifier: documentation
+      name: Documentation
+      pageRef: /docs
+      weight: 1
+      params:
+        type: link
+        icon: book-open
+    - identifier: demo
+      name: Demo
+      pageRef: /demo
+      weight: 2
+      params:
+        type: link
+        icon: play
+    - name: Install
+      weight: 3
+      url: "https://chromewebstore.google.com/detail/aaepaimdjblkleipgbkgmokokdmdhpob"
+      params:
+        external: true
+        type: link
+        icon: download
+    - name: Search
+      weight: 4
+      params:
+        type: search
