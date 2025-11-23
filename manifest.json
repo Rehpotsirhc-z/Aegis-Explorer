@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Aegis Explorer",
-    "version": "1.0",
+    "version": "2.0",
     "description": "Aegis Explorer protects children online by detecting and blocking potentially harmful images and text using customizable filters.",
     "options_page": "settings.html",
     "permissions": ["storage"],
