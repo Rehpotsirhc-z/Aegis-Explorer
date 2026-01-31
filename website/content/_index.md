@@ -22,21 +22,18 @@ layout: hextra-home
 
 {{< cards >}}
   {{< card 
-      link="/" 
       title="Real-Time Content Filtering" 
       image="real-time_content_filtering.png"
       subtitle="AI scans every page instantly to detect and block harmful images and text before they appear." 
   >}}
 
   {{< card 
-      link="/" 
       title="Powerful Usage Statistics" 
       image="powerful_usage_statistics_1.png"
       subtitle="Activity logs help you understand what was filtered and when the extension was active."
   >}}
 
   {{< card 
-      link="/" 
       title="Extensible Presets" 
       image="extensible_presets.png"
       subtitle="Fine-tune filtering behavior with customizable categories, sensitivity levels, and safety profiles."

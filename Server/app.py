@@ -28,7 +28,7 @@ def classify_texts_openai(texts):
     """
     # Hard clamp input length for cost/safety
     items = [
-        {"id": i, "text": (t if isinstance(t, str) else str(t))[:1000]}
+        {"id": i, "text": (t if isinstance(t, str) else str(t))[:2000]}
         for i, t in enumerate(texts)
     ]
 
@@ -38,10 +38,10 @@ def classify_texts_openai(texts):
         "profanity, explicit, drugs, games, gambling. "
         "Definitions: "
         "- profanity: vulgar or obscene language and slurs; "
-        "- explicit: sexual content, sexual acts, nudity, sexting; anything sexual involving minors is explicit; ALSO INCLUDES: graphic violence, gore, severe physical harm, and detailed depictions of injury or death; "
-        "- drugs: illegal drugs, misuse of prescription drugs, paraphernalia; "
-        "- games: references that primarily direct to or discuss web-based or online games; "
-        "- gambling: betting, wagering, casinos, lotteries. "
+        '- explicit: sexual content, sexual acts, nudity, sexting; anything sexual involving minors is explicit; any language hinting at NSFW (e.g. "Bet her cheeks are showing", or "Sore asshohohole"); ALSO INCLUDES: graphic violence, gore, severe physical harm, detailed depictions of injury or death (e.g. "mixed with skin and blood"); ALSO INCLUDES: content that encourages, directs, or nudges the viewer toward NSFW material elsewhere (e.g., comments linking to NSFW subreddits or websites ("This is literally r/meatcrayon (NSFW sub)"), suggestions to "check the uncensored version," or remarks implying explicit content off-platform such as "this gets way worse later" or "look up the uncut scene").'
+        '- drugs: illegal drugs, misuse of prescription drugs, paraphernalia; any mentions of drug use, buying, selling, or seeking drugs (e.g. "cocaine" or "marijuana")'
+        "- games: references that primarily direct to or discuss games; promoting games or purchases in games; "
+        "- gambling: betting, wagering, casinos, lotteries. (e.g. 'bet', 'wager', 'casino', 'poker', 'lottery', 'slots', 'BetMGM'). "
         "If none apply, return an empty flags array. "
         'Output JSON only with a top-level object: {"results":[{'
         '"id": number, "flags":[{"category": string, "confidence": number}] }...]}. '
