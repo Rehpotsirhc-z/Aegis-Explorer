@@ -1,41 +1,97 @@
+/* ============================================================
+   Aegis Explorer - Global Styles
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary: #4f6ef7;
+    --primary-hover: #3b5de7;
+    --primary-light: #eef1fe;
+    --danger: #ef4444;
+    --danger-hover: #dc2626;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --bg: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-input: #f1f5f9;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: all 0.2s ease;
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: #d9d9d9;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
     margin: 0;
     width: 100vw;
     height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    line-height: 1.3;
 }
 
 .password-field {
-    background-color: #383838;
-    color: #ffffff;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
+    background-color: var(--bg-input);
+    color: var(--text);
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border);
     width: 100%;
-    max-width: 40%;
+    max-width: 400px;
     text-align: center;
     outline: none;
+    font-size: 15px;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.password-field:focus {
+    border-color: var(--primary);
+    background-color: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.15);
 }
 
 .password-field::placeholder {
-    color: #c1c1c1;
+    color: var(--text-muted);
 }
 
 .rounded-button {
-    background-color: #757575;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 25px;
-    padding-right: 25px;
+    background-color: var(--primary);
+    padding: 12px 28px;
     color: white;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.01em;
 }
 
 .rounded-button:hover {
-    background-color: #4d4d4d;
-    color: #c1c1c1;
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.rounded-button:active {
+    transform: translateY(0);
 }

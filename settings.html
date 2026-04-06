@@ -11,6 +11,7 @@
 
   <body>
     <div class="sidebar">
+      <div class="sidebar-brand">Aegis Explorer</div>
       <ul>
         <li><button class="tablink" data-href="#blocking">Blocking</button></li>
         <li>
@@ -25,8 +26,8 @@
     <div class="content">
       <div id="blocking" class="tabcontent">
         <h1 class="tabcontent-title">Blocking</h1>
-        <!-- TODO remove data target -->
-        <!-- REMOVE VALUE -->
+        <p class="tabcontent-subtitle">Select an age preset or customize which content categories to block.</p>
+
         <div class="blocking-preset-group" id="ages-3-to-5-group">
           <div
             class="blocking-preset"
@@ -39,23 +40,22 @@
               name="blocking"
               value="ages-3-to-5"
             />
-            <label for="ages-3-to-5-radio">Ages 3–5</label>
+            <label for="ages-3-to-5-radio">Ages 3 &ndash; 5</label>
             <button class="expand-button" id="ages-3-to-5-expand-button">
-              ->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
           </div>
           <div class="blocking-preset-expanded" id="ages-3-to-5-expanded">
             <ul>
               <li>Profanity</li>
               <li>Web-Based Games</li>
-              <!-- <li>Social Media / Forums</li> -->
-              <!-- <li>Monetary Transactions</li> -->
               <li>Explicit Content</li>
               <li>Drugs</li>
               <li>Gambling</li>
             </ul>
           </div>
         </div>
+
         <div class="blocking-preset-group" id="ages-6-to-12-group">
           <div
             class="blocking-preset"
@@ -68,22 +68,21 @@
               name="blocking"
               value="ages-6-to-12"
             />
-            <label for="ages-6-to-12-radio">Ages 6–12</label>
+            <label for="ages-6-to-12-radio">Ages 6 &ndash; 12</label>
             <button class="expand-button" id="ages-6-to-12-expand-button">
-              ->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
           </div>
           <div class="blocking-preset-expanded" id="ages-6-to-12-expanded">
             <ul>
               <li>Profanity</li>
-              <!-- <li>Social Media / Forums</li> -->
-              <!-- <li>Monetary Transactions</li> -->
               <li>Explicit Content</li>
               <li>Drugs</li>
               <li>Gambling</li>
             </ul>
           </div>
         </div>
+
         <div class="blocking-preset-group" id="ages-13-to-18-group">
           <div
             class="blocking-preset"
@@ -96,9 +95,9 @@
               name="blocking"
               value="ages-13-to-18"
             />
-            <label for="ages-13-to-18-radio">Ages 13–18</label>
+            <label for="ages-13-to-18-radio">Ages 13 &ndash; 18</label>
             <button class="expand-button" id="ages-13-to-18-expand-button">
-              ->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </button>
           </div>
           <div class="blocking-preset-expanded" id="ages-13-to-18-expanded">
@@ -109,6 +108,7 @@
             </ul>
           </div>
         </div>
+
         <div class="blocking-preset-group" id="custom-group">
           <div
             class="blocking-preset"
@@ -122,7 +122,9 @@
               value="custom"
             />
             <label for="custom-radio">Custom</label>
-            <button class="expand-button" id="custom-expand-button">-></button>
+            <button class="expand-button" id="custom-expand-button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
           </div>
           <div class="blocking-preset-expanded" id="custom-expanded">
             <div class="blocking-checkbox" id="profanity">
@@ -130,9 +132,9 @@
                 type="checkbox"
                 id="profanity-checkbox"
                 name="profanity-checkbox"
-                value="Profanity"
+                value="profanity"
               />
-              <label for="profanity-checkbox">Profanity</label><br />
+              <label for="profanity-checkbox">Profanity</label>
             </div>
             <div class="blocking-checkbox" id="web-based-games">
               <input
@@ -141,31 +143,8 @@
                 name="web-based-games-checkbox"
                 value="web-based-games"
               />
-              <label for="web-based-games-checkbox">Web-Based Games</label
-              ><br />
+              <label for="web-based-games-checkbox">Web-Based Games</label>
             </div>
-            <!-- <div class="blocking-checkbox" id="social-media-and-forums">
-              <input
-                type="checkbox"
-                id="social-media-and-forums-checkbox"
-                name="social-media-and-forums-checkbox"
-                value="social-media-and-forums"
-              />
-              <label for="social-media-and-forums-checkbox"
-                >Social Media / Forums</label
-              ><br /> -->
-            <!-- </div> -->
-            <!-- <div class="blocking-checkbox" id="monetary-transactions">
-              <input
-                type="checkbox"
-                id="monetary-transactions-checkbox"
-                name="monetary-transactions-checkbox"
-                value="monetary-transactions"
-              />
-              <label for="monetary-transactions-checkbox"
-                >Monetary Transactions</label
-              ><br />
-            </div> -->
             <div class="blocking-checkbox" id="explicit-content">
               <input
                 type="checkbox"
@@ -173,8 +152,7 @@
                 name="explicit-content-checkbox"
                 value="explicit-content"
               />
-              <label for="explicit-content-checkbox">Explicit Content</label
-              ><br />
+              <label for="explicit-content-checkbox">Explicit Content</label>
             </div>
             <div class="blocking-checkbox" id="drugs">
               <input
@@ -183,7 +161,7 @@
                 name="drugs-checkbox"
                 value="drugs"
               />
-              <label for="drugs-checkbox">Drugs</label><br />
+              <label for="drugs-checkbox">Drugs</label>
             </div>
             <div class="blocking-checkbox" id="gambling">
               <input
@@ -192,7 +170,7 @@
                 name="gambling-checkbox"
                 value="gambling"
               />
-              <label for="gambling-checkbox">Gambling</label><br />
+              <label for="gambling-checkbox">Gambling</label>
             </div>
           </div>
         </div>
@@ -200,22 +178,25 @@
 
       <div id="management" class="tabcontent">
         <h1 class="tabcontent-title">Management</h1>
-        <!-- TODO click off the prompt to close, and add close button -->
+        <p class="tabcontent-subtitle">Change your admin password and configure detection sensitivity.</p>
+
         <button class="rounded-button" id="change-password-button">
           Change Password
         </button>
 
-        <br />
-
-        <h2>Set Confidence Percent</h2>
-        <input
-          class="confidence-field"
-          type="number"
-          id="set-confidence-field"
-          placeholder="50"
-          min="0"
-          max="100"
-        />
+        <h2>Detection Confidence</h2>
+        <p class="field-description">Higher values mean stricter detection (fewer false positives but may miss some content). Recommended: 30&ndash;50% for schools.</p>
+        <div class="confidence-wrapper">
+          <input
+            class="confidence-field"
+            type="number"
+            id="set-confidence-field"
+            placeholder="50"
+            min="0"
+            max="100"
+          />
+          <span class="confidence-unit">%</span>
+        </div>
 
         <div class="change-password-prompt" id="change-password-prompt">
           <h1 class="change-password-title">Change Password</h1>
@@ -242,33 +223,41 @@
           </button>
         </div>
       </div>
+
       <div id="statistics" class="tabcontent">
-        <!-- TODO Statistics -->
         <h1 class="tabcontent-title">Statistics</h1>
-        <h2 id="current-date-statistics"></h2>
-        <button class="rounded-button" id="prev-day-button">
-          Previous Day
-        </button>
-        <button class="rounded-button" id="next-day-button">Next Day</button>
-        <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
-        <h2>Flagged Content</h2>
-        <canvas id="hits-per-category" width="400px" height="400px"></canvas>
-        <!-- <canvas id="page-per-5-minutes" width="400px" height="400px"></canvas> -->
-        <h2>Number of Events</h2>
-        <div style="width: 80%; overflow-x: auto; overflow-y: hidden">
-          <div style="width: 400px; height: 400px">
-            <canvas
-              id="page-per-5-minutes"
-              width="9000px"
-              height="400px"
-            ></canvas>
+        <p class="tabcontent-subtitle">View content filtering activity and usage patterns.</p>
+
+        <div class="stats-nav">
+          <button class="rounded-button" id="prev-day-button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Previous
+          </button>
+          <h2 id="current-date-statistics"></h2>
+          <button class="rounded-button" id="next-day-button">
+            Next
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"></polyline></svg>
+          </button>
+        </div>
+
+        <div class="chart-section">
+          <h2>Flagged Content</h2>
+          <div class="chart-container">
+            <canvas id="hits-per-category"></canvas>
           </div>
         </div>
 
-        <h2>Active Times</h2>
-        <div style="width: 80%; overflow-x: auto; overflow-y: hidden">
-          <div style="width: 400px; height: 400px">
-            <canvas id="online-minutes" width="18000px" height="400px"></canvas>
+        <div class="chart-section">
+          <h2>Number of Events</h2>
+          <div class="chart-container chart-wide">
+            <canvas id="page-per-5-minutes"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-section">
+          <h2>Active Times</h2>
+          <div class="chart-container chart-wide">
+            <canvas id="online-minutes"></canvas>
           </div>
         </div>
       </div>

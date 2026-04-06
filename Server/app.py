@@ -1,28 +1,45 @@
 import os
-
+import json
+import hashlib
+from collections import OrderedDict
 from pathlib import Path
 
-from fastapi import FastAPI, UploadFile, File, Form
+from dotenv import load_dotenv
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from ultralytics import YOLO
 import torch
-from PIL import Image
-from io import BytesIO
-
-import json
 from openai import OpenAI
 
-try:
-    from local_secrets import OPENAI_API_KEY as _OPENAI_API_KEY
-except Exception:
-    _OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-client = OpenAI(api_key=_OPENAI_API_KEY) if _OPENAI_API_KEY else OpenAI()
+load_dotenv()
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# Cache for text classifications (avoids re-calling OpenAI for same text)
+text_cache = OrderedDict()
+TEXT_CACHE_MAX = 5000
 
 
-# Helper: classify texts with OpenAI and return your expected shape
+
+def cache_get(text):
+    key = hashlib.md5(text.encode()).hexdigest()
+    if key in text_cache:
+        text_cache.move_to_end(key)
+        return text_cache[key]
+    return None
+
+
+def cache_set(text, result):
+    key = hashlib.md5(text.encode()).hexdigest()
+    if len(text_cache) >= TEXT_CACHE_MAX:
+        text_cache.popitem(last=False)
+    text_cache[key] = result
+
+
 def classify_texts_openai(texts):
     """
+    Classify texts using OpenAI.
     Returns: list of { "text": str, "flags": [ { "category": str, "confidence": float } ] }
     Categories allowed: profanity, explicit, drugs, games, gambling
     """
@@ -34,23 +51,24 @@ def classify_texts_openai(texts):
 
     system_prompt = (
         "You are a strict K-12 content safety classifier. "
-        "For each input item, decide zero or more categories from this exact set: "
-        "profanity, explicit, drugs, games, gambling. "
-        "Definitions: "
-        "- profanity: vulgar or obscene language and slurs; "
-        '- explicit: sexual content, sexual acts, nudity, sexting; anything sexual involving minors is explicit; any language hinting at NSFW (e.g. "Bet her cheeks are showing", or "Sore asshohohole"); ALSO INCLUDES: graphic violence, gore, severe physical harm, detailed depictions of injury or death (e.g. "mixed with skin and blood"); ALSO INCLUDES: content that encourages, directs, or nudges the viewer toward NSFW material elsewhere (e.g., comments linking to NSFW subreddits or websites ("This is literally r/meatcrayon (NSFW sub)"), suggestions to "check the uncensored version," or remarks implying explicit content off-platform such as "this gets way worse later" or "look up the uncut scene").'
-        '- drugs: illegal drugs, misuse of prescription drugs, paraphernalia; any mentions of drug use, buying, selling, or seeking drugs (e.g. "cocaine" or "marijuana")'
-        "- games: references that primarily direct to or discuss games; promoting games or purchases in games; "
-        "- gambling: betting, wagering, casinos, lotteries. (e.g. 'bet', 'wager', 'casino', 'poker', 'lottery', 'slots', 'BetMGM'). "
-        "If none apply, return an empty flags array. "
-        'Output JSON only with a top-level object: {"results":[{'
-        '"id": number, "flags":[{"category": string, "confidence": number}] }...]}. '
-        "confidence is a number in [0,1]. Do not rewrite or summarize the text."
+        "Classify each item into zero or more categories: profanity, explicit, drugs, games, gambling. "
+        "- profanity: vulgar/obscene language and slurs. "
+        "- explicit: sexual content, nudity, sexting; anything sexual involving minors; "
+        "graphic violence, gore, detailed injury/death; "
+        'directing users to NSFW material (e.g. "check the uncensored version", linking NSFW subreddits). '
+        "- drugs: illegal drugs, drug paraphernalia, promoting/glorifying drug use or selling. "
+        "Ignore educational/news/health contexts (e.g. 'drug prevention program'). "
+        "- games: promoting or directing to video/online/mobile games or gaming platforms. "
+        "Ignore casual use (e.g. 'game plan', 'ball game'). "
+        "- gambling: betting, wagering, casinos, lotteries, sports betting, slots. "
+        "Ignore idioms (e.g. 'I bet you're right', 'you bet'). "
+        "Empty flags array if none apply. "
+        'Output JSON: {"results":[{"id":number,"flags":[{"category":string,"confidence":number}]}...]}. '
+        "confidence in [0,1]. Do not rewrite the text."
     )
 
     user_payload = {"items": items}
 
-    # Use JSON mode for structured output
     resp = client.chat.completions.create(
         model="gpt-4o-mini",
         temperature=0,
@@ -65,7 +83,6 @@ def classify_texts_openai(texts):
     try:
         data = json.loads(content)
     except Exception:
-        # Fallback: everything safe
         return [{"text": t, "flags": []} for t in texts]
 
     results_by_id = {
@@ -93,9 +110,6 @@ def classify_texts_openai(texts):
     return out
 
 
-# set number of threads to 8
-# torch.set_num_threads(8)
-
 app = FastAPI()
 
 app.add_middleware(
@@ -106,39 +120,49 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ---- YOLO Image Classification ----
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# Load the model
-image_model_path = Path("models/image/model_v9.pt")
+image_model_path = Path("AI_Code/model/model_v9.pt")
 img_model = YOLO(image_model_path)
 img_model.to(device)
 
 
-def saveImgToFile(img, path):
-    img.save(path)
+def run_yolo(url):
+    """Run YOLO inference in a thread (synchronous, blocks event loop otherwise)."""
+    import requests
+    from PIL import Image
+    from io import BytesIO
+
+    # Download image and pass as PIL Image to avoid YOLO treating URLs as video streams
+    resp = requests.get(url, timeout=10)
+    resp.raise_for_status()
+    img = Image.open(BytesIO(resp.content))
+
+    results = img_model(img, save=False, verbose=False)
+    predictions = results[0].boxes
+    return [
+        {
+            "class": img_model.names[int(pred.cls)],
+            "confidence": float(pred.conf),
+        }
+        for pred in predictions
+    ]
 
 
 @app.post("/predict_image")
-async def predict_image(image: UploadFile = File(...)):
+async def predict_image(payload: dict):
     try:
-        img_bytes = await image.read()
-        img = Image.open(BytesIO(img_bytes))
+        url = payload.get("url")
+        if not url:
+            return JSONResponse({"error": "Missing 'url' field"}, status_code=400)
 
-        results = img_model(img)
-        predictions = results[0].boxes
+        import asyncio
+        loop = asyncio.get_event_loop()
+        preds = await loop.run_in_executor(None, run_yolo, url)
 
-        response = {
-            "predictions": [
-                {
-                    "class": img_model.names[int(pred.cls)],
-                    "confidence": float(pred.conf),
-                }
-                for pred in predictions
-            ]
-        }
-
-        return JSONResponse(response)
+        return JSONResponse({"predictions": preds})
 
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
@@ -154,7 +178,25 @@ async def predict_text(payload: dict):
         return JSONResponse({"error": "'texts' must be a list"}, status_code=400)
 
     try:
-        results = classify_texts_openai(texts)
+        # Check cache first - only send uncached texts to OpenAI
+        results = [None] * len(texts)
+        uncached = []
+        uncached_indices = []
+
+        for i, t in enumerate(texts):
+            cached = cache_get(t)
+            if cached is not None:
+                results[i] = cached
+            else:
+                uncached.append(t)
+                uncached_indices.append(i)
+
+        if uncached:
+            fresh = classify_texts_openai(uncached)
+            for idx, result in zip(uncached_indices, fresh):
+                results[idx] = result
+                cache_set(result["text"], result)
+
         return JSONResponse(results)
     except Exception as e:
         print("OpenAI classification error:", e)

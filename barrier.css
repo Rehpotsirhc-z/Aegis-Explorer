@@ -1,67 +1,111 @@
+/* ============================================================
+   Aegis Explorer - Password / First-Time Setup Screen
+   ============================================================ */
+
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    background: linear-gradient(135deg, #667eea 0%, #4f6ef7 50%, #764ba2 100%);
+    min-height: 100vh;
 }
 
-.forgot-password {
-    color: #383838;
-    text-align: center;
-    outline: none;
-}
-
-#password-section {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 100%;
-    gap: 0px;
-}
-
-#password-section.active {
-    display: flex;
-}
-
+#password-section,
 #set-password-section {
     display: none;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     width: 100%;
-    gap: 15px;
+    max-width: 480px;
+    background: var(--bg-card);
+    padding: 48px 40px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    gap: 16px;
 }
 
+#password-section.active,
 #set-password-section.active {
     display: flex;
 }
 
-#set-password-button {
-    margin-top: 40px;
+#password-section h1,
+#set-password-section h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
 }
 
-#submit-password-button {
-    margin-top: 40px;
-}
-
-#submit-password-button:hover {
-    background-color: #4d4d4d;
-    color: #c1c1c1;
+.barrier-subtitle {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin: 0 0 12px;
 }
 
 h3 {
-    color: #4d4d4d;
-    font-weight: normal;
+    color: var(--text-secondary);
+    font-weight: 400;
+    font-size: 15px;
+    margin-bottom: 16px;
+}
+
+.password-field {
+    max-width: 100%;
+    width: 100%;
+}
+
+.forgot-password {
+    color: var(--primary);
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 4px 0;
+    transition: var(--transition);
+}
+
+.forgot-password:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+#submit-password-button,
+#set-password-button {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 12px;
+    padding: 14px;
+    font-size: 16px;
 }
 
 #incorrect-password-message {
     display: none;
-    color: red;
-    font-size: 16px;
-    font-weight: bold;
+    color: var(--danger);
+    font-size: 14px;
+    font-weight: 500;
+    background: #fef2f2;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    width: 100%;
+    text-align: center;
 }
 
 #incorrect-password-message.active {
     display: block;
+}
+
+/* Logo */
+#password-section::before,
+#set-password-section::before {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 12px;
+    background-image: url('icon128.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }

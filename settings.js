@@ -54,9 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Make checkboxes change storage values
-    customCheckboxes.forEach((checkbox) => {
-        document.getElementById(checkbox).addEventListener("click", (event) => {
-            toggleRestriction(event.target.value);
+    customCheckboxes.forEach((checkboxId) => {
+        const checkbox = document.getElementById(checkboxId);
+        checkbox.addEventListener("change", () => {
+            toggleRestriction(checkbox.value);
         });
     });
 
@@ -83,13 +84,16 @@ document.addEventListener("DOMContentLoaded", () => {
             .addEventListener("click", (e) => toggleExpandButton(e, age)),
     );
 
-    // Make clicking on blank areas of expanded Custom preset toggle checkboxes
+    // Make clicking on the div row toggle the checkbox (but not double-toggle if checkbox itself was clicked)
     document.querySelectorAll(".blocking-checkbox").forEach((div) =>
         div.addEventListener("click", (event) => {
-            event.stopPropagation(); // Prevent clicks from propagating to parent elements
-            checkbox = event.currentTarget.querySelector(
-                'input[type="checkbox"]',
-            ).checked ^= true;
+            event.stopPropagation();
+            const checkbox = div.querySelector('input[type="checkbox"]');
+            // Only toggle if the click was NOT on the checkbox itself (browser already toggled it)
+            if (event.target !== checkbox) {
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event("change"));
+            }
         }),
     );
 
@@ -227,34 +231,32 @@ document.addEventListener("DOMContentLoaded", () => {
                                 : 0,
                         ),
                         backgroundColor: [
-                            "rgba(255, 99, 132, 1)", // Red
-                            "rgba(54, 162, 235, 1)", // Blue
-                            "rgba(255, 206, 86, 1)", // Yellow
-                            "rgba(75, 192, 192, 1)", // Green
-                            "rgba(153, 102, 255, 1)", // Purple
-                            "rgba(255, 159, 64, 1)", // Orange
-                            "rgba(25, 159, 64, 1)", // Orange
+                            "#ef4444", // Red - profanity
+                            "#4f6ef7", // Blue - games
+                            "#f59e0b", // Amber - explicit
+                            "#22c55e", // Green - drugs
+                            "#a855f7", // Purple - gambling
+                            "#64748b", // Gray - background
                         ],
-                        borderColor: [
-                            "rgba(255, 99, 132, 1)", // Red
-                            "rgba(54, 162, 235, 1)", // Blue
-                            "rgba(255, 206, 86, 1)", // Yellow
-                            "rgba(75, 192, 192, 1)", // Green
-                            "rgba(153, 102, 255, 1)", // Purple
-                            "rgba(255, 159, 64, 1)", // Orange
-                            "rgba(25, 159, 64, 1)", // Orange
-                        ],
-                        borderWidth: 1,
+                        borderColor: "#ffffff",
+                        borderWidth: 2,
                     },
                 ],
             },
             options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            padding: 16,
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            font: { family: "Inter, sans-serif", size: 13 },
+                        },
                     },
                 },
-                responsive: false,
             },
         });
     });
@@ -307,21 +309,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 datasets: [
                     {
                         label: "Number of Events",
-                        // data: [12, 19, 3, 5, 2, 3, 10],
                         data: dateIntervals.map((interval) => interval.length),
-                        backgroundColor: "rgba(255, 99, 132, 0.2)",
-                        borderColor: "rgba(255, 99, 132, 1)",
-                        borderWidth: 1,
+                        backgroundColor: "rgba(79, 110, 247, 0.1)",
+                        borderColor: "#4f6ef7",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        pointHoverBackgroundColor: "#4f6ef7",
                     },
                 ],
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
+                        grid: { color: "rgba(0,0,0,0.05)" },
+                        ticks: { font: { family: "Inter, sans-serif", size: 12 } },
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { family: "Inter, sans-serif", size: 11 },
+                            maxTicksLimit: 12,
+                            maxRotation: 0,
+                        },
                     },
                 },
-                responsive: false,
+                plugins: {
+                    legend: { display: false },
+                },
             },
         });
         chrome.storage.local.get(["onlineLog"]).then((result) => {
@@ -349,26 +369,45 @@ document.addEventListener("DOMContentLoaded", () => {
                     labels: oneMinuteLabels,
                     datasets: [
                         {
-                            label: "Number of Events",
+                            label: "Active",
                             data: dateIntervals.map((timestamp) =>
                                 timestamp.length == 1 ? 1 : 0,
                             ),
-                            // data: result.log
-                            backgroundColor: "rgba(255, 99, 132, 0.2)",
-                            borderColor: "rgba(255, 99, 132, 1)",
-                            borderWidth: 1,
+                            backgroundColor: "rgba(34, 197, 94, 0.15)",
+                            borderColor: "#22c55e",
+                            borderWidth: 2,
+                            fill: true,
+                            pointRadius: 0,
+                            stepped: true,
                         },
                     ],
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true,
+                            max: 1,
+                            ticks: {
+                                stepSize: 1,
+                                callback: (v) => v === 1 ? "Online" : "Offline",
+                                font: { family: "Inter, sans-serif", size: 12 },
+                            },
+                            grid: { color: "rgba(0,0,0,0.05)" },
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: "Inter, sans-serif", size: 11 },
+                                maxTicksLimit: 12,
+                                maxRotation: 0,
+                            },
                         },
                     },
-                    responsive: false,
-                    pointStyle: false,
-                    stepped: true,
+                    plugins: {
+                        legend: { display: false },
+                    },
                 },
             });
         });
@@ -522,16 +561,18 @@ function clearRestrictions() {
 function toggleExpandButton(event, age) {
     const preset = document.getElementById(`${age}-preset`);
     var section = document.getElementById(`${age}-expanded`);
+    const expandBtn = document.getElementById(`${age}-expand-button`);
 
     // We need to set the max-height manually to remove the lag when closing the
     // expanded preset
     if (section.classList.contains("expanded")) {
         section.classList.remove("expanded");
         section.style.maxHeight = "0px";
+        expandBtn.classList.remove("rotated");
     } else {
         section.classList.add("expanded");
         section.style.maxHeight = section.scrollHeight + 20 + "px";
-        // section.scrollHeight + preset.offsetWidth + "px";
+        expandBtn.classList.add("rotated");
     }
 }
 

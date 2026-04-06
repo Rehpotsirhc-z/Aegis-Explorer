@@ -1,93 +1,46 @@
-baseUrl = "https://aegisexplorer.org/server";
-imageUrl = `${baseUrl}/predict_image`;
-textUrl = `${baseUrl}/predict_text`;
+// ============================================================
+// Aegis Explorer - Background Service Worker
+// Architecture: Hybrid image classification
+//   1. NSFWJS (local, in-browser) — instant explicit content detection
+//   2. YOLO (server) — all categories (drugs, gambling, games, profanity, explicit)
+//   Server proxy for text (keeps OpenAI key secure)
+// ============================================================
 
-// // set keeping track of image URLs
-// const imageUrls = new Set();
+// Server URLs
+const serverBase = "https://aegisexplorer.org/server";
+//const serverBase = "http://localhost:8000";
+const imageUrl = `${serverBase}/predict_image`;
+const textUrl = `${serverBase}/predict_text`;
+
+// URL-based cache: avoids re-processing the same image URL
+const imageCache = new Map();
+const MAX_CACHE_SIZE = 2000;
+
+// Default confidence threshold
+const DEFAULT_THRESHOLD = 0.5;
+
+// File extensions to skip (icons, vectors — not meaningful for classification)
+const SKIP_EXTENSIONS = /\.(svg|ico|gif|webp)(\?.*)?$/i;
+
+// Category name → storage key mapping
+const CATEGORIES = {
+    profanity: "profanity",
+    explicit: "explicit-content",
+    drugs: "drugs",
+    games: "web-based-games",
+    gambling: "gambling",
+    background: "background",
+};
+
+// ============================================================
+// Utilities
+// ============================================================
 
 chrome.runtime.onInstalled.addListener(({ reason }) => {
     if (reason === "install") {
-        chrome.tabs.create({
-            url: "barrier.html",
-        });
+        chrome.tabs.create({ url: "barrier.html" });
     }
 });
-
-function dataUrlToBlob(dataUrl) {
-    const [header, data] = dataUrl.split(",");
-    const mime = header.match(/:(.*?);/)[1];
-    const binary = atob(data);
-    const array = new Uint8Array(binary.length);
-
-    for (let i = 0; i < binary.length; i++) {
-        array[i] = binary.charCodeAt(i);
-    }
-
-    return new Blob([array], { type: mime });
-}
-
-async function downloadImage(url) {
-    if (!url) return;
-    let blob;
-
-    if (url.startsWith("data:")) {
-        blob = dataUrlToBlob(url);
-    } else {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                console.log(`Failed to fetch image from URL: "${url}"`);
-                return null;
-            }
-            blob = await response.blob();
-        } catch (error) {
-            console.error(`Error fetching image from URL (${url}):`, error);
-            return null;
-        }
-    }
-
-    if (!blob.type.startsWith("image/")) {
-        console.log(`Skipping non-image URL: "${url}" | Type: "${blob.type}"`);
-        return null;
-    }
-
-    if (blob.type.startsWith("image/svg")) {
-        console.log(`Skipping SVG image from URL: "${url}"`);
-        return null;
-    }
-
-    try {
-        // Create an ImageBitmap to access image dimensions
-        const img = await createImageBitmap(blob);
-
-        // TODO
-        // if (img.width < 32 || img.height < 32) {
-        //     // console.log(
-        //     //     `Skipping image from URL: "${url}" | Dimensions: ${img.width}x${img.height}`,
-        //     // );
-        //     return null;
-        // }
-
-        // // Create an offscreen canvas to process the image
-        // const canvas = new OffscreenCanvas(img.width, img.height);
-        // const ctx = canvas.getContext("2d");
-        // ctx.drawImage(img, 0, 0);
-
-        // // Convert canvas content to JPEG
-        // const jpgBlob = await canvas.convertToBlob({
-        //     type: "image/jpeg",
-        //     quality: 1,
-        // });
-
-        // const filename = url.split("/").pop().split(".").shift() + ".jpg";
-
-        return new File([blob], "image", { type: blob.type });
-        // return new File([blob], "image", { type: "image" });
-    } catch (error) {
-        console.error(`Error processing image from URL (${url}):`, error);
-        return null;
-    }
-}
 
 function recordCategory(category) {
     chrome.storage.local.get([`${category}-log`]).then((result) => {
@@ -107,232 +60,264 @@ function thirtyDaysAgo() {
     return currentDate - thirtyDays;
 }
 
+function sendToTab(tabId, message) {
+    if (tabId) {
+        chrome.tabs.sendMessage(tabId, message).catch(() => {});
+    } else {
+        chrome.tabs.query({}, (tabs) => {
+            tabs.forEach((tab) => {
+                chrome.tabs.sendMessage(tab.id, message).catch(() => {});
+            });
+        });
+    }
+}
+
+function cacheSet(key, value) {
+    if (imageCache.size >= MAX_CACHE_SIZE) {
+        const toDelete = Math.floor(MAX_CACHE_SIZE * 0.25);
+        const keys = imageCache.keys();
+        for (let i = 0; i < toDelete; i++) {
+            imageCache.delete(keys.next().value);
+        }
+    }
+    imageCache.set(key, value);
+}
+
+function chunk(arr, size) {
+    const out = [];
+    for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+    return out;
+}
+
+// Online time tracking
 setInterval(() => {
     chrome.storage.local.get(["onlineLog"]).then((result) => {
         log = Array.from(result.onlineLog || []);
-
         let time = new Date().getTime();
         log.push(time);
         chrome.storage.local.set({ onlineLog: log });
     });
 }, 60000);
 
-chrome.runtime.onMessage.addListener(async (request) => {
+// ============================================================
+// YOLO - Server-side classification (all categories)
+// ============================================================
+
+async function classifyImageWithYOLO(imgLink) {
+    try {
+        // Send the URL to the server — server downloads the image
+        // (avoids CORS issues with cross-origin images)
+        const response = await fetch(imageUrl, {
+            method: "POST",
+            body: JSON.stringify({ url: imgLink }),
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) return { error: `Server error: ${response.status}` };
+        return await response.json();
+    } catch (error) {
+        console.error("YOLO classification failed:", error);
+        return { error: error.message };
+    }
+}
+
+function processYoloPredictions(predictions, confidenceThreshold) {
+    if (!predictions || predictions.length === 0) {
+        return { action: "revealImage", className: "background" };
+    }
+
+    let best = null;
+    for (const pred of predictions) {
+        if (pred.class === "background") continue;
+        if (pred.confidence > confidenceThreshold) {
+            if (!best || pred.confidence > best.confidence) {
+                best = pred;
+            }
+        }
+    }
+
+    if (best) {
+        return {
+            action: "removeImage",
+            className: best.class,
+            confidence: best.confidence,
+        };
+    }
+
+    return { action: "revealImage", className: "background" };
+}
+
+// ============================================================
+// Text Classification via server proxy (keeps OpenAI key secure)
+// ============================================================
+
+async function classifyTextsViaServer(texts) {
+    try {
+        const response = await fetch(textUrl, {
+            method: "POST",
+            body: JSON.stringify({ texts }),
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+            console.error("Text API error:", response.status);
+            return texts.map((t) => ({ text: t, flags: [] }));
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Text classification error:", error);
+        return texts.map((t) => ({ text: t, flags: [] }));
+    }
+}
+
+// ============================================================
+// Main message handler
+// ============================================================
+
+chrome.runtime.onMessage.addListener(async (request, sender) => {
+    const senderTabId = sender?.tab?.id;
+
+    // --------------------------------------------------------
+    // IMAGE PROCESSING (Hybrid: NSFWJS local + YOLO server)
+    // Step 1: NSFWJS checks for explicit content locally (instant)
+    //         If flagged → block immediately, skip YOLO
+    // Step 2: YOLO checks all categories on server
+    //         Catches drugs, gambling, games, profanity + second explicit check
+    // --------------------------------------------------------
     if (request.images) {
         console.log(request.images.length, "images to process");
         const categoryCount = {};
 
-        // Download all images concurrently and keep track of URLs
-        const imagePromises = request.images.map(async (imageLink) => {
-            const image = await downloadImage(imageLink);
-            return { image, imageLink };
-        });
+        const categoryKeys = Object.values(CATEGORIES);
+        const storageData = await chrome.storage.local.get([
+            "confidence",
+            ...categoryKeys,
+        ]);
+        const confidenceThreshold =
+            typeof storageData.confidence === "number"
+                ? storageData.confidence
+                : DEFAULT_THRESHOLD;
 
-        const imagesWithUrls = (await Promise.all(imagePromises)).filter(
-            ({ image }) => image,
+        // Separate cached vs uncached
+        const cachedImages = [];
+        const uncachedImageLinks = [];
+
+        for (const imageLink of request.images) {
+            // Skip SVGs, ICOs, GIFs — not useful for content classification
+            if (SKIP_EXTENSIONS.test(imageLink)) {
+                sendToTab(senderTabId, { action: "revealImage", imageLink });
+                continue;
+            }
+
+            if (imageCache.has(imageLink)) {
+                cachedImages.push({
+                    imageLink,
+                    cached: imageCache.get(imageLink),
+                });
+            } else {
+                uncachedImageLinks.push(imageLink);
+            }
+        }
+
+        // Process cached results immediately
+        for (const { imageLink, cached } of cachedImages) {
+            sendToTab(senderTabId, { action: cached.action, imageLink });
+            if (cached.action === "removeImage" && cached.category) {
+                recordCategory(cached.category);
+            }
+        }
+
+        if (uncachedImageLinks.length === 0) {
+            console.log("All images served from cache");
+            return;
+        }
+
+        console.log(
+            `${cachedImages.length} cached, ${uncachedImageLinks.length} to classify`,
         );
 
-        console.log(imagesWithUrls);
-
-        console.log(imagesWithUrls.length, "images downloaded");
-
-        // Create and send requests for all images concurrently
-        const predictionPromises = imagesWithUrls.map(
-            async ({ image, imageLink }) => {
+        const classificationPromises = uncachedImageLinks.map(
+            async (imageLink) => {
                 try {
-                    const formData = new FormData();
-                    formData.append("image", image);
+                    // --- YOLO server check (all categories) ---
+                    const yoloResult =
+                        await classifyImageWithYOLO(imageLink);
 
-                    const response = await fetch(imageUrl, {
-                        method: "POST",
-                        body: formData,
-                    });
+                    if (yoloResult?.error) {
+                        // Server unavailable - reveal (NSFWJS already cleared explicit)
+                        sendToTab(senderTabId, {
+                            action: "revealImage",
+                            imageLink,
+                        });
+                        cacheSet(imageLink, { action: "revealImage" });
+                        return;
+                    }
 
-                    const { predictions: [prediction] = [] } =
-                        await response.json();
-
-                    chrome.storage.local.get(["confidence"]).then((result) => {
-                        confidenceThreshold = result.confidence || 0.5;
-
-                        if (prediction) {
-                            const { class: className, confidence } = prediction;
-                            if (confidence > confidenceThreshold) {
-                                if (className !== "background") {
-                                    console.log(
-                                        `URL: ${imageLink} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-                                    );
-
-                                    const categories = {
-                                        profanity: "profanity",
-                                        // social: "social-media-and-forums",
-                                        // monetary: "monetary-transactions",
-                                        explicit: "explicit-content",
-                                        drugs: "drugs",
-                                        games: "web-based-games",
-                                        gambling: "gambling",
-                                        background: "background",
-                                    };
-
-                                    Object.entries(categories).forEach(
-                                        ([key, value]) => {
-                                            chrome.storage.local
-                                                .get([value])
-                                                .then((result) => {
-                                                    if (
-                                                        className === key &&
-                                                        (result[value] ||
-                                                            result[value] ===
-                                                                undefined)
-                                                    ) {
-                                                        console.log(
-                                                            "Category: ",
-                                                            value,
-                                                        );
-
-                                                        recordCategory(value);
-
-                                                        chrome.tabs.query(
-                                                            {},
-                                                            (tabs) => {
-                                                                tabs.forEach(
-                                                                    (tab) => {
-                                                                        chrome.tabs
-                                                                            .sendMessage(
-                                                                                tab.id,
-                                                                                {
-                                                                                    action: "removeImage",
-                                                                                    imageLink,
-                                                                                },
-                                                                            )
-                                                                            .catch(
-                                                                                (
-                                                                                    error,
-                                                                                ) => {
-                                                                                    // console.error(
-                                                                                    //     `Error removing image from URL (${imageLink}):`,
-                                                                                    //     error,
-                                                                                    // );
-                                                                                },
-                                                                            );
-                                                                    },
-                                                                );
-                                                            },
-                                                        );
-                                                        // chrome.runtime.sendMessage({ action: "removeImage", imageLink: imageLink });
-                                                    } else if (
-                                                        className === key &&
-                                                        !(
-                                                            result[value] ||
-                                                            result[value] ===
-                                                                undefined
-                                                        )
-                                                    ) {
-                                                        recordCategory(
-                                                            "background",
-                                                        );
-
-                                                        chrome.tabs.query(
-                                                            {},
-                                                            (tabs) => {
-                                                                tabs.forEach(
-                                                                    (tab) => {
-                                                                        chrome.tabs
-                                                                            .sendMessage(
-                                                                                tab.id,
-                                                                                {
-                                                                                    action: "revealImage",
-                                                                                    imageLink,
-                                                                                },
-                                                                            )
-                                                                            .catch(
-                                                                                (
-                                                                                    error,
-                                                                                ) => {
-                                                                                    // console.error(
-                                                                                    //     `Error revealing image from URL (${imageLink}):`,
-                                                                                    //     error,
-                                                                                    // );
-                                                                                },
-                                                                            );
-                                                                    },
-                                                                );
-                                                            },
-                                                        );
-                                                        // chrome.runtime.sendMessage({ action: "revealImage", imageLink: imageLink });
-                                                    }
-                                                });
-                                        },
-                                    );
-                                } else {
-                                    recordCategory("background");
-
-                                    chrome.tabs.query({}, (tabs) => {
-                                        tabs.forEach((tab) => {
-                                            chrome.tabs
-                                                .sendMessage(tab.id, {
-                                                    action: "revealImage",
-                                                    imageLink,
-                                                })
-                                                .catch((error) => {
-                                                    // console.error(
-                                                    //     `Error revealing image from URL (${imageLink}):`,
-                                                    //     error,
-                                                    // );
-                                                });
-                                        });
-                                    });
-                                }
-
-                                categoryCount[className] =
-                                    (categoryCount[className] || 0) + 1;
-                            } else {
-                                chrome.tabs.query({}, (tabs) => {
-                                    tabs.forEach((tab) => {
-                                        chrome.tabs
-                                            .sendMessage(tab.id, {
-                                                action: "revealImage",
-                                                imageLink,
-                                            })
-                                            .catch((error) => {
-                                                // console.error(
-                                                //     `Error revealing image from URL (${imageLink}):`,
-                                                //     error,
-                                                // );
-                                            });
-                                    });
-                                });
-
-                                categoryCount["background"] =
-                                    (categoryCount["background"] || 0) + 1;
-                            }
-                        } else {
-                            console.log(
-                                `URL: ${imageLink} | Prediction: background`,
-                            );
-                            categoryCount["background"] =
-                                (categoryCount["background"] || 0) + 1;
-                        }
-                    });
-                } catch (error) {
-                    console.error(
-                        `Error getting predictions from URL (${imageLink}):`,
-                        error,
+                    const decision = processYoloPredictions(
+                        yoloResult.predictions,
+                        confidenceThreshold,
                     );
+
+                    if (decision.action === "removeImage") {
+                        const storageKey = CATEGORIES[decision.className];
+                        const isEnabled = storageData[storageKey] ?? true;
+
+                        if (isEnabled) {
+                            console.log(
+                                `BLOCKED (YOLO): ${imageLink} | ${decision.className} (${(decision.confidence * 100).toFixed(1)}%)`,
+                            );
+                            recordCategory(storageKey || decision.className);
+                            sendToTab(senderTabId, {
+                                action: "removeImage",
+                                imageLink,
+                            });
+                            cacheSet(imageLink, {
+                                action: "removeImage",
+                                category: storageKey || decision.className,
+                                className: decision.className,
+                            });
+                        } else {
+                            sendToTab(senderTabId, {
+                                action: "revealImage",
+                                imageLink,
+                            });
+                            cacheSet(imageLink, { action: "revealImage" });
+                        }
+                    } else {
+                        sendToTab(senderTabId, {
+                            action: "revealImage",
+                            imageLink,
+                        });
+                        cacheSet(imageLink, { action: "revealImage" });
+                    }
+
+                    categoryCount[decision.className] =
+                        (categoryCount[decision.className] || 0) + 1;
+                } catch (error) {
+                    console.error(`Error classifying ${imageLink}:`, error);
+                    sendToTab(senderTabId, {
+                        action: "revealImage",
+                        imageLink,
+                    });
                 }
             },
         );
 
-        await Promise.all(predictionPromises);
-
-        console.log("Category counts:");
-        Object.entries(categoryCount).forEach(([category, count]) => {
-            console.log(`${category}: ${count}`);
+        // Fire and forget — don't block the message handler
+        // Results are sent via sendToTab, no need to await
+        Promise.all(classificationPromises).then(() => {
+            console.log("Category counts:", categoryCount);
         });
-    } else if (request.texts) {
-        console.log(request.texts.length, "text to process");
+    }
+
+    // --------------------------------------------------------
+    // TEXT PROCESSING (via OpenAI API - server proxy)
+    // --------------------------------------------------------
+    else if (request.texts) {
+        console.log(request.texts.length, "texts to process");
         const categoryCount = {};
 
-        // Keep existing sentence splitting for accuracy
         const allSentences = request.texts.flatMap((rawText) => {
             return rawText
                 .split(/(?<=[.!?])\s+/)
@@ -342,40 +327,20 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
         if (allSentences.length === 0) return;
 
-        // Read confidence threshold once
-        const { confidence: storedConfidence } = await chrome.storage.local.get(
-            ["confidence"],
-        );
+        const { confidence: storedConfidence } =
+            await chrome.storage.local.get(["confidence"]);
         const confidenceThreshold = storedConfidence ?? 0.5;
 
-        // Preload content-category toggles once
-        const categories = {
-            profanity: "profanity",
-            explicit: "explicit-content",
-            drugs: "drugs",
-            games: "web-based-games",
-            gambling: "gambling",
-            background: "background",
-        };
-        const categoryKeys = Object.values(categories);
+        const categoryKeys = Object.values(CATEGORIES);
         const categoryToggles = await chrome.storage.local.get(categoryKeys);
 
-        // Batch sentences to reduce API calls
-        const BATCH_SIZE = 50;
+        const BATCH_SIZE = 20;
         const batches = chunk(allSentences, BATCH_SIZE);
 
-        for (const batch of batches) {
+        const batchPromises = batches.map(async (batch) => {
             try {
-                const textFormData = { texts: batch };
-                const textResponse = await fetch(textUrl, {
-                    method: "POST",
-                    body: JSON.stringify(textFormData),
-                    headers: { "Content-Type": "application/json" },
-                });
+                const textPredictions = await classifyTextsViaServer(batch);
 
-                const textPredictions = await textResponse.json(); // [{ text, flags: [{category, confidence}]}]
-
-                // Process each text result
                 for (const result of textPredictions) {
                     const text = result.text;
                     const flags = Array.isArray(result.flags)
@@ -401,7 +366,6 @@ chrome.runtime.onMessage.addListener(async (request) => {
                         }
                     });
 
-                    // Pick category with most flags above threshold
                     let maxFlagged = null;
                     let maxCount = 0;
                     for (const [cat, cnt] of Object.entries(
@@ -420,44 +384,31 @@ chrome.runtime.onMessage.addListener(async (request) => {
                     }
 
                     const className = maxFlagged;
-                    const storageKey = categories[className];
-                    const isEnabled = categoryToggles[storageKey] ?? true; // default-on behavior
+                    const storageKey = CATEGORIES[className];
+                    const isEnabled = categoryToggles[storageKey] ?? true;
 
                     if (isEnabled) {
-                        console.log(`Text ${text} | Prediction: ${className}`);
-                        chrome.tabs.query({}, (tabs) => {
-                            tabs.forEach((tab) => {
-                                chrome.tabs
-                                    .sendMessage(tab.id, {
-                                        action: "removeText",
-                                        text,
-                                    })
-                                    .catch(() => {});
-                            });
+                        console.log(
+                            `Text blocked: "${text}" | ${className}`,
+                        );
+                        sendToTab(senderTabId, {
+                            action: "removeText",
+                            text,
                         });
                         categoryCount[className] =
                             (categoryCount[className] || 0) + 1;
                     } else {
-                        // Disabled category: treat as background for UI purposes
                         categoryCount["background"] =
                             (categoryCount["background"] || 0) + 1;
                     }
                 }
             } catch (error) {
-                console.error(`Error getting predictions`, error);
+                console.error("Error processing text batch:", error);
             }
-        }
+        });
 
-        console.log("Category counts:");
-        Object.entries(categoryCount).forEach(([category, count]) => {
-            console.log(`${category}: ${count}`);
+        Promise.all(batchPromises).then(() => {
+            console.log("Text category counts:", categoryCount);
         });
     }
 });
-
-// Small chunk helper for batching
-function chunk(arr, size) {
-    const out = [];
-    for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
-    return out;
-}

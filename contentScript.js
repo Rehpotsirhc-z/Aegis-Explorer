@@ -6,11 +6,28 @@ const imageUrls = new Set();
 
 const allRealSrcs = new Set();
 
+// Minimum image dimension to process (skip icons, avatars, spacers)
+const MIN_IMAGE_SIZE = 50;
+
 // Add a small text queue with debounce + max batch size
 const textQueue = [];
 let textFlushTimer = null;
 const TEXT_BATCH_SIZE = 200; // max items per message to the background
-const TEXT_FLUSH_DELAY = 400; // debounce flush delay (ms)
+const TEXT_FLUSH_DELAY = 150; // debounce flush delay (ms)
+
+// Inject a style rule once for hiding pending images via CSS class
+// This avoids blanking src (which breaks layout) and uses opacity + blur instead
+const aegisStyle = document.createElement("style");
+aegisStyle.textContent = `
+    .aegis-pending {
+        opacity: 0 !important;
+        transition: opacity 0.15s ease-in;
+    }
+    .aegis-blocked {
+        opacity: 0 !important;
+    }
+`;
+(document.head || document.documentElement).appendChild(aegisStyle);
 
 function flushTextQueue() {
     const batch = textQueue.splice(0, TEXT_BATCH_SIZE);
@@ -45,6 +62,16 @@ function queueTexts(texts) {
     }
 }
 
+// Check if an image is too small to be worth classifying
+function isTooSmall(img) {
+    // Use natural dimensions if available, fall back to rendered dimensions
+    const w = img.naturalWidth || img.width || img.offsetWidth || 0;
+    const h = img.naturalHeight || img.height || img.offsetHeight || 0;
+    // If dimensions are 0, image hasn't loaded yet - don't skip it
+    if (w === 0 && h === 0) return false;
+    return w < MIN_IMAGE_SIZE || h < MIN_IMAGE_SIZE;
+}
+
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
 
@@ -55,57 +82,71 @@ function extractImageLinks() {
                 img.dataset.src ||
                 img.dataset.originalSrc ||
                 img.dataset.lazySrc ||
-                img.dataset.originalSrc ||
                 img.src;
 
             allRealSrcs.add(realSrc);
 
+            // Skip tiny images (icons, avatars, spacers)
+            if (isTooSmall(img)) {
+                img.dataset.approved = "true";
+                return "";
+            }
+
             if (!img.src.startsWith("data:image/gif")) {
                 if (!img.dataset.originalSrc) {
                     // Only set the originalSrc once, when it has the correct value
-                    // The browser resets the src to the URL of the webpage, so
-                    // what happens is that it hasn't been added to the seenImages,
-                    // and so when this function is rerun, it resets it with the
-                    // wrong value.
                     img.dataset.originalSrc = img.src;
                 }
                 img.dataset.originalAlt = img.alt;
                 if (img.srcset !== "") {
                     img.dataset.originalSrcset = img.srcset;
-                    img.srcset = "";
                 }
-                img.src = "";
-                img.alt = "";
+
+                // Use CSS class to hide instead of blanking src
+                // This preserves layout and prevents broken image indicators
+                img.classList.add("aegis-pending");
+
+                // Safety timeout: auto-reveal if classification doesn't respond
+                setTimeout(() => {
+                    if (img.classList.contains("aegis-pending")) {
+                        img.classList.remove("aegis-pending");
+                        img.dataset.approved = "true";
+                    }
+                }, 5000);
 
                 return img.dataset.originalSrc;
             } else {
                 return "";
             }
         })
-        .filter((src) => src !== "" && !seenImages.has(src)); // We do this after so that they still disappear if not approved
+        .filter((src) => src !== "" && !seenImages.has(src));
 
     newImageLinks.forEach((src) => seenImages.add(src));
 
-    // Extract images from CSS background images
-    const backgroundImages = Array.from(document.querySelectorAll("*"));
+    // Extract images from CSS background images - only check new elements
+    // (querySelectorAll("*") with getComputedStyle is very expensive, so
+    //  we limit to elements that are likely to have background images)
+    const bgSelectors = "div, section, header, footer, article, aside, main, span, a, figure";
+    const backgroundImages = Array.from(document.querySelectorAll(bgSelectors));
 
     backgroundImages.forEach((element) => {
+        if (element.dataset.aegisBgChecked === "true") return;
+        element.dataset.aegisBgChecked = "true";
+
         const backgroundImage =
             window.getComputedStyle(element).backgroundImage;
         if (backgroundImage && backgroundImage !== "none") {
             try {
                 url = backgroundImage.match(/url\(["']?([^"']*)["']?\)/)[1];
-                if (element.dataset.approved !== "true") {
-                    // seenImages.add(url);
-                    // if (!seenImages.has(url)) {
+                if (element.dataset.approved !== "true" && !seenImages.has(url)) {
+                    seenImages.add(url);
                     newImageLinks.push(url);
-                    // }
 
                     element.dataset.originalBackgroundImage = url;
                     element.style.backgroundImage = "none";
                 }
             } catch (error) {
-                // console.error("Error extracting background image", error);
+                // ignore invalid background-image values
             }
         }
     });
@@ -125,9 +166,6 @@ function sendImages() {
 }
 
 function extractSentences() {
-    // const textContent = document.body.innerText;
-    // const sentences = textContent.match(/[^.!?]*[.!?]/g) || [];
-    // return sentences;
     sentences = [];
 
     const excludedTags = new Set([
@@ -153,7 +191,7 @@ function extractSentences() {
     }
 
     function extractTextFromNode(node) {
-        if (!node) return; // Add null check
+        if (!node) return;
 
         if (node.nodeType === Node.TEXT_NODE) {
             const parent = node.parentElement;
@@ -174,15 +212,13 @@ function extractSentences() {
 
     extractTextFromNode(document.body);
 
-    // remove duplicates, empty strings, whitespace, and seen text
+    // remove duplicates, empty strings, whitespace, too-short text, and seen text
     sentences = sentences
         .map((sentence) => sentence.trim())
-        .filter((sentence) => sentence !== "")
+        .filter((sentence) => sentence.length >= 4)
         .filter((sentence) => sentence !== "???")
         .filter((sentence) => sentence !== ":")
         .filter((sentence) => sentence !== "-")
-        // .filter((sentence) => !sentence.includes("???"))
-        // .filter((sentence) => !sentence.includes(":"))
         .filter((sentence) => !seenText.has(sentence));
 
     return sentences;
@@ -195,20 +231,41 @@ function sendText() {
 }
 
 function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// Set up a MutationObserver to detect change in the DOM
-const observer = new MutationObserver(() => {
-    sendImages();
-    sendText();
+// Set up a MutationObserver to detect changes in the DOM
+// Optimized: only process added nodes instead of re-scanning entire DOM
+const observer = new MutationObserver((mutations) => {
+    let hasNewImages = false;
+    let hasNewText = false;
+
+    for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+            if (node.nodeType !== Node.ELEMENT_NODE) {
+                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                    hasNewText = true;
+                }
+                continue;
+            }
+            // Check if the added node is or contains images
+            if (node.tagName === "IMG" || node.querySelector?.("img")) {
+                hasNewImages = true;
+            }
+            // Check for text content
+            if (node.textContent?.trim()) {
+                hasNewText = true;
+            }
+        }
+    }
+
+    if (hasNewImages) sendImages();
+    if (hasNewText) sendText();
 });
 
 observer.observe(document, {
     childList: true,
     subtree: true,
-    //     // attributes: true,
-    //     // attributesFilter: ["src"],
 });
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
@@ -219,14 +276,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             `img[data-original-src="${message.imageLink}"]`,
         );
         images.forEach((image) => {
-            image.src = "";
+            // Use CSS class for blocking (keeps layout intact)
+            image.classList.remove("aegis-pending");
+            image.classList.add("aegis-blocked");
             image.alt = "";
-            if (image.srcset === "" && image.dataset.originalSrcset) {
-                image.srcset = "";
-                image.removeAttribute("data-original-srcset");
-            }
             image.removeAttribute("data-original-src");
             image.removeAttribute("data-original-alt");
+            if (image.dataset.originalSrcset) {
+                image.removeAttribute("data-original-srcset");
+            }
         });
 
         // Handle background images
@@ -241,17 +299,17 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         console.log("Revealing image", message.imageLink);
 
         const images = document.querySelectorAll(
-            `img[src=""][data-original-src="${message.imageLink}"]`,
+            `img[data-original-src="${message.imageLink}"]`,
         );
         images.forEach((image) => {
-            image.src = image.dataset.originalSrc;
-            image.alt = image.dataset.originalAlt;
-            if (image.srcset === "" && image.dataset.originalSrcset) {
+            // Remove hiding class and restore visibility
+            image.classList.remove("aegis-pending");
+            image.alt = image.dataset.originalAlt || "";
+            if (image.dataset.originalSrcset) {
                 image.srcset = image.dataset.originalSrcset;
                 image.removeAttribute("data-original-srcset");
             }
             image.dataset.approved = "true";
-            image.style.display = "block";
             image.removeAttribute("data-original-src");
             image.removeAttribute("data-original-alt");
         });
@@ -265,25 +323,24 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             console.log("Revealing background image", message.imageLink);
             element.style.backgroundImage = `url(${element.dataset.originalBackgroundImage})`;
             element.dataset.approved = "true";
-            element.style.display = "block";
             element.removeAttribute("data-original-background-image");
         });
     } else if (message.action === "removeText" && message.text) {
-        // remove all instances of the text in the document
         const text = message.text.trim();
         console.log("Removing: ", text);
 
         function removeTextFromNode(node) {
             if (node.nodeType === Node.TEXT_NODE) {
-                textContent = node.textContent;
-                if (textContent.trim() === "") {
-                    return;
-                }
-                // console.log("Target:", text);
-                // console.log(node.textContent);
-                // node.textContent = node.textContent.replace(text, "???");
-                if (node.textContent.includes(text)) {
-                    // console.log("Result: ", node.textContent);
+                const content = node.textContent.trim();
+                if (content === "") return;
+
+                // Only replace if the text node matches exactly or
+                // the flagged text is a full word/sentence within the node
+                if (content === text) {
+                    // Exact match — replace entire node content
+                    node.textContent = "???";
+                } else if (text.length >= 8 && node.textContent.includes(text)) {
+                    // Longer flagged text — safe to do substring replace
                     node.textContent = node.textContent.replace(
                         new RegExp(escapeRegExp(text), "gi"),
                         "???",
@@ -298,18 +355,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
 });
 
-// window.addEventListener("load", () => {
-//     sendImages();
-//     sendText();
-// });
-
-// document.addEventListener("DOMContentLoaded", () => {
-//     sendImages();
-//     sendText();
-// });
-
-// sendImages();
-
 function debounce(func, wait = 100) {
     let t;
     return () => {
@@ -318,35 +363,33 @@ function debounce(func, wait = 100) {
     };
 }
 
+// Initial scan: run when DOM is ready and again when page fully loads
+// (MutationObserver may miss content rendered during initial page parse)
+document.addEventListener("DOMContentLoaded", () => {
+    sendImages();
+    sendText();
+});
+window.addEventListener("load", () => {
+    sendImages();
+    sendText();
+});
+
 (function () {
-    const lazySend = debounce(() => sendImages(), 1000);
+    // Reduced debounce from 1000ms to 150ms for faster detection
+    const lazySend = debounce(() => sendImages(), 150);
 
     const srcDesc = Object.getOwnPropertyDescriptor(
         HTMLImageElement.prototype,
         "src",
     );
 
-    const seenElements = new WeakSet();
-
-    // function resetSeenElements() {
-    //     seenElements.clear();
-    // }
-
     Object.defineProperty(HTMLImageElement.prototype, "src", {
         ...srcDesc,
         set(value) {
             srcDesc.set.call(this, value);
-            // sendImages();
-            // if (this.dataset.approved !== 'true' && !seenElements.has(this) && value !== '') {
-            // seenElements.add(this);
-            // lazySend();
-            // }
 
             if (this.dataset.approved === "true") return;
 
-            // if (seenElements.has(this)) return;
-
-            // seenElements.add(this);
             if (value !== "") {
                 lazySend();
             }
