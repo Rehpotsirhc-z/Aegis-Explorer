@@ -8,7 +8,7 @@
 
 // Server URLs
 const serverBase = "https://aegisexplorer.org/server";
-//const serverBase = "http://localhost:8000";
+// const serverBase = "http://localhost:8000";
 const imageUrl = `${serverBase}/predict_image`;
 const textUrl = `${serverBase}/predict_text`;
 
@@ -241,8 +241,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
             async (imageLink) => {
                 try {
                     // --- YOLO server check (all categories) ---
-                    const yoloResult =
-                        await classifyImageWithYOLO(imageLink);
+                    const yoloResult = await classifyImageWithYOLO(imageLink);
 
                     if (yoloResult?.error) {
                         // Server unavailable - reveal (NSFWJS already cleared explicit)
@@ -327,8 +326,9 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 
         if (allSentences.length === 0) return;
 
-        const { confidence: storedConfidence } =
-            await chrome.storage.local.get(["confidence"]);
+        const { confidence: storedConfidence } = await chrome.storage.local.get(
+            ["confidence"],
+        );
         const confidenceThreshold = storedConfidence ?? 0.5;
 
         const categoryKeys = Object.values(CATEGORIES);
@@ -388,9 +388,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
                     const isEnabled = categoryToggles[storageKey] ?? true;
 
                     if (isEnabled) {
-                        console.log(
-                            `Text blocked: "${text}" | ${className}`,
-                        );
+                        console.log(`Text blocked: "${text}" | ${className}`);
                         sendToTab(senderTabId, {
                             action: "removeText",
                             text,

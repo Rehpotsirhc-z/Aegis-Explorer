@@ -131,14 +131,23 @@ img_model.to(device)
 
 def run_yolo(url):
     """Run YOLO inference in a thread (synchronous, blocks event loop otherwise)."""
+    import base64
     import requests
     from PIL import Image
     from io import BytesIO
 
-    # Download image and pass as PIL Image to avoid YOLO treating URLs as video streams
-    resp = requests.get(url, timeout=10)
-    resp.raise_for_status()
-    img = Image.open(BytesIO(resp.content))
+    if url.startswith("data:"):
+        # data:[<mediatype>][;base64],<data>
+        try:
+            _, encoded = url.split(",", 1)
+            img = Image.open(BytesIO(base64.b64decode(encoded)))
+        except Exception as e:
+            raise ValueError(f"Invalid data URI: {e}")
+    else:
+        # Download image and pass as PIL Image to avoid YOLO treating URLs as video streams
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        img = Image.open(BytesIO(resp.content))
 
     results = img_model(img, save=False, verbose=False)
     predictions = results[0].boxes

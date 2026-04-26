@@ -87,7 +87,7 @@ function extractImageLinks() {
             allRealSrcs.add(realSrc);
 
             // Skip tiny images (icons, avatars, spacers)
-            if (isTooSmall(img)) {
+            if (!img.src.startsWith("data:") && isTooSmall(img)) {
                 img.dataset.approved = "true";
                 return "";
             }
@@ -106,7 +106,6 @@ function extractImageLinks() {
                 // This preserves layout and prevents broken image indicators
                 img.classList.add("aegis-pending");
 
-                // Safety timeout: auto-reveal if classification doesn't respond
                 setTimeout(() => {
                     if (img.classList.contains("aegis-pending")) {
                         img.classList.remove("aegis-pending");
@@ -126,7 +125,8 @@ function extractImageLinks() {
     // Extract images from CSS background images - only check new elements
     // (querySelectorAll("*") with getComputedStyle is very expensive, so
     //  we limit to elements that are likely to have background images)
-    const bgSelectors = "div, section, header, footer, article, aside, main, span, a, figure";
+    const bgSelectors =
+        "div, section, header, footer, article, aside, main, span, a, figure";
     const backgroundImages = Array.from(document.querySelectorAll(bgSelectors));
 
     backgroundImages.forEach((element) => {
@@ -138,12 +138,28 @@ function extractImageLinks() {
         if (backgroundImage && backgroundImage !== "none") {
             try {
                 url = backgroundImage.match(/url\(["']?([^"']*)["']?\)/)[1];
-                if (element.dataset.approved !== "true" && !seenImages.has(url)) {
+                if (
+                    element.dataset.approved !== "true" &&
+                    !seenImages.has(url)
+                ) {
                     seenImages.add(url);
                     newImageLinks.push(url);
 
                     element.dataset.originalBackgroundImage = url;
                     element.style.backgroundImage = "none";
+
+                    // Safety timeout: restore background if classification never responds
+                    const capturedElement = element;
+                    const capturedUrl = url;
+                    setTimeout(() => {
+                        if (capturedElement.dataset.originalBackgroundImage) {
+                            capturedElement.style.backgroundImage = `url(${capturedUrl})`;
+                            capturedElement.dataset.approved = "true";
+                            capturedElement.removeAttribute(
+                                "data-original-background-image",
+                            );
+                        }
+                    }, 5000);
                 }
             } catch (error) {
                 // ignore invalid background-image values
@@ -243,7 +259,10 @@ const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
         for (const node of mutation.addedNodes) {
             if (node.nodeType !== Node.ELEMENT_NODE) {
-                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                if (
+                    node.nodeType === Node.TEXT_NODE &&
+                    node.textContent.trim()
+                ) {
                     hasNewText = true;
                 }
                 continue;
@@ -272,9 +291,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message.action === "removeImage" && message.imageLink) {
         console.log("Removing image", message.imageLink);
 
-        const images = document.querySelectorAll(
-            `img[data-original-src="${message.imageLink}"]`,
-        );
+        const images = Array.from(
+            document.querySelectorAll("img[data-original-src]"),
+        ).filter((img) => img.dataset.originalSrc === message.imageLink);
         images.forEach((image) => {
             // Use CSS class for blocking (keeps layout intact)
             image.classList.remove("aegis-pending");
@@ -288,8 +307,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         });
 
         // Handle background images
-        const elements = document.querySelectorAll(
-            `*[data-original-background-image="${message.imageLink}"]`,
+        const elements = Array.from(
+            document.querySelectorAll("[data-original-background-image]"),
+        ).filter(
+            (el) => el.dataset.originalBackgroundImage === message.imageLink,
         );
         elements.forEach((element) => {
             element.style.backgroundImage = "none";
@@ -298,9 +319,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     } else if (message.action === "revealImage" && message.imageLink) {
         console.log("Revealing image", message.imageLink);
 
-        const images = document.querySelectorAll(
-            `img[data-original-src="${message.imageLink}"]`,
-        );
+        const images = Array.from(
+            document.querySelectorAll("img[data-original-src]"),
+        ).filter((img) => img.dataset.originalSrc === message.imageLink);
         images.forEach((image) => {
             // Remove hiding class and restore visibility
             image.classList.remove("aegis-pending");
@@ -315,10 +336,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         });
 
         // Handle background images
-        const elements = document.querySelectorAll(
-            `*[data-original-background-image="${message.imageLink}"]`,
+        const elements = Array.from(
+            document.querySelectorAll("[data-original-background-image]"),
+        ).filter(
+            (el) => el.dataset.originalBackgroundImage === message.imageLink,
         );
-
         elements.forEach((element) => {
             console.log("Revealing background image", message.imageLink);
             element.style.backgroundImage = `url(${element.dataset.originalBackgroundImage})`;
@@ -339,7 +361,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 if (content === text) {
                     // Exact match — replace entire node content
                     node.textContent = "???";
-                } else if (text.length >= 8 && node.textContent.includes(text)) {
+                } else if (
+                    text.length >= 8 &&
+                    node.textContent.includes(text)
+                ) {
                     // Longer flagged text — safe to do substring replace
                     node.textContent = node.textContent.replace(
                         new RegExp(escapeRegExp(text), "gi"),
