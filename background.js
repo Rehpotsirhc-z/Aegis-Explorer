@@ -1,9 +1,11 @@
 // ============================================================
 // Aegis Explorer - Background Service Worker
 // Architecture: Hybrid image classification
-//   1. NSFWJS (local, in-browser) — instant explicit content detection
+//   1. NSFWJS (in-browser, content script) — explicit content prefilter
+//      Blocked images skip the network round-trip entirely.
 //   2. YOLO (server) — all categories (drugs, gambling, games, profanity, explicit)
-//   Server proxy for text (keeps OpenAI key secure)
+//      Catches what NSFWJS can't see (CORS-tainted / non-explicit categories).
+//   - Server proxy for text (keeps OpenAI key secure)
 // ============================================================
 
 // Server URLs
@@ -70,27 +72,6 @@ function sendToTab(tabId, message) {
             });
         });
     }
-}
-
-function logImageDecision({
-    action,
-    imageLink,
-    source = "unknown",
-    className,
-    confidence,
-    fromCache = false,
-}) {
-    const status = action === "removeImage" ? "BLOCKED" : "REVEALED";
-    const cacheTag = fromCache ? "[CACHE]" : "";
-    const classTag = className ? ` | ${className}` : "";
-    const confidenceTag =
-        typeof confidence === "number"
-            ? ` (${(confidence * 100).toFixed(1)}%)`
-            : "";
-
-    console.log(
-        `[IMAGE]${cacheTag}[${source}] ${status}: ${imageLink}${classTag}${confidenceTag}`,
-    );
 }
 
 function cacheSet(key, value) {
@@ -199,12 +180,20 @@ async function classifyTextsViaServer(texts) {
 chrome.runtime.onMessage.addListener(async (request, sender) => {
     const senderTabId = sender?.tab?.id;
 
+    // Local NSFWJS hits report their category here so the popup tally
+    // stays accurate without sending the image URL to the server.
+    if (request.recordCategory) {
+        recordCategory(request.recordCategory);
+        return;
+    }
+
     // --------------------------------------------------------
-    // IMAGE PROCESSING (Hybrid: NSFWJS local + YOLO server)
-    // Step 1: NSFWJS checks for explicit content locally (instant)
-    //         If flagged → block immediately, skip YOLO
-    // Step 2: YOLO checks all categories on server
-    //         Catches drugs, gambling, games, profanity + second explicit check
+    // IMAGE PROCESSING (Hybrid)
+    //   Step 1 (content script): NSFWJS classifies <img> elements locally
+    //                            and blocks Porn/Hentai/Sexy hits in-place.
+    //   Step 2 (here): YOLO server classifies whatever NSFWJS didn't flag
+    //                  (cross-origin / CORS-tainted / non-explicit categories
+    //                  like drugs, gambling, games, profanity).
     // --------------------------------------------------------
     if (request.images) {
         console.log(request.images.length, "images to process");
@@ -227,11 +216,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
         for (const imageLink of request.images) {
             // Skip SVGs, ICOs, GIFs — not useful for content classification
             if (SKIP_EXTENSIONS.test(imageLink)) {
-                sendToTab(senderTabId, {
-                    action: "revealImage",
-                    imageLink,
-                    source: "local:skip-extension",
-                });
+                sendToTab(senderTabId, { action: "revealImage", imageLink });
                 continue;
             }
 
@@ -247,19 +232,7 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 
         // Process cached results immediately
         for (const { imageLink, cached } of cachedImages) {
-            logImageDecision({
-                action: cached.action,
-                imageLink,
-                source: cached.source || "cache:unknown",
-                className: cached.className,
-                confidence: cached.confidence,
-                fromCache: true,
-            });
-            sendToTab(senderTabId, {
-                action: cached.action,
-                imageLink,
-                source: cached.source || "cache:unknown",
-            });
+            sendToTab(senderTabId, { action: cached.action, imageLink });
             if (cached.action === "removeImage" && cached.category) {
                 recordCategory(cached.category);
             }
@@ -281,21 +254,12 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
                     const yoloResult = await classifyImageWithYOLO(imageLink);
 
                     if (yoloResult?.error) {
-                        // Server unavailable - reveal (NSFWJS already cleared explicit)
-                        logImageDecision({
-                            action: "revealImage",
-                            imageLink,
-                            source: "server:error",
-                        });
+                        // Server unavailable — reveal image
                         sendToTab(senderTabId, {
                             action: "revealImage",
                             imageLink,
-                            source: "server:error",
                         });
-                        cacheSet(imageLink, {
-                            action: "revealImage",
-                            source: "server:error",
-                        });
+                        cacheSet(imageLink, { action: "revealImage" });
                         return;
                     }
 
@@ -309,61 +273,32 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
                         const isEnabled = storageData[storageKey] ?? true;
 
                         if (isEnabled) {
-                            logImageDecision({
-                                action: "removeImage",
-                                imageLink,
-                                source: "server:yolo",
-                                className: decision.className,
-                                confidence: decision.confidence,
-                            });
+                            console.log(
+                                `BLOCKED (YOLO): ${imageLink} | ${decision.className} (${(decision.confidence * 100).toFixed(1)}%)`,
+                            );
                             recordCategory(storageKey || decision.className);
                             sendToTab(senderTabId, {
                                 action: "removeImage",
                                 imageLink,
-                                source: "server:yolo",
                             });
                             cacheSet(imageLink, {
                                 action: "removeImage",
-                                source: "server:yolo",
                                 category: storageKey || decision.className,
                                 className: decision.className,
-                                confidence: decision.confidence,
                             });
                         } else {
-                            logImageDecision({
-                                action: "revealImage",
-                                imageLink,
-                                source: "server:yolo-disabled",
-                                className: decision.className,
-                                confidence: decision.confidence,
-                            });
                             sendToTab(senderTabId, {
                                 action: "revealImage",
                                 imageLink,
-                                source: "server:yolo-disabled",
                             });
-                            cacheSet(imageLink, {
-                                action: "revealImage",
-                                source: "server:yolo-disabled",
-                                className: decision.className,
-                                confidence: decision.confidence,
-                            });
+                            cacheSet(imageLink, { action: "revealImage" });
                         }
                     } else {
-                        logImageDecision({
-                            action: "revealImage",
-                            imageLink,
-                            source: "server:yolo",
-                        });
                         sendToTab(senderTabId, {
                             action: "revealImage",
                             imageLink,
-                            source: "server:yolo",
                         });
-                        cacheSet(imageLink, {
-                            action: "revealImage",
-                            source: "server:yolo",
-                        });
+                        cacheSet(imageLink, { action: "revealImage" });
                     }
 
                     categoryCount[decision.className] =

@@ -9,6 +9,113 @@ const allRealSrcs = new Set();
 // Minimum image dimension to process (skip icons, avatars, spacers)
 const MIN_IMAGE_SIZE = 50;
 
+// Per-URL safety reveal timer. Hides the image until either a verdict
+// arrives (revealImage / removeImage clears the timer) or this timeout
+// fires, in which case we fail-open and reveal.
+const PENDING_REVEAL_MS = 30000;
+const pendingTimers = new Map();
+
+function startPendingTimer(url, img) {
+    if (pendingTimers.has(url)) return;
+    const id = setTimeout(() => {
+        pendingTimers.delete(url);
+        if (img && img.classList.contains("aegis-pending")) {
+            img.classList.remove("aegis-pending");
+            img.dataset.approved = "true";
+        }
+    }, PENDING_REVEAL_MS);
+    pendingTimers.set(url, id);
+}
+
+function startPendingBgTimer(url, element) {
+    if (pendingTimers.has(url)) return;
+    const id = setTimeout(() => {
+        pendingTimers.delete(url);
+        if (element.dataset.originalBackgroundImage) {
+            element.style.backgroundImage = `url(${url})`;
+            element.dataset.approved = "true";
+            element.removeAttribute("data-original-background-image");
+        }
+    }, PENDING_REVEAL_MS);
+    pendingTimers.set(url, id);
+}
+
+function clearPendingTimer(url) {
+    const id = pendingTimers.get(url);
+    if (id !== undefined) {
+        clearTimeout(id);
+        pendingTimers.delete(url);
+    }
+}
+
+// ============================================================
+// NSFWJS local prefilter
+// Block thresholds: Porn>0.6, Hentai>0.6, Sexy>0.8.
+// On flag → block in-place and skip the YOLO server round-trip.
+// On error (CORS-tainted canvas, model load failure) → fall through
+//   to YOLO so we never silently let an image through.
+// ============================================================
+let nsfwModel = null;
+let nsfwModelPromise = null;
+
+function loadNsfwModel() {
+    if (nsfwModel) return Promise.resolve(nsfwModel);
+    if (nsfwModelPromise) return nsfwModelPromise;
+    if (typeof nsfwjs === "undefined") {
+        return Promise.reject(new Error("nsfwjs global not available"));
+    }
+    const modelUrl = chrome.runtime.getURL("models/nsfwjs/model.json");
+    nsfwModelPromise = nsfwjs
+        .load(modelUrl)
+        .then((m) => {
+            nsfwModel = m;
+            return m;
+        })
+        .catch((err) => {
+            nsfwModelPromise = null;
+            throw err;
+        });
+    return nsfwModelPromise;
+}
+
+function waitForImageLoad(img) {
+    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+        const cleanup = () => {
+            img.removeEventListener("load", onLoad);
+            img.removeEventListener("error", onErr);
+            clearTimeout(timer);
+        };
+        const onLoad = () => {
+            cleanup();
+            resolve();
+        };
+        const onErr = () => {
+            cleanup();
+            reject(new Error("image load error"));
+        };
+        const timer = setTimeout(() => {
+            cleanup();
+            reject(new Error("image load timeout"));
+        }, 5000);
+        img.addEventListener("load", onLoad, { once: true });
+        img.addEventListener("error", onErr, { once: true });
+    });
+}
+
+async function classifyImageLocally(img) {
+    const model = await loadNsfwModel();
+    await waitForImageLoad(img);
+    const predictions = await model.classify(img);
+    const scores = {};
+    for (const p of predictions) scores[p.className] = p.probability;
+    const blocked =
+        (scores.Porn || 0) > 0.6 ||
+        (scores.Hentai || 0) > 0.6 ||
+        (scores.Sexy || 0) > 0.8;
+    return { blocked, scores };
+}
+
 // Add a small text queue with debounce + max batch size
 const textQueue = [];
 let textFlushTimer = null;
@@ -74,10 +181,12 @@ function isTooSmall(img) {
 
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
+    // Pairs of { url, img } so callers (NSFWJS prefilter) can access the element.
+    const imgEntries = [];
 
-    const newImageLinks = Array.from(images)
+    Array.from(images)
         .filter((img) => img.dataset.approved !== "true")
-        .map((img) => {
+        .forEach((img) => {
             const realSrc =
                 img.dataset.src ||
                 img.dataset.originalSrc ||
@@ -86,41 +195,32 @@ function extractImageLinks() {
 
             allRealSrcs.add(realSrc);
 
-            // Skip tiny images (icons, avatars, spacers)
             if (!img.src.startsWith("data:") && isTooSmall(img)) {
                 img.dataset.approved = "true";
-                return "";
+                return;
             }
 
-            if (!img.src.startsWith("data:image/gif")) {
-                if (!img.dataset.originalSrc) {
-                    // Only set the originalSrc once, when it has the correct value
-                    img.dataset.originalSrc = img.src;
-                }
-                img.dataset.originalAlt = img.alt;
-                if (img.srcset !== "") {
-                    img.dataset.originalSrcset = img.srcset;
-                }
+            if (img.src.startsWith("data:image/gif")) return;
 
-                // Use CSS class to hide instead of blanking src
-                // This preserves layout and prevents broken image indicators
-                img.classList.add("aegis-pending");
-
-                setTimeout(() => {
-                    if (img.classList.contains("aegis-pending")) {
-                        img.classList.remove("aegis-pending");
-                        img.dataset.approved = "true";
-                    }
-                }, 5000);
-
-                return img.dataset.originalSrc;
-            } else {
-                return "";
+            if (!img.dataset.originalSrc) {
+                img.dataset.originalSrc = img.src;
             }
-        })
-        .filter((src) => src !== "" && !seenImages.has(src));
+            img.dataset.originalAlt = img.alt;
+            if (img.srcset !== "") {
+                img.dataset.originalSrcset = img.srcset;
+            }
 
-    newImageLinks.forEach((src) => seenImages.add(src));
+            img.classList.add("aegis-pending");
+
+            const url = img.dataset.originalSrc;
+            if (url && !seenImages.has(url)) {
+                seenImages.add(url);
+                imgEntries.push({ url, img });
+                startPendingTimer(url, img);
+            }
+        });
+
+    const newImageLinks = imgEntries.map((e) => e.url);
 
     // Extract images from CSS background images - only check new elements
     // (querySelectorAll("*") with getComputedStyle is very expensive, so
@@ -147,19 +247,7 @@ function extractImageLinks() {
 
                     element.dataset.originalBackgroundImage = url;
                     element.style.backgroundImage = "none";
-
-                    // Safety timeout: restore background if classification never responds
-                    const capturedElement = element;
-                    const capturedUrl = url;
-                    setTimeout(() => {
-                        if (capturedElement.dataset.originalBackgroundImage) {
-                            capturedElement.style.backgroundImage = `url(${capturedUrl})`;
-                            capturedElement.dataset.approved = "true";
-                            capturedElement.removeAttribute(
-                                "data-original-background-image",
-                            );
-                        }
-                    }, 5000);
+                    startPendingBgTimer(url, element);
                 }
             } catch (error) {
                 // ignore invalid background-image values
@@ -167,15 +255,51 @@ function extractImageLinks() {
         }
     });
 
-    return newImageLinks;
+    return { imgEntries, bgLinks: newImageLinks.slice(imgEntries.length) };
 }
 
-function sendImages() {
-    const imageLinks = extractImageLinks();
+function blockImageElement(img, url) {
+    img.classList.remove("aegis-pending");
+    img.classList.add("aegis-blocked");
+    img.alt = "";
+    img.removeAttribute("data-original-src");
+    img.removeAttribute("data-original-alt");
+    if (img.dataset.originalSrcset) {
+        img.removeAttribute("data-original-srcset");
+    }
+    img.dataset.approved = "true";
+    clearPendingTimer(url);
+}
+
+async function sendImages() {
+    const { imgEntries, bgLinks } = extractImageLinks();
+    const yoloLinks = bgLinks.slice();
+
+    // NSFWJS prefilter: classify each <img> element. Blocked images skip
+    // the YOLO server hop entirely; everything else is forwarded as before.
+    await Promise.all(
+        imgEntries.map(async ({ url, img }) => {
+            try {
+                const { blocked, scores } = await classifyImageLocally(img);
+                if (blocked) {
+                    console.log("BLOCKED (NSFWJS):", url, scores);
+                    blockImageElement(img, url);
+                    chrome.runtime
+                        .sendMessage({ recordCategory: "explicit-content" })
+                        .catch(() => {});
+                    return;
+                }
+            } catch (e) {
+                // Tainted canvas / load timeout / model failure → fall through
+                // to YOLO so we never silently allow an unclassified image.
+            }
+            yoloLinks.push(url);
+        }),
+    );
+
+    if (yoloLinks.length === 0) return;
     try {
-        if (imageLinks.length > 0) {
-            chrome.runtime.sendMessage({ images: imageLinks });
-        }
+        chrome.runtime.sendMessage({ images: yoloLinks });
     } catch (error) {
         console.error("Error sending images", error);
     }
@@ -289,10 +413,8 @@ observer.observe(document, {
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message.action === "removeImage" && message.imageLink) {
-        console.log(
-            `Removing image [${message.source || "unknown"}]`,
-            message.imageLink,
-        );
+        console.log("Removing image", message.imageLink);
+        clearPendingTimer(message.imageLink);
 
         const images = Array.from(
             document.querySelectorAll("img[data-original-src]"),
@@ -320,10 +442,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             element.removeAttribute("data-original-background-image");
         });
     } else if (message.action === "revealImage" && message.imageLink) {
-        console.log(
-            `Revealing image [${message.source || "unknown"}]`,
-            message.imageLink,
-        );
+        console.log("Revealing image", message.imageLink);
+        clearPendingTimer(message.imageLink);
 
         const images = Array.from(
             document.querySelectorAll("img[data-original-src]"),
@@ -348,10 +468,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             (el) => el.dataset.originalBackgroundImage === message.imageLink,
         );
         elements.forEach((element) => {
-            console.log(
-                `Revealing background image [${message.source || "unknown"}]`,
-                message.imageLink,
-            );
+            console.log("Revealing background image", message.imageLink);
             element.style.backgroundImage = `url(${element.dataset.originalBackgroundImage})`;
             element.dataset.approved = "true";
             element.removeAttribute("data-original-background-image");
