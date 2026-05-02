@@ -289,7 +289,10 @@ observer.observe(document, {
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message.action === "removeImage" && message.imageLink) {
-        console.log("Removing image", message.imageLink);
+        console.log(
+            `Removing image [${message.source || "unknown"}]`,
+            message.imageLink,
+        );
 
         const images = Array.from(
             document.querySelectorAll("img[data-original-src]"),
@@ -317,7 +320,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             element.removeAttribute("data-original-background-image");
         });
     } else if (message.action === "revealImage" && message.imageLink) {
-        console.log("Revealing image", message.imageLink);
+        console.log(
+            `Revealing image [${message.source || "unknown"}]`,
+            message.imageLink,
+        );
 
         const images = Array.from(
             document.querySelectorAll("img[data-original-src]"),
@@ -342,7 +348,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             (el) => el.dataset.originalBackgroundImage === message.imageLink,
         );
         elements.forEach((element) => {
-            console.log("Revealing background image", message.imageLink);
+            console.log(
+                `Revealing background image [${message.source || "unknown"}]`,
+                message.imageLink,
+            );
             element.style.backgroundImage = `url(${element.dataset.originalBackgroundImage})`;
             element.dataset.approved = "true";
             element.removeAttribute("data-original-background-image");

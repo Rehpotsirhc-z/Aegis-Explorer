@@ -72,6 +72,27 @@ function sendToTab(tabId, message) {
     }
 }
 
+function logImageDecision({
+    action,
+    imageLink,
+    source = "unknown",
+    className,
+    confidence,
+    fromCache = false,
+}) {
+    const status = action === "removeImage" ? "BLOCKED" : "REVEALED";
+    const cacheTag = fromCache ? "[CACHE]" : "";
+    const classTag = className ? ` | ${className}` : "";
+    const confidenceTag =
+        typeof confidence === "number"
+            ? ` (${(confidence * 100).toFixed(1)}%)`
+            : "";
+
+    console.log(
+        `[IMAGE]${cacheTag}[${source}] ${status}: ${imageLink}${classTag}${confidenceTag}`,
+    );
+}
+
 function cacheSet(key, value) {
     if (imageCache.size >= MAX_CACHE_SIZE) {
         const toDelete = Math.floor(MAX_CACHE_SIZE * 0.25);
@@ -206,7 +227,11 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
         for (const imageLink of request.images) {
             // Skip SVGs, ICOs, GIFs — not useful for content classification
             if (SKIP_EXTENSIONS.test(imageLink)) {
-                sendToTab(senderTabId, { action: "revealImage", imageLink });
+                sendToTab(senderTabId, {
+                    action: "revealImage",
+                    imageLink,
+                    source: "local:skip-extension",
+                });
                 continue;
             }
 
@@ -222,7 +247,19 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 
         // Process cached results immediately
         for (const { imageLink, cached } of cachedImages) {
-            sendToTab(senderTabId, { action: cached.action, imageLink });
+            logImageDecision({
+                action: cached.action,
+                imageLink,
+                source: cached.source || "cache:unknown",
+                className: cached.className,
+                confidence: cached.confidence,
+                fromCache: true,
+            });
+            sendToTab(senderTabId, {
+                action: cached.action,
+                imageLink,
+                source: cached.source || "cache:unknown",
+            });
             if (cached.action === "removeImage" && cached.category) {
                 recordCategory(cached.category);
             }
@@ -245,11 +282,20 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
 
                     if (yoloResult?.error) {
                         // Server unavailable - reveal (NSFWJS already cleared explicit)
+                        logImageDecision({
+                            action: "revealImage",
+                            imageLink,
+                            source: "server:error",
+                        });
                         sendToTab(senderTabId, {
                             action: "revealImage",
                             imageLink,
+                            source: "server:error",
                         });
-                        cacheSet(imageLink, { action: "revealImage" });
+                        cacheSet(imageLink, {
+                            action: "revealImage",
+                            source: "server:error",
+                        });
                         return;
                     }
 
@@ -263,32 +309,61 @@ chrome.runtime.onMessage.addListener(async (request, sender) => {
                         const isEnabled = storageData[storageKey] ?? true;
 
                         if (isEnabled) {
-                            console.log(
-                                `BLOCKED (YOLO): ${imageLink} | ${decision.className} (${(decision.confidence * 100).toFixed(1)}%)`,
-                            );
+                            logImageDecision({
+                                action: "removeImage",
+                                imageLink,
+                                source: "server:yolo",
+                                className: decision.className,
+                                confidence: decision.confidence,
+                            });
                             recordCategory(storageKey || decision.className);
                             sendToTab(senderTabId, {
                                 action: "removeImage",
                                 imageLink,
+                                source: "server:yolo",
                             });
                             cacheSet(imageLink, {
                                 action: "removeImage",
+                                source: "server:yolo",
                                 category: storageKey || decision.className,
                                 className: decision.className,
+                                confidence: decision.confidence,
                             });
                         } else {
+                            logImageDecision({
+                                action: "revealImage",
+                                imageLink,
+                                source: "server:yolo-disabled",
+                                className: decision.className,
+                                confidence: decision.confidence,
+                            });
                             sendToTab(senderTabId, {
                                 action: "revealImage",
                                 imageLink,
+                                source: "server:yolo-disabled",
                             });
-                            cacheSet(imageLink, { action: "revealImage" });
+                            cacheSet(imageLink, {
+                                action: "revealImage",
+                                source: "server:yolo-disabled",
+                                className: decision.className,
+                                confidence: decision.confidence,
+                            });
                         }
                     } else {
+                        logImageDecision({
+                            action: "revealImage",
+                            imageLink,
+                            source: "server:yolo",
+                        });
                         sendToTab(senderTabId, {
                             action: "revealImage",
                             imageLink,
+                            source: "server:yolo",
                         });
-                        cacheSet(imageLink, { action: "revealImage" });
+                        cacheSet(imageLink, {
+                            action: "revealImage",
+                            source: "server:yolo",
+                        });
                     }
 
                     categoryCount[decision.className] =
