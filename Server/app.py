@@ -121,8 +121,12 @@ app.add_middleware(
 )
 
 # ---- YOLO Image Classification ----
+torch.set_num_threads(os.cpu_count() or 1)
+torch.set_num_interop_threads(1)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
+print("torch num threads:", torch.get_num_threads())
+print("torch num interop threads:", torch.get_num_interop_threads())
 
 image_model_path = Path("AI_Code/model/model_v9.pt")
 img_model = YOLO(image_model_path)
