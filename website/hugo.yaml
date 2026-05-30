@@ -75,3 +75,14 @@ menu:
       weight: 4
       params:
         type: search
+
+security:
+  enableInlineShortcodes: false
+  http:
+    methods:
+      - "(?i)GET|POST"
+    urls:
+      - '(?i)^https://cdn\.jsdelivr\.net/'
+      - "(?i)^https?://[a-z]"
+      - "!(?i)https?://localhost"
+      - "!@"
