@@ -1,0 +1,8 @@
+# Age presets, matching applyRestrictions() in the extension's settings.js.
+# `blocks` lists category keys from data/categories.yaml.
+- name: Ages 3–5
+  blocks: [profanity, web-based-games, explicit-content, drugs, gambling]
+- name: Ages 6–12
+  blocks: [profanity, explicit-content, drugs, gambling]
+- name: Ages 13–18
+  blocks: [explicit-content, drugs, gambling]

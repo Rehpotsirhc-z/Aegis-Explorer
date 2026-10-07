@@ -1,0 +1,25 @@
+# Content categories, in the order the extension's settings page lists them.
+# `key` matches the storage key used by the extension (settings.js).
+- key: profanity
+  name: Profanity
+  description: Vulgar or obscene language and slurs.
+- key: web-based-games
+  name: Web-based games
+  description: >-
+    Content that promotes online, browser or mobile games and gaming sites.
+    Everyday phrases like "game plan" or "ball game" are left alone.
+- key: explicit-content
+  name: Explicit content
+  description: >-
+    Sexual content and nudity, graphic violence and gore, and links that point
+    to adult material.
+- key: drugs
+  name: Drugs
+  description: >-
+    Illegal drugs, drug paraphernalia, and content that glorifies or sells
+    them. Health, news and drug-prevention material is not blocked.
+- key: gambling
+  name: Gambling
+  description: >-
+    Casinos, sports betting, slots and lotteries. Figures of speech like
+    "I bet you're right" are ignored.

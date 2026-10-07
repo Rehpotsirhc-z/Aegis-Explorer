@@ -169,12 +169,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const categories = {
         profanity: "profanity",
-        social: "social-media-and-forums",
-        monetary: "monetary-transactions",
         explicit: "explicit-content",
         drugs: "drugs",
         games: "web-based-games",
         gambling: "gambling",
+    };
+
+    const categoryColors = {
+        profanity: "#ef4444", // Red
+        explicit: "#f59e0b", // Amber
+        drugs: "#22c55e", // Green
+        games: "#4f6ef7", // Blue
+        gambling: "#a855f7", // Purple
     };
 
     let date = new Date();
@@ -184,7 +190,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let myChart1, myChart2, myChart3; // Declare charts in the outer scope
 
-    const categoryLog = {};
+    const categoryLog = Object.fromEntries(
+        Object.keys(categories).map((key) => [key, []]),
+    );
 
     prevButton.addEventListener("click", () => {
         date.setDate(date.getDate() - 1);
@@ -230,14 +238,9 @@ document.addEventListener("DOMContentLoaded", () => {
                                   ).length
                                 : 0,
                         ),
-                        backgroundColor: [
-                            "#ef4444", // Red - profanity
-                            "#4f6ef7", // Blue - games
-                            "#f59e0b", // Amber - explicit
-                            "#22c55e", // Green - drugs
-                            "#a855f7", // Purple - gambling
-                            "#64748b", // Gray - background
-                        ],
+                        backgroundColor: Object.keys(categoryLog).map(
+                            (key) => categoryColors[key],
+                        ),
                         borderColor: "#ffffff",
                         borderWidth: 2,
                     },

@@ -1,0 +1,14 @@
+{{- /*
+The content categories Aegis Explorer filters, from data/categories.yaml.
+
+@example {{< category-list >}}
+*/ -}}
+
+<dl class="ae-categories not-prose">
+  {{- range site.Data.categories }}
+    <div>
+      <dt>{{ .name }}</dt>
+      <dd>{{ .description }}</dd>
+    </div>
+  {{- end }}
+</dl>

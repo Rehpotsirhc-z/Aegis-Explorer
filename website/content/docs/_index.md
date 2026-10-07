@@ -1,43 +1,37 @@
 ---
-date: '2025-11-22T17:11:22-05:00'
-linkTitle: "Documentation"
-title: 'Aegis Explorer'
+title: Documentation
+linkTitle: Docs
+description: How to install, set up and use the Aegis Explorer Chrome extension.
 ---
 
-## What is Aegis Explorer?
+Aegis Explorer is a Chrome extension that hides harmful images and text on the pages your child visits. You choose which kinds of content to filter, and settings are protected by a password only you know.
 
-Aegis Explorer is a Chrome extension designed to protect children online by detecting and blocking potentially harmful images and text using customizable filters.
-
-### How It Works
 {{< cards >}}
-  {{< card title="Real-time Filtering" subtitle="Scans images and text on every page as you browse." >}}
-  {{< card title="Customizable Rules" subtitle="Parents choose what categories to filter and set confidence thresholds." >}}
-  {{< card title="Private by Design" subtitle="No data is stored; only minimal content is sent to the server for analysis." >}}
-  {{< card title="Server-Side AI" subtitle="Processing happens on the backend for speed and consistency." >}}
+  {{< card link="getting-started/" title="Getting started" subtitle="Install the extension and create your admin password." >}}
+  {{< card link="filtering/" title="Filtering settings" subtitle="Age presets, custom categories and detection sensitivity." >}}
+  {{< card link="statistics/" title="Statistics" subtitle="Read the daily log of blocked content and activity." >}}
+  {{< card link="troubleshooting/" title="Troubleshooting" subtitle="Fixes for common problems, and known limitations." >}}
 {{< /cards >}}
 
-### Why Not Local AI?
+## How filtering works
 
-Running AI locally would be too slow and inconsistent across devices.  
-To ensure fast and reliable protection, minimal data is sent to the server for classification. **Nothing is stored.**
+When a page loads, Aegis Explorer:
 
-## Usage Insights
+1. **Holds back the page's images** until they've been checked. Text is collected as it appears on the page, including content that loads later as you scroll.
+2. **Checks images on the computer first.** An explicit-image model runs inside the browser. Images it flags are hidden right away and never leave the computer.
+3. **Sends the rest to be classified.** Remaining images are checked by our image model for explicit content, drugs, gambling, games and profanity. Short pieces of text are checked by a language model for the same categories.
+4. **Hides what matches your settings.** Blocked images and text stay hidden. Everything else is shown as normal.
 
-Aegis Explorer provides simple usage statistics:
+Only the categories you've turned on are blocked, and only when the model's confidence is above your [Detection Confidence](filtering/#detection-confidence) setting.
 
-- Logs of blocked harmful content  
-- Uptime and activity graphs  
-- High-level browsing activity patterns  
-
-These logs help confirm that the extension is active and hasn't been tampered with.
-
-## Design Philosophy
+## Design philosophy
 
 Aegis Explorer is purposely designed to strike a balance between online safety and independence:
 
-- No filter is perfect---conversation and trust matter  
-- Not meant to be unbreakable, but **practical**  
-- Helps parents guide safe internet habits without extreme restrictions  
+- No filter is perfect; conversation and trust matter
+- Not meant to be unbreakable, but **practical**
+- Helps parents guide safe internet habits without extreme restrictions
 
 The goal is mitigation, not total lockdown.
 
+For what data is sent and what's kept, see the [privacy policy](/privacy/).

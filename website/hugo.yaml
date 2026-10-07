@@ -1,12 +1,24 @@
 baseURL: https://aegisexplorer.org/
-languageCode: en-us
+locale: en-us
 title: Aegis Explorer
+enableRobotsTXT: true
 
 module:
   imports:
     - path: github.com/imfing/hextra
 
 params:
+  description: >-
+    Aegis Explorer is a Chrome extension that hides explicit content, drugs,
+    gambling, games and profanity on web pages before children see them.
+    Made by Aegis Technologies LLC.
+  images:
+    - /images/social-card.png
+
+  company: Aegis Technologies LLC
+  email: contact@aegisexplorer.org
+  chromeStoreURL: https://chromewebstore.google.com/detail/aaepaimdjblkleipgbkgmokokdmdhpob
+
   navbar:
     displayTitle: true
     displayLogo: true
@@ -20,6 +32,7 @@ params:
 
   footer:
     enable: true
+    # The copyright line is rendered by layouts/_partials/custom/footer.html
     displayCopyright: false
     displayPoweredBy: false
     width: normal
@@ -27,8 +40,6 @@ params:
   page:
     # full (100%), wide (90rem), normal (80rem)
     width: normal
-    # tabs:
-    #   sync: true
 
   theme:
     # light | dark | system
@@ -50,29 +61,31 @@ markup:
 
 menu:
   main:
-    - identifier: documentation
-      name: Documentation
-      pageRef: /docs
+    - identifier: how-it-works
+      name: How it works
+      url: /#how-it-works
       weight: 1
-      params:
-        type: link
-        icon: book-open
-    - identifier: demo
-      name: Demo
-      pageRef: /demo
+    - identifier: documentation
+      name: Docs
+      pageRef: /docs
       weight: 2
-      params:
-        type: link
-        icon: play
-    - name: Install
+    - identifier: privacy
+      name: Privacy
+      pageRef: /privacy
       weight: 3
+    - identifier: about
+      name: About
+      pageRef: /about
+      weight: 4
+    - name: Add to Chrome
+      weight: 5
       url: "https://chromewebstore.google.com/detail/aaepaimdjblkleipgbkgmokokdmdhpob"
       params:
         external: true
         type: link
         icon: download
     - name: Search
-      weight: 4
+      weight: 6
       params:
         type: search
 

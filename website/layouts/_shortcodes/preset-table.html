@@ -1,0 +1,39 @@
+{{- /*
+Table of age presets against content categories, built from
+data/presets.yaml and data/categories.yaml.
+
+@example {{< preset-table >}}
+*/ -}}
+
+{{- $presets := site.Data.presets -}}
+{{- $categories := site.Data.categories -}}
+
+<div class="ae-table-wrap not-prose">
+  <table class="ae-preset-table">
+    <thead>
+      <tr>
+        <th scope="col">Category</th>
+        {{- range $presets }}
+          <th scope="col">{{ .name }}</th>
+        {{- end }}
+        <th scope="col">Custom</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{- range $categories }}
+        {{- $key := .key }}
+        <tr>
+          <th scope="row">{{ .name }}</th>
+          {{- range $presets }}
+            {{- if in .blocks $key }}
+              <td class="ae-blocked"><span aria-hidden="true">●</span> Blocked</td>
+            {{- else }}
+              <td class="ae-allowed">Allowed</td>
+            {{- end }}
+          {{- end }}
+          <td class="ae-custom">Your choice</td>
+        </tr>
+      {{- end }}
+    </tbody>
+  </table>
+</div>

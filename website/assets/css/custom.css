@@ -1,0 +1,514 @@
+/*
+ * Site-specific styles layered on top of Hextra.
+ * Classes are prefixed with `ae-`. Colors come from Hextra's variables so the
+ * light/dark theme toggle keeps working.
+ */
+
+:root {
+  --ae-text: var(--hx-color-gray-900);
+  --ae-muted: var(--hx-color-gray-600);
+  --ae-subtle: var(--hx-color-gray-500);
+  --ae-border: var(--hx-color-gray-200);
+  --ae-surface: var(--hx-color-gray-50);
+  --ae-accent: var(--hx-color-primary-600);
+  --ae-accent-hover: var(--hx-color-primary-700);
+  --ae-blocked: oklch(50.5% 0.213 27.518);
+}
+
+.dark {
+  --ae-text: var(--hx-color-gray-100);
+  --ae-muted: var(--hx-color-gray-400);
+  --ae-subtle: var(--hx-color-gray-500);
+  --ae-border: var(--hx-color-neutral-800);
+  --ae-surface: var(--hx-color-neutral-900);
+  --ae-accent: var(--hx-color-primary-500);
+  --ae-accent-hover: var(--hx-color-primary-400);
+  --ae-blocked: oklch(70.4% 0.191 22.216);
+}
+
+/* ---------- Home: hero ---------- */
+
+.ae-hero {
+  width: 100%;
+  padding-top: 1.5rem;
+}
+
+.ae-hero-title {
+  max-width: 20ch;
+  margin: 0;
+  padding: 0.25rem 0;
+  text-wrap: balance;
+  font-size: clamp(2.25rem, 1.6rem + 3vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  background-image: linear-gradient(to right, var(--hx-color-gray-900), var(--hx-color-gray-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .ae-hero-title {
+  background-image: linear-gradient(to right, var(--hx-color-gray-100), var(--hx-color-gray-400));
+}
+
+.ae-hero-lead {
+  max-width: 40rem;
+  margin: 1.25rem 0 0;
+  font-size: var(--hx-text-xl);
+  line-height: 1.6;
+  color: var(--ae-muted);
+}
+
+.ae-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 2rem 0 0;
+}
+
+.ae-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in, border-color 0.2s ease-in, color 0.2s ease-in;
+}
+
+.ae-btn-primary {
+  background-color: var(--hx-color-primary-600);
+  color: #fff;
+}
+
+.ae-btn-primary:hover {
+  background-color: var(--hx-color-primary-700);
+}
+
+.ae-btn-secondary {
+  border-color: var(--ae-border);
+  color: var(--ae-text);
+}
+
+.ae-btn-secondary:hover {
+  border-color: var(--hx-color-gray-400);
+}
+
+.ae-btn:focus-visible {
+  outline: 2px solid var(--ae-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Screenshots ---------- */
+
+.ae-shot {
+  width: 100%;
+  margin: 3rem 0 0;
+}
+
+.ae-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--ae-border);
+  border-radius: var(--hx-radius-xl);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 12px 32px -8px rgb(0 0 0 / 0.12);
+}
+
+.dark .ae-shot img {
+  box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.6);
+}
+
+.ae-shot figcaption {
+  margin-top: 0.75rem;
+  font-size: var(--hx-text-sm);
+  line-height: 1.6;
+  color: var(--ae-subtle);
+}
+
+.ae-shot figcaption strong {
+  color: var(--ae-text);
+}
+
+/* Screenshots inside docs pages */
+.content .ae-shot {
+  margin: 1.5rem 0;
+}
+
+
+/* ---------- Home: sections ---------- */
+
+.ae-section {
+  width: 100%;
+  padding-top: 6rem;
+  scroll-margin-top: calc(var(--navbar-height, 4rem) + 1rem);
+}
+
+.ae-h2 {
+  max-width: 32ch;
+  text-wrap: balance;
+  margin: 0;
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--ae-text);
+}
+
+.ae-lead {
+  max-width: 42rem;
+  margin: 1rem 0 0;
+  font-size: var(--hx-text-lg);
+  line-height: 1.65;
+  color: var(--ae-muted);
+}
+
+.ae-section h3 {
+  margin: 0 0 0.5rem;
+  font-size: var(--hx-text-lg);
+  font-weight: 600;
+  color: var(--ae-text);
+}
+
+.ae-section p {
+  line-height: 1.65;
+}
+
+.ae-section code {
+  padding: 0.1em 0.35em;
+  border-radius: var(--hx-radius-sm);
+  background: var(--ae-surface);
+  border: 1px solid var(--ae-border);
+  font-size: 0.9em;
+}
+
+.ae-section a:not(.ae-btn) {
+  color: var(--ae-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Section heads that sit directly above a Hextra feature grid */
+#problem,
+#principles {
+  padding-bottom: 2rem;
+}
+
+.ae-gap-sm {
+  height: 1rem;
+}
+
+.ae-gap-lg {
+  height: 3rem;
+}
+
+/* Numbered steps */
+.ae-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  margin: 3rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: ae-step;
+}
+
+.ae-steps li {
+  counter-increment: ae-step;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ae-border);
+}
+
+.ae-steps li::before {
+  content: counter(ae-step, decimal-leading-zero);
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: var(--hx-text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ae-accent);
+}
+
+.ae-steps p {
+  margin: 0;
+  color: var(--ae-muted);
+}
+
+/* Category definitions */
+.ae-categories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 2.5rem;
+  margin: 2.5rem 0 0;
+}
+
+.ae-categories > div {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--ae-border);
+}
+
+.ae-categories dt {
+  font-weight: 600;
+  color: var(--ae-text);
+}
+
+.ae-categories dd {
+  margin: 0.35rem 0 0;
+  line-height: 1.6;
+  color: var(--ae-muted);
+}
+
+/* Preset table */
+.ae-table-wrap {
+  width: 100%;
+  margin: 2.5rem 0 0;
+  overflow-x: auto;
+  border: 1px solid var(--ae-border);
+  border-radius: var(--hx-radius-xl);
+}
+
+.ae-preset-table {
+  width: 100%;
+  min-width: 36rem;
+  border-collapse: collapse;
+  font-size: var(--hx-text-sm);
+}
+
+.ae-preset-table th,
+.ae-preset-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--ae-border);
+}
+
+.ae-preset-table tbody tr:last-child th,
+.ae-preset-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.ae-preset-table thead th {
+  background: var(--ae-surface);
+  font-weight: 600;
+  color: var(--ae-text);
+  white-space: nowrap;
+}
+
+.ae-preset-table tbody th {
+  font-weight: 600;
+  color: var(--ae-text);
+}
+
+.ae-preset-table .ae-blocked {
+  color: var(--ae-text);
+  font-weight: 500;
+}
+
+.ae-preset-table .ae-blocked span {
+  margin-right: 0.35rem;
+  font-size: 0.6em;
+  vertical-align: 0.2em;
+  color: var(--ae-blocked);
+}
+
+.ae-preset-table .ae-allowed,
+.ae-preset-table .ae-custom {
+  color: var(--ae-subtle);
+}
+
+/* Sources under the statistics */
+.ae-sources {
+  width: 100%;
+  margin: 1.25rem 0 0;
+  padding-left: 1.25rem;
+  list-style: decimal;
+  font-size: var(--hx-text-xs);
+  line-height: 1.6;
+  color: var(--ae-subtle);
+}
+
+.ae-sources a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ae-sources a:hover {
+  color: var(--ae-text);
+}
+
+/* Demo videos */
+.ae-videos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.ae-videos figure {
+  margin: 0;
+}
+
+.ae-videos video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border: 1px solid var(--ae-border);
+  border-radius: var(--hx-radius-xl);
+}
+
+.ae-videos figcaption {
+  margin-top: 0.75rem;
+  font-size: var(--hx-text-sm);
+  line-height: 1.6;
+  color: var(--ae-subtle);
+}
+
+/* FAQ */
+.ae-faq {
+  width: 100%;
+  max-width: 48rem;
+  margin-top: 1rem;
+}
+
+.ae-faq details p {
+  line-height: 1.65;
+}
+
+/* Closing call to action */
+.ae-cta {
+  width: 100%;
+  margin: 6rem 0 2rem;
+  padding: 3.5rem 2rem;
+  text-align: center;
+  border: 1px solid var(--ae-border);
+  border-radius: var(--hx-radius-3xl);
+  background: var(--ae-surface);
+}
+
+.ae-cta h2 {
+  margin: 0;
+  text-wrap: balance;
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ae-text);
+}
+
+.ae-cta p {
+  margin: 0.5rem 0 0;
+  font-size: var(--hx-text-lg);
+  color: var(--ae-muted);
+}
+
+.ae-cta .ae-actions {
+  justify-content: center;
+}
+
+/* ---------- Footer ---------- */
+
+.ae-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2.5rem;
+  padding: 3rem 0 2rem;
+}
+
+.ae-footer-brand {
+  max-width: 18rem;
+}
+
+.ae-footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--ae-text);
+}
+
+.ae-footer-brand p {
+  margin: 0.75rem 0 0;
+  font-size: var(--hx-text-sm);
+  line-height: 1.6;
+}
+
+.ae-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem 4rem;
+}
+
+.ae-footer-links h2 {
+  margin: 0 0 0.75rem;
+  font-size: var(--hx-text-sm);
+  font-weight: 600;
+  color: var(--ae-text);
+}
+
+.ae-footer-links ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ae-footer-links li + li {
+  margin-top: 0.5rem;
+}
+
+.ae-footer-links a {
+  font-size: var(--hx-text-sm);
+  color: inherit;
+  transition: color 0.15s ease-in;
+}
+
+.ae-footer-links a:hover {
+  color: var(--ae-text);
+}
+
+.ae-footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  padding: 1.5rem 0 2.5rem;
+  border-top: 1px solid var(--ae-border);
+  font-size: var(--hx-text-xs);
+}
+
+.ae-footer-legal p {
+  margin: 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 767px) {
+  .ae-section {
+    padding-top: 4.5rem;
+  }
+
+  .ae-steps,
+  .ae-categories,
+  .ae-videos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ae-steps {
+    gap: 1.5rem;
+  }
+
+  .ae-hero-lead {
+    font-size: var(--hx-text-lg);
+  }
+
+  .ae-actions .ae-btn {
+    flex: 1 1 auto;
+  }
+
+  .ae-cta {
+    padding: 2.5rem 1.25rem;
+  }
+}

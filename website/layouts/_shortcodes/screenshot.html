@@ -1,0 +1,31 @@
+{{- /*
+A product screenshot in a simple frame.
+
+@param {string} src Path under static/, e.g. /images/settings-blocking.png
+@param {string} alt Alt text.
+@param {string} caption Optional caption.
+@param {int} width Intrinsic width in pixels.
+@param {int} height Intrinsic height in pixels.
+@param {bool} eager Load immediately instead of lazily (use above the fold).
+
+@example {{< screenshot src="/images/settings-blocking.png" alt="..." width="1600" height="1000" >}}
+*/ -}}
+
+{{- $src := .Get "src" -}}
+{{- if hasPrefix $src "/" -}}
+  {{- $src = relURL (strings.TrimPrefix "/" $src) -}}
+{{- end -}}
+{{- $eager := eq (.Get "eager") "true" -}}
+
+<figure class="ae-shot not-prose">
+  <img
+    src="{{ $src }}"
+    alt="{{ .Get "alt" }}"
+    {{ with .Get "width" }}width="{{ . }}"{{ end }}
+    {{ with .Get "height" }}height="{{ . }}"{{ end }}
+    {{ if $eager }}fetchpriority="high"{{ else }}loading="lazy" decoding="async"{{ end }}
+  />
+  {{- with .Get "caption" }}
+    <figcaption>{{ . | markdownify }}</figcaption>
+  {{- end }}
+</figure>
